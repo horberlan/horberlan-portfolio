@@ -19,10 +19,10 @@ export default {
     },
     hoverColor: [Boolean, String],
     rotate: String,
-    margin : {
+    margin: {
       type: String,
-      default: "auto",
-    }
+      default: "0",
+    },
   },
 
   computed: {

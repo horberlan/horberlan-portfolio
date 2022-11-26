@@ -9,8 +9,7 @@ const hello = [
   const github = [
     "const ",
     "githubLink ",
-    "“https://github.com/example/url”",
-    
+    "“https://github.com/horberlan”",
 ]
 </script>
 <template>

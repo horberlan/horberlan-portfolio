@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const footerData = ["copright", "@pois.nada"];
+const footerData = ["Copyright ©", "@pois.nada"];
 </script>
 
 <template>

@@ -53,7 +53,7 @@ nav {
     padding: 1rem 2rem;
     transition: 200ms;
     &:nth-child(1) {
-      padding-inline-end: 9.625rem;
+      min-width: 17vw;
     }
     &:last-child {
       margin-inline-start: auto;

@@ -2,13 +2,16 @@
 import { ref, watch } from "vue";
 import SvgIcon from "./SvgIcon.vue";
 
-const props = defineProps<{
-  open: boolean;
-  closed?: boolean;
-  clickable?: boolean;
-  title?: string;
-  mode?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    open: boolean;
+    closed?: boolean;
+    clickable?: boolean;
+    title?: string;
+    mode?: string;
+  }>(),
+  { mode: "subitem" }
+);
 
 const emit = defineEmits(["close-all", "selected"]);
 
@@ -42,13 +45,34 @@ const toggleAccordeon = () => {
 };
 </script>
 <template>
-  <div :class="['box-accordeon noselect']">
+  <div v-if="mode === 'subitem'" :class="['box-accordeon noselect']">
     <div class="header" @click="toggleAccordeon()">
       <SvgIcon
         name="chevronIcon"
         :rotate="opened ? '0deg' : '-90deg'"
         size="sm"
       />
+      <slot name="icon-folder"></slot>
+      <div class="title">
+        <span v-html="props.title" />
+      </div>
+    </div>
+    <Transition>
+      <div v-if="opened" class="body">
+        <slot></slot>
+      </div>
+    </Transition>
+  </div>
+  <div v-else :class="['box-accordeon noselect', 'item']">
+    <div class="header" @click="toggleAccordeon()">
+      <SvgIcon
+        name="chevronIcon"
+        :rotate="opened ? '0deg' : '-90deg'"
+        size="sm"
+        type="custom"
+        margin="0.3125rem"
+      />
+      <slot name="icon-folder"></slot>
       <div class="title">
         <span v-html="props.title" />
       </div>
@@ -66,6 +90,17 @@ const toggleAccordeon = () => {
 }
 .box-accordeon {
   display: grid;
+  &.item {
+    border-bottom: 1px solid #1e2d3d;
+    width: 100%;
+    margin: 0;
+    .header {
+      padding: 0.5rem;
+    }
+    .body {
+      margin-block: 0.5rem;
+    }
+  }
   .header {
     display: flex;
     gap: 1rem;

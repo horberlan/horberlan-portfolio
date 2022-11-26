@@ -40,9 +40,9 @@ section {
 section .panel_content {
   height: 100%;
   border: 1px solid #1e2d3d;
-  padding: 0.5rem;
+  //padding: 0.5rem;
   &:nth-child(1n) {
-    width: 16%;
+    min-width: 24rem !important;
   }
 }
 .resized {
