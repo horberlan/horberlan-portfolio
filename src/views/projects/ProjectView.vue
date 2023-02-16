@@ -76,8 +76,9 @@ const logData = async (data, index) => {
 };
 const getSafeProjects = async () => {
   try {
-    const { data } = await getProjects({ type: {...listFilters.value.map((e) => e.type)} });
+    const { data } = await getProjects(undefined);
     projectsList.value = data;
+    console.log(projectsList.value)
   } catch (error) {
     console.error(error);
   } finally {
