@@ -98,9 +98,12 @@ import BoxAccordeon from "@/components/BoxAccordeon.vue";
 import PanelView from "@/components/PanelView.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { markRaw, onMounted, onUpdated, ref, type Ref } from "vue";
+import Skills from "./Skills.vue";
+import Web3Interests from "./Web3Interests.vue";
 import Values from "./ValuesComp.vue";
 import ValuesSec from "./TestTwo.vue";
 import AboutMe from "./AboutMe.vue";
+import Courses from "./Courses.vue";
 import { getSnippet, updateSnippet } from "@/services/entites";
 import "vue-code-highlight/themes/duotone-sea.css";
 const componentValue = ref(markRaw(AboutMe));
@@ -147,16 +150,21 @@ const educations = ref([
     title: "university",
     component: markRaw(Values),
   },
+  {
+    title: "Courses",
+    component: markRaw(Courses),
+  },
 ]);
 const interests = ref([
   {
     title: "Web3",
-    component: markRaw(ValuesSec),
+    component: markRaw(Web3Interests),
   },
   {
-    title: "university",
-    component: markRaw(Values),
+    title: "Skills",
+    component: markRaw(Skills),
   },
+  
 ]);
 const bio = ref([
   {

@@ -2,14 +2,14 @@ import Axios from "axios";
 const app = Axios;
 
 export const searchOutFit = async (value) => {
-  const { data } = await app.post("http://localhost:3004/api/projects", {
+  const { data } = await app.post("http://localhost:3000/api/projects", {
     ...value,
   });
   return data;
 };
 export const getProjects = async (param) => {
   // Object.keys(param).forEach(() => { filters.value[filterType] = values });
-  const data = await app.get("http://localhost:3004/api/projects", {
+  const data = await app.get("http://localhost:3000/api/projects", {
     params: {
       ...param,
     },
