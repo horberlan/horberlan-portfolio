@@ -48,13 +48,13 @@
 <script setup lang="ts">
 import BoxAccordeon from "@/components/BoxAccordeon.vue";
 import PanelView from "@/components/PanelView.vue";
-import SvgIcon from "@/components/SvgIcon.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
-import { onMounted, ref } from "vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import type { ProjectType } from "@/utils/enums/project";
 import { PROJECT_TYPE } from "@/utils/enums/project";
-import { uniqBy, omit } from "lodash";
+import { omit, uniqBy } from "lodash";
+import { onMounted, ref } from "vue";
 
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
@@ -62,31 +62,38 @@ const listFilters = ref([]);
 const searchParams = ref({
   type: PROJECT_TYPE.ALL,
 });
-const logData = async (data, index) => {
+const allTypes = ref(PROJECT_TYPE);
+const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
     searchParams.value.type = data;
-    listFilters.value = uniqBy(
-      [...listFilters.value, { type: data }],
-      (e) => e.type
-    );
+    filtredProjectsList.value = [...projectsList.value.filter((e) => e.type === data), ...projectsList.value]
+    console.log("checked", filtredProjectsList.value.map((e)=> e.type));
+    await getSafeProjects(data);
   } else {
-    listFilters.value = omit(listFilters.value, [data]);
+    filtredProjectsList.value = projectsList.value.filter(
+      (e) => e.type !== data
+    );
+    console.log("no checked", filtredProjectsList.value);
+    await getSafeProjects(null);
   }
-  await getSafeProjects();
 };
-const getSafeProjects = async () => {
+const getSafeProjects = async (index: PROJECT_TYPE) => {
+  const filter = ref<ProjectType[]>([]);
   try {
     const { data } = await getProjects(undefined);
     projectsList.value = data;
-    console.log(projectsList.value)
+    filter.value =
+      index !== null
+        ? projectsList.value.filter((e) => e.type === index)
+        : projectsList.value;
   } catch (error) {
     console.error(error);
   } finally {
-    filtredProjectsList.value = projectsList.value;
+    filtredProjectsList.value = filter.value;
   }
 };
 
-onMounted(async () => await getSafeProjects());
+onMounted(async () => await getSafeProjects(null));
 </script>
 
 <style lang="scss" scoped>
