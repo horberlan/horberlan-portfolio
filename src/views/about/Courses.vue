@@ -1,6 +1,9 @@
 <template> <ol>
   <li>/**</li>
-  <li>* Technical education, Computer Technician - E.E.M.T. Cristiano Cartaxo;</li>
+  <li>* Courses of my interest</li>
+  <li>* VUE.JS Training;</li>
+  <li>* M220JS: MongoDB for JavaScript Developers;</li>
+  <li>* Advanced Node.js;</li>
   <li>**/</li>
 </ol>
 </template>
@@ -23,3 +26,4 @@ li {
 }
 }
 </style>
+

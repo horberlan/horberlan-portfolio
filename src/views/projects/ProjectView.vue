@@ -29,16 +29,19 @@
     <template #left>
       <div class="flex-wrapper">
         <TransitionGroup name="list">
-          <ProjectCard
-            v-for="(project, index) in filtredProjectsList"
-            :key="index"
-            :flag="project.href"
-            :bg="project.background"
-            :desc="project.project_description"
-            :href="project.href"
-          >
-            <template #index> </template>
-          </ProjectCard>
+          <div>
+            <ProjectCard
+              v-for="(project, index) in filtredProjectsList"
+              :key="project.id"
+              :flag="project.href"
+              :bg="project.background"
+              :desc="project.project_description"
+              :href="project.href"
+            >
+              <template #index> </template>
+            </ProjectCard>
+
+          </div>
         </TransitionGroup>
       </div>
     </template>
