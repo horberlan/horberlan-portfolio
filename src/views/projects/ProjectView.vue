@@ -29,18 +29,14 @@
     <template #left>
       <div class="flex-wrapper">
         <TransitionGroup name="list">
-          <div>
+          <div v-for="project in filtredProjectsList" :key="project.id">
             <ProjectCard
-              v-for="(project, index) in filtredProjectsList"
-              :key="project.id"
               :flag="project.href"
               :bg="project.background"
               :desc="project.project_description"
               :href="project.href"
             >
-              <template #index> </template>
             </ProjectCard>
-
           </div>
         </TransitionGroup>
       </div>
@@ -54,49 +50,44 @@ import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
-import type { ProjectType } from "@/utils/enums/project";
-import { PROJECT_TYPE } from "@/utils/enums/project";
-import { omit, uniqBy } from "lodash";
+import { PROJECT_TYPE, type ProjectType } from "@/utils/enums/project";
 import { onMounted, ref } from "vue";
-
+import { without, remove } from "lodash";
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
-const listFilters = ref([]);
+const listFilters = ref<string[]>([]);
 const searchParams = ref({
   type: PROJECT_TYPE.ALL,
 });
 const allTypes = ref(PROJECT_TYPE);
+
 const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
+    listFilters.value.push(data);
+
     searchParams.value.type = data;
-    filtredProjectsList.value = [...projectsList.value.filter((e) => e.type === data), ...projectsList.value]
-    console.log("checked", filtredProjectsList.value.map((e)=> e.type));
-    await getSafeProjects(data);
+    filtredProjectsList.value = [
+      ...projectsList.value.filter((e) => e.type === data),
+    ];
   } else {
+    remove(listFilters.value, (number) => number === data);
     filtredProjectsList.value = projectsList.value.filter(
       (e) => e.type !== data
     );
-    console.log("no checked", filtredProjectsList.value);
-    await getSafeProjects(null);
   }
+  await getSafeProjects(listFilters.value);
 };
-const getSafeProjects = async (index: PROJECT_TYPE) => {
-  const filter = ref<ProjectType[]>([]);
+const getSafeProjects = async (value: string[]) => {
   try {
-    const { data } = await getProjects(undefined);
-    projectsList.value = data;
-    filter.value =
-      index !== null
-        ? projectsList.value.filter((e) => e.type === index)
-        : projectsList.value;
+    const data = await getProjects(value);
+    const filter = data;
+    filtredProjectsList.value = filter;
   } catch (error) {
-    console.error(error);
-  } finally {
-    filtredProjectsList.value = filter.value;
+    return;
   }
 };
 
-onMounted(async () => await getSafeProjects(null));
+onMounted(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>

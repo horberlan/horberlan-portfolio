@@ -1,36 +1,59 @@
-import Axios from "axios";
-const app = Axios;
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:3004/api",
+});
 
 export const searchOutFit = async (value) => {
-  const { data } = await app.post("http://localhost:3000/api/projects", {
-    ...value,
-  });
-  return data;
+  try {
+    const { data } = await api.post("/projects", value);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
-export const getProjects = async (param) => {
-  // Object.keys(param).forEach(() => { filters.value[filterType] = values });
-  const data = await app.get("http://localhost:3000/api/projects", {
-    params: {
-      ...param,
-    },
-  });
-  return data;
+
+const getProjects = async (param: Record<string, string>): Promise<any> => {
+  try {
+    const { data } = await api.get(`/projects?type=${Object.values(param).join(";") ?? ""}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
+export { getProjects };
 export const getSnippet = async () => {
-  const { data } = await app.get("http://localhost:3000/snippets");
-  return data;
+  try {
+    const { data } = await api.get("/snippet");
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
+
 export const updateSnippet = async (snippet) => {
-  const { data } = await app.put(
-    `http://localhost:3004/snippets/${snippet.id}`,
-    snippet
-  );
-  return data;
+  try {
+    const { data } = await api.put(`/snippet/${snippet.id}`, snippet);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
+
 export const getContact = async () => {
-  const { data } = await app.get(`http://localhost:3004/form`);
-  return data;
+  try {
+    const { data } = await api.get("/form");
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
+
 export const postContact = async (form) => {
-  await app.put("http://localhost:3004/form", form);
+  try {
+    await api.put("/form", form);
+  } catch (error) {
+    console.log(error);
+  }
 };

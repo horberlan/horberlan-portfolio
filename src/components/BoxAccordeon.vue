@@ -78,7 +78,7 @@ const toggleAccordeon = () => {
       </div>
     </div>
     <Transition>
-      <div v-if="opened" class="body">
+      <div v-show="opened" class="body">
         <slot></slot>
       </div>
     </Transition>

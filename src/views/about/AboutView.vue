@@ -121,7 +121,7 @@ type Snippets = {
 };
 const getSafeSnippet = async () => {
   try {
-    const snippets  = await getSnippet();
+    const snippets = await getSnippet();
     snippetList.value = snippets;
   } catch {
     console.log("error");
