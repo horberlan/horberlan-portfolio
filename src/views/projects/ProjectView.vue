@@ -51,15 +51,16 @@ import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import { PROJECT_TYPE, type ProjectType } from "@/utils/enums/project";
+import { remove } from "lodash";
 import { onMounted, ref } from "vue";
-import { without, remove } from "lodash";
+
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
 const listFilters = ref<string[]>([]);
-const searchParams = ref({
+const searchParams = ref<{ type: PROJECT_TYPE }>({
   type: PROJECT_TYPE.ALL,
 });
-const allTypes = ref(PROJECT_TYPE);
+const allTypes = PROJECT_TYPE;
 
 const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
@@ -70,20 +71,20 @@ const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
       ...projectsList.value.filter((e) => e.type === data),
     ];
   } else {
-    remove(listFilters.value, (number) => number === data);
+    listFilters.value = listFilters.value.filter((number) => number !== data);
     filtredProjectsList.value = projectsList.value.filter(
       (e) => e.type !== data
     );
   }
   await getSafeProjects(listFilters.value);
 };
+
 const getSafeProjects = async (value: string[]) => {
   try {
     const data = await getProjects(value);
-    const filter = data;
-    filtredProjectsList.value = filter;
+    filtredProjectsList.value = data;
   } catch (error) {
-    return;
+    console.error(error);
   }
 };
 
