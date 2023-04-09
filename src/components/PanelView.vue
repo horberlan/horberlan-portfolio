@@ -4,6 +4,7 @@
       <slot name="panel-1"></slot>
     </div>
     <DragCol
+      v-if="props.isResizable"
       :sliderWidth="3"
       width="100%"
       height="auto"
@@ -21,11 +22,20 @@
         </div>
       </template>
     </DragCol>
+    <div v-else>
+      <slot name="left"> </slot>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { DragCol } from "vue-resizer";
+const props = withDefaults(
+  defineProps<{
+    isResizable: boolean;
+  }>(),
+  { isResizable: true }
+);
 </script>
 
 <style lang="scss" scoped>

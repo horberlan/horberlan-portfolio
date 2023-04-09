@@ -24,7 +24,7 @@
           <button
             v-for="(education, index) in items.content"
             :key="index"
-            @click="() => (select = !select)"
+            @click="componentValue = education.component"
             class="btn"
           >
             <SvgIcon name="AboutMd" size="md" />
@@ -50,29 +50,44 @@
       </box-accordeon>
     </template>
     <template #panel-2>
-      <p v-if="select">asdasdas</p>
-      <ol>
-        <li>/**</li>
-        <li>* About me</li>
-        <li>* About me Working as a Full Stack developer with</li>
-        <li>* emphasis on Front-end javaScript frameworks such</li>
-        <li>* as React.js and Vue.js 3 (Composition API),</li>
-        <li>* Back-end inpython3 (Django) and Node.js. Mobile application</li>
-        <li>* development using React Native Framework.</li>
-        <li>* Worked on 11 new products in the last 6months for Fermen.to</li>
-        <li>* and Flow E.F inc. Aiming at a minimum of 95%</li>
-        <li>* performance in collaborative development applications.</li>
-        <li>* Passionate about decentralized projects on WEB3.</li>
-        <li>* One of my projects created in 2021 got</li>
-        <li>* 4600+ downloads and 8.8 rating on Pling Store.</li>
-        <li>* In my spare time I</li>
-        <li>* contribute as a translation reviewer for GitLab inc.</li>
-        <li>**/</li>
-      </ol>
+      <component :is="componentValue" />
     </template>
     <template #panel-3>
       <div>
         <p ref="lineCouter" class="test-span">// Code snippet showcase:</p>
+        <div
+          class="snippet-container"
+          v-for="snippet in snippetList"
+          :key="snippet.id"
+        >
+          <div class="header">
+            <div class="left">
+              <img class="img" :src="snippet.avatar_url" :alt="snippet.name" />
+              <p>
+                {{ snippet.name }} <br />
+                Created {{ snippet.updated_date }}
+              </p>
+            </div>
+            <div class="right">
+              <p @click="show = !show">details</p>
+              <p @click="updateSafeSnippet(snippet)">
+                {{ snippet.stars }} stars
+              </p>
+            </div>
+          </div>
+          <div class="snippet-content">
+            <div v-highlight>
+              <pre class="language-javascript">
+                <code>
+{{ snippet.snippet }}
+                </code>
+              </pre>
+            </div>
+          </div>
+          <Transition>
+            <p v-if="show">{{ snippet.details }}</p>
+          </Transition>
+        </div>
       </div>
     </template>
   </PanelView>
@@ -82,30 +97,90 @@
 import BoxAccordeon from "@/components/BoxAccordeon.vue";
 import PanelView from "@/components/PanelView.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
-import { ref } from "vue";
+import { markRaw, onMounted, onUpdated, ref, type Ref } from "vue";
+import Skills from "./Skills.vue";
+import Web3Interests from "./Web3Interests.vue";
+import Values from "./ValuesComp.vue";
+import ValuesSec from "./TestTwo.vue";
+import AboutMe from "./AboutMe.vue";
+import Courses from "./Courses.vue";
+import { getSnippet, updateSnippet } from "@/services/entites";
+import "vue-code-highlight/themes/duotone-sea.css";
+const componentValue = ref(markRaw(AboutMe));
+const snippetList = ref([]) as Ref<Snippets[]>;
+const show = ref(false);
 
-const select = ref(false);
-
+type Snippets = {
+  id: string;
+  name: string;
+  updated_date: string;
+  snippet: string;
+  details: string;
+  stars: number;
+  avatar_url: string;
+};
+const getSafeSnippet = async () => {
+  try {
+    const snippets = await getSnippet();
+    snippetList.value = snippets;
+  } catch {
+    console.log("error");
+  } finally {
+    console.log("ok");
+  }
+};
+const updateSafeSnippet = async (snippet: Snippets) => {
+  snippet = { ...snippet, stars: ++snippet.stars, details: "aaa" };
+  try {
+    await updateSnippet(snippet);
+    await getSnippet();
+  } catch {
+    console.log("error");
+  } finally {
+    console.log("ok");
+  }
+};
 const educations = ref([
   {
     title: "high-school",
-    component: null,
+    component: markRaw(ValuesSec),
   },
   {
     title: "university",
-    component: null,
+    component: markRaw(Values),
+  },
+  {
+    title: "Courses",
+    component: markRaw(Courses),
+  },
+]);
+const interests = ref([
+  {
+    title: "Web3",
+    component: markRaw(Web3Interests),
+  },
+  {
+    title: "Skills",
+    component: markRaw(Skills),
+  },
+  
+]);
+const bio = ref([
+  {
+    title: "About me",
+    component: markRaw(AboutMe),
   },
 ]);
 const personalInfo = ref([
   {
     title: "bio",
-    content: "to do",
+    content: bio.value,
     iconFill: "#E99287",
     isOpened: true,
   },
   {
     title: "interests",
-    content: "to do",
+    content: interests.value,
     iconFill: "#43D9AD",
     isOpened: false,
   },
@@ -126,6 +201,8 @@ const sidebarPersonalInfo = [
 const sidebarContacts = [
   { titleAccorden: "contacts", content: contacts.value },
 ];
+onUpdated(async () => await getSnippet());
+onMounted(() => getSafeSnippet());
 </script>
 
 <style lang="scss" scoped>
@@ -141,19 +218,48 @@ const sidebarContacts = [
   cursor: pointer;
   margin-block-start: 0.5rem;
 }
-ol {
-  font-family: monospace;
-  font-weight: 350;
-  font-size: 1.125rem;
-  line-height: 1.6875rem;
-  color: #607b96;
-  li {
-    padding-inline-start: 1.5rem;
-    margin-inline-start: 2rem;
-    &::marker {
-      display: block;
-      font-weight: lighter;
+.snippet-container {
+  display: flex;
+  flex-direction: column;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    .left {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: min-content;
+      place-items: center;
+      gap: 1rem;
+      .img {
+        width: 2.625rem;
+        height: 2.625rem;
+        border-radius: 50%;
+      }
+    }
+    .right {
+      display: flex;
+      gap: 2rem;
     }
   }
+  .snippet-content {
+    background: #011221;
+    border: 1px solid #1e2d3d;
+    border-radius: 0.9375rem;
+    padding: 1.875rem 1.5rem;
+  }
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+.language-javascript {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
 }
 </style>

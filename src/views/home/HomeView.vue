@@ -48,8 +48,7 @@ $orange: #E99287;
 
 .hero_container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  aspect-ratio: 16 / 7;
+  grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
   color: #E5E9F0;
   display: grid;
   gap: 6rem;

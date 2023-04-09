@@ -1,34 +1,54 @@
 import constants from "./constants";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "SnakeCanvas",
   props: {
-    cellSize: Number,
-    boardSize: Number,
+    cellSize: {
+      type: Number,
+      default: 0,
+    },
+    boardSize: {
+      type: Number,
+      default: 0,
+    },
     speed: Number,
     isPlaying: Boolean,
     stop: Function,
     addScores: Function,
     scores: Number,
   },
+  data(): {
+    boardContext: CanvasRenderingContext2D | null;
+    snake: { x: number; y: number }[];
+    direction: { keyCode: number; move: { x: number; y: number } } | null;
+    targetCell: { x: number; y: number } | null;
+  } {
+    return {
+      boardContext: null,
+      snake: [],
+      direction: null,
+      targetCell: null,
+    };
+  },
   computed: {
-    boardSizePx() {
+    boardSizePx(): number | undefined {
       return this.cellSize * this.boardSize;
     },
   },
-  mounted() {
+  mounted(): void {
     this.boardContext = this.$refs.board.getContext("2d");
     this.$refs.board.focus();
     window.addEventListener("keydown", this.onKeyPress);
   },
-  created() {
+  created(): void {
     this.resetSnake();
   },
-  beforeDestroy() {
+  beforeUnmount(): void {
     window.removeEventListener("keydown", this.onKeyPress);
   },
   watch: {
-    isPlaying(value) {
+    isPlaying(value: boolean): void {
       this.clear();
       if (value) {
         this.resetSnake();
@@ -37,21 +57,21 @@ export default {
     },
   },
   methods: {
-    resetSnake() {
+    resetSnake(): void {
       this.snake = [
         {
           x: this.getMiddleCell(),
           y: this.getMiddleCell(),
         },
       ];
-      const randomDirectionIndex = Math.floor(Math.random() * 4);
+      const randomDirectionIndex: number = Math.floor(Math.random() * 4);
       this.direction = constants[randomDirectionIndex];
       this.targetCell = null;
     },
-    getMiddleCell() {
+    getMiddleCell(): number {
       return Math.round(this.boardSize / 2);
     },
-    move() {
+    move(): void {
       if (!this.isPlaying) {
         return;
       }
@@ -59,7 +79,7 @@ export default {
       this.clear();
       this.setTargetCell();
 
-      const newHeadCell = {
+      const newHeadCell: { x: number; y: number } = {
         x: this.snake[0].x + this.direction.move.x,
         y: this.snake[0].y + this.direction.move.y,
       };
@@ -82,15 +102,15 @@ export default {
       }
 
       this.boardContext.beginPath();
-      this.snake.forEach(this.drawCell);
+      this.snake.forEach((cell: { x: number; y: number }) => this.drawCell(cell));
       this.boardContext.closePath();
 
       setTimeout(this.move, this.getMoveDelay());
     },
-    clear() {
+    clear(): void {
       this.boardContext.clearRect(0, 0, this.boardSizePx, this.boardSizePx);
     },
-    drawCell({ x, y }) {
+    drawCell({ x, y }: { x: number; y: number }): void {
       this.boardContext.rect(
         x * this.cellSize,
         y * this.cellSize,
@@ -100,14 +120,14 @@ export default {
       this.boardContext.fillStyle = "#43D9AD";
       this.boardContext.fill();
     },
-    getMoveDelay() {
+    getMoveDelay(): number {
       return (2 / Number(this.speed)) * 1000;
     },
-    isCellOutOfBoard({ x, y }) {
+    isCellOutOfBoard({ x, y }: { x: number; y: number }): boolean {
       return x < 0 || y < 0 || x >= this.boardSize || y >= this.boardSize;
     },
-    onKeyPress(event) {
-      const newDirection = constants.find((c) => c.keyCode === event.keyCode);
+    onKeyPress(event: KeyboardEvent): void {
+      const newDirection: { keyCode: number; move: { x: number; y: number } } | undefined = constants.find((c) => c.keyCode === event.keyCode);
 
       if (!newDirection) {
         return;
@@ -117,11 +137,11 @@ export default {
         this.direction = newDirection;
       }
     },
-    setTargetCell() {
+    setTargetCell(): void {
       if (!this.targetCell) {
-        let targetCell = this.getRandomCell();
+        let targetCell: { x: number; y: number } = this.getRandomCell();
         while (this.amountCellsInSnake(targetCell) > 0) {
-          targetCell = this.getRandomCell;
+          targetCell = this.getRandomCell();
         }
         this.targetCell = targetCell;
       }
@@ -137,21 +157,21 @@ export default {
       this.boardContext.fill();
       this.boardContext.closePath();
     },
-    getRandomCell() {
+    getRandomCell(): { x: number; y: number } {
       return {
         x: Math.floor(Math.random() * this.boardSize),
         y: Math.floor(Math.random() * this.boardSize),
       };
     },
-    amountCellsInSnake(cell) {
+    amountCellsInSnake(cell: { x: number; y: number }): number {
       return this.snake.filter(({ x, y }) => x === cell.x && y === cell.y)
         .length;
     },
-    isTargetNewHead() {
+    isTargetNewHead(): boolean {
       return (
         this.snake[0].x + this.direction.move.x === this.targetCell.x &&
         this.snake[0].y + this.direction.move.y === this.targetCell.y
       );
     },
   },
-};
+});

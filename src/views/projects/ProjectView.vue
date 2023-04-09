@@ -1,23 +1,136 @@
 <template>
-  <PanelView>
+  <PanelView :isResizable="false">
     <template #panel-1>
       <box-accordeon
-        title="test"
+        title="projects"
         :open="true"
         @selected="null"
         @close-all="null"
       >
-        content
+        <div
+          class="checkbox"
+          v-for="(project, index) in PROJECT_TYPE"
+          :key="index"
+        >
+          <input
+            type="checkbox"
+            name="scales"
+            :id="`scales-${index}`"
+            :ref="`theCheckbox-${index}`"
+            @click="logData(index, $event.currentTarget)"
+          />
+          <label :for="`scales-${index}`">
+            <SvgIcon name="ReactIconFlag" size="md" />
+            {{ project }}</label
+          >
+        </div>
       </box-accordeon>
     </template>
-    <template #panel-2> aaa</template>
-    <template #panel-3> aaa</template>
+    <template #left>
+      <div class="flex-wrapper">
+        <TransitionGroup name="list">
+          <div v-for="project in filtredProjectsList" :key="project.id">
+            <ProjectCard
+              :flag="project.href"
+              :bg="project.background"
+              :desc="project.project_description"
+              :href="project.href"
+            >
+            </ProjectCard>
+          </div>
+        </TransitionGroup>
+      </div>
+    </template>
   </PanelView>
 </template>
 
 <script setup lang="ts">
 import BoxAccordeon from "@/components/BoxAccordeon.vue";
 import PanelView from "@/components/PanelView.vue";
+import ProjectCard from "@/components/ProjectCard.vue";
+import SvgIcon from "@/components/SvgIcon.vue";
+import { getProjects } from "@/services/entites";
+import { PROJECT_TYPE, type ProjectType } from "@/utils/enums/project";
+import { remove } from "lodash";
+import { onMounted, ref } from "vue";
+
+const projectsList = ref<ProjectType[]>([]);
+const filtredProjectsList = ref<ProjectType[]>([]);
+const listFilters = ref<string[]>([]);
+const searchParams = ref<{ type: PROJECT_TYPE }>({
+  type: PROJECT_TYPE.ALL,
+});
+const allTypes = PROJECT_TYPE;
+
+const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
+  if (index.checked) {
+    listFilters.value.push(data);
+
+    searchParams.value.type = data;
+    filtredProjectsList.value = [
+      ...projectsList.value.filter((e) => e.type === data),
+    ];
+  } else {
+    listFilters.value = listFilters.value.filter((number) => number !== data);
+    filtredProjectsList.value = projectsList.value.filter(
+      (e) => e.type !== data
+    );
+  }
+  await getSafeProjects(listFilters.value);
+};
+
+const getSafeProjects = async (value: string[]) => {
+  try {
+    const data = await getProjects(value);
+    filtredProjectsList.value = data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => await getSafeProjects([]));
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.panel_content) {
+  max-width: 10rem;
+  padding-inline: 1rem;
+}
+.flex-wrapper {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 2rem;
+}
+.checkbox {
+  display: flex;
+  gap: 1rem;
+  height: 0.875rem;
+  margin-block-end: 1.5rem;
+}
+input[type="checkbox"] {
+  width: 0.875rem;
+  height: 0.875rem;
+  aspect-ratio: 1;
+  appearance: none;
+  background: #607b96;
+  display: grid;
+  place-items: center;
+  border-radius: 2px;
+  padding: 0;
+}
+
+input[type="checkbox"]:checked:after {
+  content: "✔";
+  color: white;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>
