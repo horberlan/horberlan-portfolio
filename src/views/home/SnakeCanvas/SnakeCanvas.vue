@@ -6,6 +6,6 @@
     :height="boardSizePx"
   ></canvas>
 </template>
-<script src="./SnakeCanvas.js"></script>
+<script src="./SnakeCanvas.ts"></script>
 
 <style scoped src="./SnakeCanvas.css"></style>

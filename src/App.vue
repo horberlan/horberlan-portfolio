@@ -18,9 +18,7 @@ import Footer from "./views/home/Footer.vue";
 <style scoped lang="scss">
 $bg-color: #1e2d3d;
 $primary: #607b96;
-:deep(#app) {
-  overflow-y: hidden;
-}
+
 .slide-fade-enter-active {
   transition: all 200ms ease-out;
 }
