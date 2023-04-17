@@ -11,5 +11,14 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
-  }
+  },
+  css: {
+    loaderOptions: {
+        sass: {
+            additionalData: `
+                @import "./src/assets/styles/_variables.scss";
+            `
+        }
+    }
+}
 }

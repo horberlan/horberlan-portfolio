@@ -3,7 +3,8 @@
     <div class="flag">
       <SvgIcon :name="props.flag" size="lg" />
     </div>
-    <SvgIcon :name="props.bg" class="img" margin="0" />
+    <!-- <div class="img skeleton"></div> -->
+    <SvgIcon class="img skeleton" :name="props.bg" margin="0" />
     <div class="card-content">
       <p>{{ props.desc }}</p>
       <a class="primary-btn" role="button" :href="props.href" target="_blank"
@@ -19,7 +20,7 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import type { PROJECT_TYPE } from "@/utils/enums/project";
 
 const props = defineProps<{
-  flag: PROJECT_TYPE;
+  flag: PROJECT_TYPE | string;
   bg: string;
   desc: string;
   href: string;
@@ -42,11 +43,31 @@ const props = defineProps<{
     right: 20px;
     z-index: 2;
   }
+  .skeleton {
+    width: 100%;
+    height: 15px;
+    display: block;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0) 80%
+      ),
+      lightgray;
+    background-repeat: repeat-y;
+    background-size: 33.75rem 43.75rem;
+    animation: shine 1.6s infinite;
+  }
+  @keyframes shine {
+    to {
+      background-position: 100% 0;
+    }
+  }
   .img {
     width: 100%;
     height: 50%;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    border-top-left-radius: 0.9375rem;
+    border-top-right-radius: 0.9375rem;
   }
   .card-content {
     padding-inline: 1.875rem;

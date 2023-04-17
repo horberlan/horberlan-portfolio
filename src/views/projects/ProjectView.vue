@@ -9,7 +9,7 @@
       >
         <div
           class="checkbox"
-          v-for="(project, index) in PROJECT_TYPE"
+          v-for="(project, index) in allProjects"
           :key="index"
         >
           <input
@@ -17,11 +17,11 @@
             name="scales"
             :id="`scales-${index}`"
             :ref="`theCheckbox-${index}`"
-            @click="logData(index, $event.currentTarget)"
+            @click="cardsGroup(project.type, $event?.currentTarget)"
           />
           <label :for="`scales-${index}`">
-            <SvgIcon name="ReactIconFlag" size="md" />
-            {{ project }}</label
+            <SvgIcon :name="project.icon" size="md" />
+            {{ project.type }}</label
           >
         </div>
       </box-accordeon>
@@ -51,8 +51,7 @@ import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import { PROJECT_TYPE, type ProjectType } from "@/utils/enums/project";
-import { remove } from "lodash";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
@@ -60,9 +59,31 @@ const listFilters = ref<string[]>([]);
 const searchParams = ref<{ type: PROJECT_TYPE }>({
   type: PROJECT_TYPE.ALL,
 });
+const allProjects = computed(() => [
+  {
+    type: PROJECT_TYPE.VUE,
+    icon: "VueIcon",
+    label: "",
+  },
+  {
+    type: PROJECT_TYPE.REACT,
+    icon: "ReactIconFlag",
+    label: "",
+  },
+  {
+    type: PROJECT_TYPE.NODE,
+    icon: "NodeJs",
+    label: "",
+  },
+  {
+    type: PROJECT_TYPE.VANILLA,
+    icon: "VanillaIcon",
+    label: "",
+  },
+]);
 const allTypes = PROJECT_TYPE;
 
-const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
+const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
     listFilters.value.push(data);
 
@@ -93,12 +114,13 @@ onMounted(async () => await getSafeProjects([]));
 
 <style lang="scss" scoped>
 :deep(.panel_content) {
-  max-width: 10rem;
+  width: $nav-size;
   padding-inline: 1rem;
 }
 .flex-wrapper {
   display: flex;
-  gap: 1rem;
+  width: 100%;
+  gap: 4rem;
   flex-wrap: wrap;
   margin: 2rem;
 }
