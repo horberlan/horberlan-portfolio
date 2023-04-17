@@ -109,7 +109,7 @@ const toggleAccordeon = () => {
     color: #ffffff;
     margin: 0.25rem;
     cursor: pointer;
-    margin-block-end: 1.5rem;
+    margin-block-end: 0;
     align-items: center;
   }
   .body {
