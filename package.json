@@ -19,8 +19,10 @@
     "quasar": "^2.11.10",
     "vite-svg-loader": "^4.0.0",
     "vue": "^3.2.47",
+    "vue-resize": "^1.0.1",
     "vue-resizer": "^1.1.9",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "webpack": "^5.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.32.3",

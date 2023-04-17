@@ -3,14 +3,14 @@
     <div class="panel_content">
       <slot name="panel-1"></slot>
     </div>
-    <div class="content">
       <DragCol
         v-if="props.isResizable"
-        :sliderWidth="3"
+        :sliderWidth="5 "
         width="100%"
         height="auto"
         padding="10"
         sliderBgColor="#1e2d3d"
+        :leftPercent="60"
       >
         <template #left>
           <div class="resized">
@@ -26,7 +26,6 @@
       <div v-else>
         <slot name="left"> </slot>
       </div>
-    </div>
   </section>
 </template>
 
@@ -53,7 +52,6 @@ section {
     height: 100%;
     border: 1px solid #1e2d3d;
     width: 20.5rem;
-  
   }
 
   .content {
@@ -62,5 +60,9 @@ section {
 }
 .resized {
   padding: 0.5rem;
+  :deep(ol) li .link {
+    color:white;
+    text-decoration: none;
+  }
 }
 </style>

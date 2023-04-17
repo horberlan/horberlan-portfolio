@@ -142,12 +142,12 @@ const updateSafeSnippet = async (snippet: Snippets) => {
 };
 const educations = ref([
   {
-    title: "high-school",
-    component: markRaw(ValuesSec),
-  },
-  {
     title: "university",
     component: markRaw(Values),
+  },
+  {
+    title: "high-school",
+    component: markRaw(ValuesSec),
   },
   {
     title: "Courses",
