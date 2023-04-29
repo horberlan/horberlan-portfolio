@@ -3,7 +3,6 @@
     <template #panel-1> </template>
     <template #panel-2>
       <form @submit.prevent="submitContact(formValue)" class="contact">
-        {{ formValue }}
         <label for="input">name</label>
         <input v-model="formValue.name" name="input" type="text" />
         <label for="input">email</label>
@@ -17,7 +16,9 @@
         <button class="submit" type="submit">submit</button>
       </form>
     </template>
-    <template #panel-3> </template>
+    <template #panel-3>
+      {{ formValue }}
+    </template>
   </PanelView>
 </template>
 <script setup lang="ts">

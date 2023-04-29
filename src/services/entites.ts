@@ -3,7 +3,9 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "http://localhost:3004/api",
 });
-
+const api2 = axios.create({
+  baseURL: "http://localhost:3000",
+});
 export const searchOutFit = async (value) => {
   try {
     const { data } = await api.post("/projects", value);
@@ -52,7 +54,7 @@ export const getContact = async () => {
 
 export const postContact = async (form) => {
   try {
-    await api.put("/form", form);
+    await api2.put("/form", form);
   } catch (error) {
     console.log(error);
   }
