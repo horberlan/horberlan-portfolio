@@ -25,7 +25,7 @@
   </svg>
 </template>
 <script setup lang="ts">
-const props = withDefaults(
+withDefaults(
   defineProps<{
     type: string;
   }>(),

@@ -163,7 +163,6 @@ const interests = ref([
     title: "Skills",
     component: markRaw(Skills),
   },
-  
 ]);
 const bio = ref([
   {
@@ -213,7 +212,7 @@ onMounted(() => getSafeSnippet());
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.3125rem;
-  color: #607b96;
+  color: $font-lynch;
   border: none;
   cursor: pointer;
   margin-block-start: 0.5rem;

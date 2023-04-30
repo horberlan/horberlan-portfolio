@@ -63,7 +63,7 @@ nav {
 .router-link-active,
 .router-link-exact-active {
   position: relative;
-  color: white !important;
+  color: $white-full !important;
   &::before {
     content: "";
     background: #fea55f;

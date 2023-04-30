@@ -1,10 +1,15 @@
 <template>
   <div class="card">
+    <span class="project-title">{{ name }}</span>
     <div class="flag">
       <SvgIcon :name="props.flag" size="lg" />
     </div>
-    <!-- <div class="img skeleton"></div> -->
-    <SvgIcon class="img skeleton" :name="props.bg" margin="0" />
+    <Suspense>
+      <SvgIcon class="img" :name="props.bg" margin="0" />
+      <template #fallback>
+        <span class="loading skeleton">Loading...</span>
+      </template>
+    </Suspense>
     <div class="card-content">
       <p>{{ props.desc }}</p>
       <a class="primary-btn" role="button" :href="props.href" target="_blank"
@@ -24,16 +29,23 @@ const props = defineProps<{
   bg: string;
   desc: string;
   href: string;
+  name: string;
 }>();
 </script>
 
 <style scoped lang="scss">
 .card {
   position: relative;
-  width: 370.35px;
-  height: 314.82px;
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
   background: #011221;
   border-radius: 15px;
+  .project-title {
+    text-align: center;
+    display: block;
+    padding-block-start: 1rem;
+  }
   .flag {
     position: absolute;
     width: 30px;
@@ -45,8 +57,7 @@ const props = defineProps<{
   }
   .skeleton {
     width: 100%;
-    height: 15px;
-    display: block;
+    border-radius: 15px;
     background: linear-gradient(
         to right,
         rgba(255, 255, 255, 0),
@@ -65,19 +76,24 @@ const props = defineProps<{
   }
   .img {
     width: 100%;
-    height: 50%;
+    height: 8rem;
     border-top-left-radius: 0.9375rem;
     border-top-right-radius: 0.9375rem;
   }
   .card-content {
     padding-inline: 1.875rem;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-block-end: 1rem;
   }
 }
 
 .primary-btn {
   background: #1c2b3a;
   border-radius: 8px;
-  color: white;
+  color: $white-full;
   font-weight: 450;
   font-size: 0.875rem;
   line-height: 1.125rem;
@@ -85,5 +101,15 @@ const props = defineProps<{
   padding: 0.625rem 0.875rem;
   cursor: pointer;
   text-decoration: none;
+  text-align: center;
+  flex-shrink: 0;
+}
+.loading {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 10rem;
+  color: $background-midnight;
 }
 </style>

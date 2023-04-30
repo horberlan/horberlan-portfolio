@@ -17,7 +17,9 @@ export const searchOutFit = async (value) => {
 
 const getProjects = async (param: Record<string, string>): Promise<any> => {
   try {
-    const { data } = await api.get(`/projects?type=${Object.values(param).join(";") ?? ""}`);
+    const { data } = await api.get(
+      `/projects?type=${Object.values(param).join(";") ?? ""}`
+    );
     return data;
   } catch (error) {
     console.error(error);

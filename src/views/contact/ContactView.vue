@@ -53,10 +53,10 @@ input,
 textarea {
   padding: 0.7rem 0rem;
   background: #011221;
-  border: 1px solid #607b96;
+  border: 1px solid $font-lynch;
   box-shadow: 0px 0px 0px 2px rgba(96, 123, 150, 0.3);
   border-radius: 8px;
-  color: white;
+  color: $white-full;
 }
 .submit {
   background: #1c2b3a;

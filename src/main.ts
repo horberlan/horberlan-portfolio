@@ -2,7 +2,7 @@ import "./assets/main.css";
 
 import App from "./App.vue";
 import { Quasar } from "quasar";
-import VueCodeHighlight from 'vue-code-highlight';
+import VueCodeHighlight from "vue-code-highlight";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import router from "./router";

@@ -9,6 +9,7 @@ const props = withDefaults(
     clickable?: boolean;
     title?: string;
     mode?: string;
+    icon?: string;
   }>(),
   { mode: "subitem" }
 );
@@ -48,7 +49,7 @@ const toggleAccordeon = () => {
   <div v-if="mode === 'subitem'" :class="['box-accordeon noselect']">
     <div class="header" @click="toggleAccordeon()">
       <SvgIcon
-        name="chevronIcon"
+        :name="icon ? icon : 'chevronIcon'"
         :rotate="opened ? '0deg' : '-90deg'"
         size="sm"
       />
@@ -66,7 +67,7 @@ const toggleAccordeon = () => {
   <div v-else :class="['box-accordeon noselect', 'item']">
     <div class="header" @click="toggleAccordeon()">
       <SvgIcon
-        name="chevronIcon"
+        :name="icon ? icon : 'chevronIcon'"
         :rotate="opened ? '0deg' : '-90deg'"
         size="sm"
         type="custom"
@@ -106,7 +107,7 @@ const toggleAccordeon = () => {
     gap: 1rem;
     font-style: normal;
     font-weight: 400;
-    color: #ffffff;
+    color: $white-full;
     margin: 0.25rem;
     cursor: pointer;
     margin-block-end: 0;

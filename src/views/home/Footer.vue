@@ -20,7 +20,7 @@ footer {
   bottom: 0;
   border: 1px solid $bg-color;
   width: 100%;
-  background-color: #011627;
+  background-color: $background-midnight;
   z-index: 2;
   a {
     color: $primary;

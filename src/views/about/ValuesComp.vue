@@ -2,7 +2,8 @@
   <ol>
     <li>/**</li>
     <li>
-      * <a href="https://www.anhanguera.com/"> Anhanguera Educacional</a>, Dropout, Technologist, Full Stack Development;
+      * <a href="https://www.anhanguera.com/"> Anhanguera Educacional</a>,
+      Dropout, Technologist, Full Stack Development;
     </li>
     <li>
       *
@@ -20,7 +21,7 @@ ol {
   font-weight: 350;
   font-size: 1.125rem;
   line-height: 1.6875rem;
-  color: #607b96;
+  color: $font-lynch;
   li {
     padding-inline-start: 1.5rem;
     margin-inline-start: 2rem;
