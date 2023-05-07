@@ -1,8 +1,8 @@
 <template>
   <div class="card">
-    <span class="project-title">{{ name }}</span>
+    <span class="project-title"> {{ name }}</span>
     <div class="flag">
-      <SvgIcon :name="props.flag" size="lg" />
+      <SvgIcon :name="iconType[ flag as keyof typeof iconType ]" size="lg" />
     </div>
     <Suspense>
       <SvgIcon class="img" :name="props.bg" margin="0" />
@@ -12,14 +12,11 @@
     </Suspense>
     <div class="card-content">
       <p>{{ props.desc }}</p>
-      <a class="primary-btn" role="button" :href="props.href" target="_blank"
-        >view-project</a
-      >
+      <a class="primary-btn" role="button" :href="props.href" target="_blank">view-project</a>
       <slot name="index"> </slot>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import SvgIcon from "@/components/SvgIcon.vue";
 import type { PROJECT_TYPE } from "@/utils/enums/project";
@@ -31,6 +28,13 @@ const props = defineProps<{
   href: string;
   name: string;
 }>();
+
+enum iconType {
+  VUE = "VueIcon",
+  REACT = "ReactIconFlag",
+  NODE = "NodeJs",
+  VANILLA = "VanillaIcon",
+}
 </script>
 
 <style scoped lang="scss">
@@ -41,11 +45,13 @@ const props = defineProps<{
   width: 20rem;
   background: #011221;
   border-radius: 15px;
+
   .project-title {
     text-align: center;
     display: block;
     padding-block-start: 1rem;
   }
+
   .flag {
     position: absolute;
     width: 30px;
@@ -55,31 +61,29 @@ const props = defineProps<{
     right: 20px;
     z-index: 2;
   }
+
   .skeleton {
     width: 100%;
     border-radius: 15px;
-    background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0.5) 50%,
-        rgba(255, 255, 255, 0) 80%
-      ),
-      lightgray;
+   
     background-repeat: repeat-y;
     background-size: 33.75rem 43.75rem;
     animation: shine 1.6s infinite;
   }
+
   @keyframes shine {
     to {
       background-position: 100% 0;
     }
   }
+
   .img {
     width: 100%;
     height: 8rem;
     border-top-left-radius: 0.9375rem;
     border-top-right-radius: 0.9375rem;
   }
+
   .card-content {
     padding-inline: 1.875rem;
     position: relative;
@@ -104,12 +108,13 @@ const props = defineProps<{
   text-align: center;
   flex-shrink: 0;
 }
+
 .loading {
   display: flex;
   text-align: center;
   align-items: center;
   justify-content: center;
   height: 10rem;
-  color: $background-midnight;
+  color: white;
 }
 </style>

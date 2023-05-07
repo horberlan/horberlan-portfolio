@@ -8,22 +8,12 @@
         @close-all="null"
         icon="ArrowIconSecundary"
       >
-        <div
-          class="checkbox"
-          v-for="(project, index) in allProjects"
-          :key="index"
-        >
-          <input
-            type="checkbox"
-            name="scales"
-            :id="`scales-${index}`"
-            :ref="`theCheckbox-${index}`"
-            @click="cardsGroup(project.type, $event?.currentTarget)"
-          />
+        <div class="checkbox" v-for="(project, index) in allProjects" :key="index">
+          <input type="checkbox" :id="`scales-${index}`" :ref="`theCheckbox-${index}`" @click="cardsGroup(project.type, $event?.currentTarget)" />
           <label :for="`scales-${index}`">
             <SvgIcon :name="project.icon" size="md" />
-            {{ project.type.toLocaleLowerCase() }}</label
-          >
+            {{ project.type.toLocaleLowerCase() }}
+          </label>
         </div>
       </box-accordeon>
     </template>
@@ -31,14 +21,7 @@
       <div class="flex-wrapper">
         <TransitionGroup name="list">
           <div v-for="project in filtredProjectsList" :key="project._id">
-            <ProjectCard
-              :flag="project.href"
-              :bg="project.background"
-              :desc="project.project_description"
-              :href="project.href"
-              :name="project.name"
-            >
-            </ProjectCard>
+            <ProjectCard :flag="project.type" :bg="project.background" :desc="project.project_description" :href="project.href" :name="project.name" />
           </div>
         </TransitionGroup>
       </div>
@@ -52,12 +35,23 @@ import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
-import { PROJECT_TYPE, type ProjectType } from "@/utils/enums/project";
+import { PROJECT_TYPE } from "@/utils/enums/project";
+import { uniqBy } from "lodash";
 import { computed, onMounted, ref } from "vue";
+
+interface ProjectType {
+  _id: string;
+  type: PROJECT_TYPE;
+  icon: string;
+  background: string;
+  project_description: string;
+  href: string;
+  name: string;
+}
 
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
-const listFilters = ref<string[]>([]);
+const listFilters = ref<PROJECT_TYPE[]>([]);
 const searchParams = ref<{ type: PROJECT_TYPE }>({
   type: PROJECT_TYPE.ALL,
 });
@@ -65,34 +59,31 @@ const allProjects = computed(() => [
   {
     type: PROJECT_TYPE.VUE,
     icon: "VueIcon",
-    label: "",
   },
   {
     type: PROJECT_TYPE.REACT,
     icon: "ReactIconFlag",
-    label: "",
   },
   {
     type: PROJECT_TYPE.NODE,
     icon: "NodeJs",
-    label: "",
   },
   {
     type: PROJECT_TYPE.VANILLA,
     icon: "VanillaIcon",
-    label: "",
   },
 ]);
 const allTypes = PROJECT_TYPE;
-// https://cryptodrone.gitbook.io/crypto-drone/
+
 const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
     listFilters.value.push(data);
 
     searchParams.value.type = data;
-    filtredProjectsList.value = [
-      ...projectsList.value.filter((e) => e.type === data),
-    ];
+    filtredProjectsList.value = uniqBy(
+      projectsList.value.filter((e) => e.type === data),
+      "_id"
+    );
   } else {
     listFilters.value = listFilters.value.filter((number) => number !== data);
     filtredProjectsList.value = projectsList.value.filter(
@@ -102,10 +93,11 @@ const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   await getSafeProjects(listFilters.value);
 };
 
-const getSafeProjects = async (value: string[]) => {
+const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
   try {
     const data = await getProjects(value);
     filtredProjectsList.value = data;
+    filtredProjectsList.value = uniqBy(filtredProjectsList.value, "_id");
   } catch (error) {
     console.error(error);
   }
@@ -117,7 +109,6 @@ onMounted(async () => await getSafeProjects([]));
 <style lang="scss" scoped>
 :deep(.panel_content) {
   width: $nav-size;
-  // padding-inline: 1rem;
 }
 :deep(.box-accordeon) .header {
   border-bottom: 1px solid #1e2d3d;
