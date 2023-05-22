@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3004/api",
+  baseURL: "https://ms-backend-wjkb.onrender.com/api",
 });
 const api2 = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://ms-backend-wjkb.onrender.com",
 });
 export const searchOutFit = async (value) => {
   try {
