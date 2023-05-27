@@ -1,20 +1,31 @@
 <template>
-  <nav>
+  <span v-if="header[0].toggle && !displayAll" class="toggle" @click="displayAll = !displayAll">
+    <div class="toggleIcon"></div>
+    <div class="toggleIcon"></div>
+    <div class="toggleIcon"></div>
+  </span>
+        <TransitionGroup name="header">
+  <nav :class="containerClass" v-if="displayAll" ref="containerHeader">
     <router-link
       v-for="(link, index) in header"
       :key="index"
       :to="`${link.to}`"
       class="navLinks"
     >
-      {{ link.title }}
+    <span v-if="displayAll"> {{ link.title }}</span>
     </router-link>
   </nav>
+</TransitionGroup>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { onClickOutside } from '@vueuse/core'
+
 const header = [
   {
     title: "Horberlan-Brito",
+    toggle: "a",
   },
   {
     title: "_hello",
@@ -33,6 +44,24 @@ const header = [
     to: "/contact",
   },
 ];
+const containerClass = ref('');
+const displayAll = ref(false);
+const updateContainerClass = () => {
+  if (window.innerWidth < 768) {
+    containerClass.value = 'small-screen-nav';
+  } else {
+    containerClass.value = 'large-screen-nav';
+    displayAll.value = true
+  }
+};
+const containerHeader = ref()
+onClickOutside(containerHeader, (event) => displayAll.value = !displayAll.value)
+
+onMounted(() => {
+  updateContainerClass(); 
+  window.addEventListener('resize', updateContainerClass);
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -43,12 +72,12 @@ main {
 }
 nav {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   border: 1px solid $bg-color;
   .navLinks {
     border: 1px solid $bg-color;
     color: $primary;
-    list-style: none;
+    header-style: none;
     text-decoration: none;
     padding: 1rem 2rem;
     transition: 200ms;
@@ -58,6 +87,9 @@ nav {
     &:last-child {
       margin-inline-start: auto;
     }
+  }
+  &.small-screen-nav {
+    flex-direction: column;
   }
 }
 .router-link-active,
@@ -74,5 +106,26 @@ nav {
     height: 3px;
     transform: translateX(-50%);
   }
+}
+.toggleIcon {
+  width: 35px;
+  height: 5px;
+  background-color: black;
+  margin-block: 4px;
+}
+
+.toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+.header-enter-active,
+.header-leave-active {
+  transition: all 0.5s ease;
+}
+.header-enter-from,
+.header-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>

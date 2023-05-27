@@ -5,9 +5,11 @@ html {
   background-size: cover;
   font-family: 'Fira Code', monospace;
   overflow-x: hidden;
+  width: 100vw;
 }
 * {
   font-family: 'Fira Code', monospace;
+  box-sizing: border-box;
 }
 * {
   scrollbar-width: thin;
