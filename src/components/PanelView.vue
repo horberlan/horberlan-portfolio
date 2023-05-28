@@ -1,5 +1,5 @@
 <template>
-  <section class="aaa">
+  <section class="projects-content">
     <div :class="['panel_content', containerClass]">
       <slot name="panel-1"></slot>
     </div>
@@ -64,9 +64,9 @@ onMounted(() => {
 * {
   color: $white-full;
 }
-.aaa{
+.projects-content {
   width: v-bind(windowSize);
-  height: 100vh;
+  height: 100%;
 }
 section {
   display: flex;

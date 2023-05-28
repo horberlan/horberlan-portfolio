@@ -109,8 +109,8 @@ nav {
 }
 .toggleIcon {
   width: 35px;
-  height: 5px;
-  background-color: black;
+  height: 2px;
+  background-color: white;
   margin-block: 4px;
 }
 
