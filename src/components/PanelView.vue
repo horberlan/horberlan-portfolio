@@ -54,10 +54,8 @@ const updateContainerClass = () => {
 
 onMounted(() => {
   updateContainerClass(); 
-  window.addEventListener('resize', updateContainerClass);
-});
-
-
+  window.addEventListener("resize", updateContainerClass);
+})
 </script>
 
 <style lang="scss" scoped>
