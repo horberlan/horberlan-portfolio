@@ -53,7 +53,7 @@
       <component :is="componentValue" />
     </template>
     <template #panel-3>
-      <div>
+      <div class="right-container">
         <p ref="lineCouter" class="test-span">// Code snippet showcase:</p>
         <div
           class="snippet-container"
@@ -260,5 +260,8 @@ onMounted(() => getSafeSnippet());
   background-color: transparent;
   padding: 0;
   margin: 0;
+}
+.right-container {
+  background-color: red;
 }
 </style>

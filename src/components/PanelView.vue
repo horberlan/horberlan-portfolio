@@ -10,7 +10,7 @@
       height="auto"
       padding="10"
       sliderBgColor="#1e2d3d"
-      :leftPercent="60"
+      :leftPercent="leftSize"
     >
       <template #left>
         <div class="resized">
@@ -18,7 +18,7 @@
         </div>
       </template>
       <template #right>
-        <div class="resized">
+        <div class="resized last-panel">
           <slot name="panel-3"></slot>
         </div>
       </template>
@@ -30,9 +30,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { DragCol } from "vue-resizer";
-
 
 const props = withDefaults(
   defineProps<{
@@ -40,16 +39,21 @@ const props = withDefaults(
   }>(),
   { isResizable: true }
 );
+const leftSize = ref(60);
 const containerClass = ref('');
 const windowSize = ref();
 const updateContainerClass = () => {
   windowSize.value = `${window.outerWidth}px`
   if (window.innerWidth < 768) {
     containerClass.value = 'small-screen';
+    leftSize.value = 100;
   } else {
     containerClass.value = 'large-screen';
   }
 };
+watchEffect(()=> {
+  updateContainerClass()
+})
 
 
 onMounted(() => {
@@ -87,9 +91,16 @@ section {
 }
 .resized {
   padding: 0.5rem;
+  height: 100vw;
   :deep(ol) li .link {
     color: $white-full;
     text-decoration: none;
+  }
+}
+@media screen and (max-width: 768px) {
+  .resized {
+    height: auto;
+
   }
 }
 .left-div {
