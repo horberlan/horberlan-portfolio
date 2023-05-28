@@ -99,6 +99,11 @@ const addScores = () => {
   gap: 2rem;
   margin: 0.25rem;
 }
+@media screen and (max-width: 768px) {
+  .snake {
+    width: auto;
+  }
+}
 .snake_keymap {
   background: url("../../assets/snake_game_keymap.svg") no-repeat;
   background-size: cover;
