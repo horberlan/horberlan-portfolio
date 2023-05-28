@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { DragCol } from "vue-resizer";
 
 const props = withDefaults(
