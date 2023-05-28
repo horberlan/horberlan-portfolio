@@ -1,4 +1,5 @@
 # horberlan-portfolio
+[![Netlify Status](https://api.netlify.com/api/v1/badges/b49fdc9a-3821-493b-bfa5-a9784628cb98/deploy-status)](https://app.netlify.com/sites/horberlan/deploys)
 
 This template should help get you started developing with Vue 3 in Vite.
 
