@@ -43,12 +43,12 @@ const leftSize = ref(60);
 const containerClass = ref('');
 const windowSize = ref();
 const updateContainerClass = () => {
-  windowSize.value = `${window.outerWidth}px`
+  windowSize.value = `${window.outerWidth}px`;
   if (window.innerWidth < 768) {
-    containerClass.value = 'small-screen';
+    containerClass.value = "small-screen";
     leftSize.value = 100;
   } else {
-    containerClass.value = 'large-screen';
+    containerClass.value = "large-screen";
   }
 };
 watchEffect(()=> {
