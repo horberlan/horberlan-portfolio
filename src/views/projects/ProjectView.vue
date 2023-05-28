@@ -119,11 +119,11 @@ onMounted(async () => await getSafeProjects([]));
 }
 .flex-wrapper {
   display: flex;
-  width: 100%;
   gap: 4rem;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   margin: 2rem;
   max-height: 100%;
+  justify-content: center;
 }
 .checkbox {
   display: flex;
