@@ -123,7 +123,7 @@ onMounted(async () => await getSafeProjects([]));
   flex-flow: row wrap;
   margin: 2rem;
   max-height: 100%;
-  justify-content: center;
+  justify-content: flex-start;
 }
 .checkbox {
   display: flex;

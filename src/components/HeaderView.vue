@@ -49,13 +49,14 @@ const displayAll = ref(false);
 const updateContainerClass = () => {
   if (window.innerWidth < 768) {
     containerClass.value = 'small-screen-nav';
+    onClickOutside(containerHeader, (event) => displayAll.value = !displayAll.value)
   } else {
     containerClass.value = 'large-screen-nav';
     displayAll.value = true
   }
 };
 const containerHeader = ref()
-onClickOutside(containerHeader, (event) => displayAll.value = !displayAll.value)
+
 
 onMounted(() => {
   updateContainerClass(); 
