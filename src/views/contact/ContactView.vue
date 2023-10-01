@@ -2,7 +2,7 @@
   <PanelView>
     <template #panel-1> </template>
     <template #panel-2>
-      <form @submit.prevent="submitContact(formValue)" class="contact">
+      <form class="contact">
         <label for="input">name</label>
         <input v-model="formValue.name" name="input" type="text" />
         <label for="input">email</label>
@@ -13,7 +13,7 @@
           name="input"
           type="text"
         ></textarea>
-        <button class="submit" type="submit">submit</button>
+        <button class="submit" type="submit" @click="submitContact(formValue)">submit</button>
       </form>
     </template>
     <template #panel-3>
@@ -64,5 +64,7 @@ textarea {
   border: none;
   padding: 14px 10px;
   max-width: 30%;
+  cursor: pointer;
+  color: white;
 }
 </style>

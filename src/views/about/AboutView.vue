@@ -65,7 +65,8 @@
               <img class="img" :src="snippet.avatar_url" :alt="snippet.name" />
               <p>
                 {{ snippet.name }} <br />
-                Created {{ snippet.updated_date }}
+                Created
+                {{ moment.utc(snippet.updated_date).format("MM/DD/YYYY") }}
               </p>
             </div>
             <div class="right">
@@ -78,9 +79,7 @@
           <div class="snippet-content">
             <div v-highlight>
               <pre class="language-javascript">
-                <code>
-{{ snippet.snippet }}
-                </code>
+                <code v-html=snippet.snippet />
               </pre>
             </div>
           </div>
@@ -106,6 +105,8 @@ import AboutMe from "./AboutMe.vue";
 import Courses from "./Courses.vue";
 import { getSnippet, updateSnippet } from "@/services/entites";
 import "vue-code-highlight/themes/duotone-sea.css";
+import moment from "moment";
+
 const componentValue = ref(markRaw(AboutMe));
 const snippetList = ref([]) as Ref<Snippets[]>;
 const show = ref(false);
@@ -260,8 +261,5 @@ onMounted(() => getSafeSnippet());
   background-color: transparent;
   padding: 0;
   margin: 0;
-}
-.right-container {
-  background-color: red;
 }
 </style>

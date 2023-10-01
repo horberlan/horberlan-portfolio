@@ -6,9 +6,9 @@ const api = axios.create({
 const api2 = axios.create({
   baseURL: "https://ms-backend-wjkb.onrender.com",
 });
-export const searchOutFit = async (value) => {
+export const searchOutFit = async (params) => {
   try {
-    const { data } = await api.post("/projects", value);
+    const { data } = await api.post("/projects", params);
     return data;
   } catch (error) {
     console.log(error);
@@ -29,7 +29,7 @@ const getProjects = async (param: Record<string, string>): Promise<any> => {
 export { getProjects };
 export const getSnippet = async () => {
   try {
-    const { data } = await api.get("/snippet");
+    const { data } = await api.get("/snippets");
     return data;
   } catch (error) {
     console.log(error);
@@ -38,7 +38,7 @@ export const getSnippet = async () => {
 
 export const updateSnippet = async (snippet) => {
   try {
-    const { data } = await api.put(`/snippet/${snippet.id}`, snippet);
+    const { data } = await api.put(`/snippets/${snippet.id}`, snippet);
     return data;
   } catch (error) {
     console.log(error);

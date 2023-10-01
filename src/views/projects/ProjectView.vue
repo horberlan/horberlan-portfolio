@@ -37,7 +37,7 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
-import { computed, onMounted, ref } from "vue";
+import { computed, watchEffect, ref } from "vue";
 
 interface ProjectType {
   _id: string;
@@ -73,7 +73,6 @@ const allProjects = computed(() => [
     icon: "VanillaIcon",
   },
 ]);
-const allTypes = PROJECT_TYPE;
 
 const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
@@ -103,7 +102,7 @@ const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
   }
 };
 
-onMounted(async () => await getSafeProjects([]));
+watchEffect(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
