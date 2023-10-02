@@ -37,7 +37,7 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
-import { computed, watchEffect, ref } from "vue";
+import { computed, watchEffect, ref, onMounted} from "vue";
 
 interface ProjectType {
   _id: string;
@@ -103,6 +103,7 @@ const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
 };
 
 watchEffect(async () => await getSafeProjects([]));
+onMounted(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
