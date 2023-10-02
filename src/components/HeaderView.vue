@@ -4,18 +4,13 @@
     <div class="toggleIcon"></div>
     <div class="toggleIcon"></div>
   </span>
-        <TransitionGroup name="header">
-  <nav :class="containerClass" v-if="displayAll" ref="containerHeader">
-    <router-link
-      v-for="(link, index) in header"
-      :key="index"
-      :to="`${link.to}`"
-      class="navLinks"
-    >
-    <span v-if="displayAll"> {{ link.title }}</span>
-    </router-link>
-  </nav>
-</TransitionGroup>
+  <TransitionGroup name="header">
+    <nav :class="containerClass" v-if="displayAll" ref="containerHeader">
+      <router-link v-for="(link, index) in header" :key="index" :to="`${link.to}`" class="navLinks">
+        <span v-if="displayAll"> {{ link.title }}</span>
+      </router-link>
+    </nav>
+  </TransitionGroup>
 </template>
 
 <script setup lang="ts">
@@ -25,7 +20,7 @@ import { onClickOutside } from '@vueuse/core'
 const header = [
   {
     title: "Horberlan-Brito",
-    toggle: "a",
+    to: "/",
   },
   {
     title: "_hello",
@@ -59,7 +54,7 @@ const containerHeader = ref()
 
 
 onMounted(() => {
-  updateContainerClass(); 
+  updateContainerClass();
   window.addEventListener('resize', updateContainerClass);
 });
 
@@ -68,13 +63,16 @@ onMounted(() => {
 <style lang="scss" scoped>
 $bg-color: #1e2d3d;
 $primary: #607b96;
+
 main {
   position: relative;
 }
+
 nav {
   display: flex;
   flex-flow: row wrap;
   border: 1px solid $bg-color;
+
   .navLinks {
     border: 1px solid $bg-color;
     color: $primary;
@@ -82,21 +80,26 @@ nav {
     text-decoration: none;
     padding: 1rem 2rem;
     transition: 200ms;
+
     &:nth-child(1) {
       width: $nav-size;
     }
+
     &:last-child {
       margin-inline-start: auto;
     }
   }
+
   &.small-screen-nav {
     flex-direction: column;
   }
 }
+
 .router-link-active,
 .router-link-exact-active {
   position: relative;
   color: $white-full !important;
+
   &::before {
     content: "";
     background: #fea55f;
@@ -108,6 +111,7 @@ nav {
     transform: translateX(-50%);
   }
 }
+
 .toggleIcon {
   width: 35px;
   height: 2px;
@@ -120,13 +124,14 @@ nav {
   flex-direction: column;
   align-items: end;
 }
+
 .header-enter-active,
 .header-leave-active {
   transition: all 0.5s ease;
 }
+
 .header-enter-from,
 .header-leave-to {
   opacity: 0;
   transform: translateY(-10px);
-}
-</style>
+}</style>
