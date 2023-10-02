@@ -5,7 +5,7 @@
     "preserveValueImports": false,
     "importsNotUsedAsValues": "remove",
     "verbatimModuleSyntax": true,
-    // end workaround
+    "ignoreDeprecations": "5.0"
   },
   "files": [],
   "references": [
