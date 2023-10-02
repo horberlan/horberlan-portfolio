@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": ["importsNotUsedAsValues"],
     "strict": true,
   },
   "files": [],
