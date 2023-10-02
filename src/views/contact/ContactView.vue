@@ -2,7 +2,7 @@
   <PanelView>
     <template #panel-1> </template>
     <template #panel-2>
-      <form class="contact">
+      <div class="contact">
         <label for="input">name</label>
         <input v-model="formValue.name" name="input" type="text" />
         <label for="input">email</label>
@@ -14,7 +14,7 @@
           type="text"
         ></textarea>
         <button class="submit" type="submit" @click="submitContact(formValue)">submit</button>
-      </form>
+      </div>
     </template>
     <template #panel-3>
       {{ formValue }}
@@ -33,7 +33,11 @@ const formValue = ref({
 });
 const submitContact = async (value) => {
   try {
-    await postContact(value);
+    await postContact({
+      name: value.name,
+      email: value.email,
+      message: value.message,
+    });
   } catch {
     console.log("error");
   } finally {

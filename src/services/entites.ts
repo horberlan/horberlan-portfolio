@@ -56,7 +56,7 @@ export const getContact = async () => {
 
 export const postContact = async (form) => {
   try {
-    await api2.put("/form", form);
+    await api.post("/form", form);
   } catch (error) {
     console.log(error);
   }
