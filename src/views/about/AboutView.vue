@@ -53,7 +53,7 @@
       <component :is="componentValue" />
     </template>
     <template #panel-3>
-      <div>
+      <div class="right-container">
         <p ref="lineCouter" class="test-span">// Code snippet showcase:</p>
         <div
           class="snippet-container"
@@ -65,7 +65,8 @@
               <img class="img" :src="snippet.avatar_url" :alt="snippet.name" />
               <p>
                 {{ snippet.name }} <br />
-                Created {{ snippet.updated_date }}
+                Created
+                {{ moment.utc(snippet.updated_date).format("MM/DD/YYYY") }}
               </p>
             </div>
             <div class="right">
@@ -78,9 +79,7 @@
           <div class="snippet-content">
             <div v-highlight>
               <pre class="language-javascript">
-                <code>
-{{ snippet.snippet }}
-                </code>
+                <code v-html=snippet.snippet />
               </pre>
             </div>
           </div>
@@ -106,6 +105,8 @@ import AboutMe from "./AboutMe.vue";
 import Courses from "./Courses.vue";
 import { getSnippet, updateSnippet } from "@/services/entites";
 import "vue-code-highlight/themes/duotone-sea.css";
+import moment from "moment";
+
 const componentValue = ref(markRaw(AboutMe));
 const snippetList = ref([]) as Ref<Snippets[]>;
 const show = ref(false);
@@ -142,12 +143,12 @@ const updateSafeSnippet = async (snippet: Snippets) => {
 };
 const educations = ref([
   {
-    title: "high-school",
-    component: markRaw(ValuesSec),
-  },
-  {
     title: "university",
     component: markRaw(Values),
+  },
+  {
+    title: "high-school",
+    component: markRaw(ValuesSec),
   },
   {
     title: "Courses",
@@ -163,7 +164,6 @@ const interests = ref([
     title: "Skills",
     component: markRaw(Skills),
   },
-  
 ]);
 const bio = ref([
   {
@@ -213,7 +213,7 @@ onMounted(() => getSafeSnippet());
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.3125rem;
-  color: #607b96;
+  color: $font-lynch;
   border: none;
   cursor: pointer;
   margin-block-start: 0.5rem;

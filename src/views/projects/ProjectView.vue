@@ -6,37 +6,22 @@
         :open="true"
         @selected="null"
         @close-all="null"
+        icon="ArrowIconSecundary"
       >
-        <div
-          class="checkbox"
-          v-for="(project, index) in PROJECT_TYPE"
-          :key="index"
-        >
-          <input
-            type="checkbox"
-            name="scales"
-            :id="`scales-${index}`"
-            :ref="`theCheckbox-${index}`"
-            @click="logData(index, $event.currentTarget)"
-          />
+        <div class="checkbox" v-for="(project, index) in allProjects" :key="index">
+          <input type="checkbox" :id="`scales-${index}`" :ref="`theCheckbox-${index}`" @click="cardsGroup(project.type, $event?.currentTarget)" />
           <label :for="`scales-${index}`">
-            <SvgIcon name="ReactIconFlag" size="md" />
-            {{ project }}</label
-          >
+            <SvgIcon :name="project.icon" size="md" />
+            {{ project.type.toLocaleLowerCase() }}
+          </label>
         </div>
       </box-accordeon>
     </template>
     <template #left>
       <div class="flex-wrapper">
         <TransitionGroup name="list">
-          <div v-for="project in filtredProjectsList" :key="project.id">
-            <ProjectCard
-              :flag="project.href"
-              :bg="project.background"
-              :desc="project.project_description"
-              :href="project.href"
-            >
-            </ProjectCard>
+          <div v-for="project in filtredProjectsList" :key="project._id">
+            <ProjectCard :flag="project.type" :bg="project.background" :desc="project.project_description" :href="project.href" :name="project.name" />
           </div>
         </TransitionGroup>
       </div>
@@ -50,26 +35,54 @@ import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
-import { PROJECT_TYPE, type ProjectType } from "@/utils/enums/project";
-import { remove } from "lodash";
-import { onMounted, ref } from "vue";
+import { PROJECT_TYPE } from "@/utils/enums/project";
+import { uniqBy } from "lodash";
+import { computed, watchEffect, ref } from "vue";
+
+interface ProjectType {
+  _id: string;
+  type: PROJECT_TYPE;
+  icon: string;
+  background: string;
+  project_description: string;
+  href: string;
+  name: string;
+}
 
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
-const listFilters = ref<string[]>([]);
+const listFilters = ref<PROJECT_TYPE[]>([]);
 const searchParams = ref<{ type: PROJECT_TYPE }>({
   type: PROJECT_TYPE.ALL,
 });
-const allTypes = PROJECT_TYPE;
+const allProjects = computed(() => [
+  {
+    type: PROJECT_TYPE.VUE,
+    icon: "VueIcon",
+  },
+  {
+    type: PROJECT_TYPE.REACT,
+    icon: "ReactIconFlag",
+  },
+  {
+    type: PROJECT_TYPE.NODE,
+    icon: "NodeJs",
+  },
+  {
+    type: PROJECT_TYPE.VANILLA,
+    icon: "VanillaIcon",
+  },
+]);
 
-const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
+const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   if (index.checked) {
     listFilters.value.push(data);
 
     searchParams.value.type = data;
-    filtredProjectsList.value = [
-      ...projectsList.value.filter((e) => e.type === data),
-    ];
+    filtredProjectsList.value = uniqBy(
+      projectsList.value.filter((e) => e.type === data),
+      "_id"
+    );
   } else {
     listFilters.value = listFilters.value.filter((number) => number !== data);
     filtredProjectsList.value = projectsList.value.filter(
@@ -79,41 +92,56 @@ const logData = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
   await getSafeProjects(listFilters.value);
 };
 
-const getSafeProjects = async (value: string[]) => {
+const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
   try {
     const data = await getProjects(value);
     filtredProjectsList.value = data;
+    filtredProjectsList.value = uniqBy(filtredProjectsList.value, "_id");
   } catch (error) {
     console.error(error);
   }
 };
 
-onMounted(async () => await getSafeProjects([]));
+watchEffect(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
 :deep(.panel_content) {
-  max-width: 10rem;
-  padding-inline: 1rem;
+  width: $nav-size;
+}
+:deep(.box-accordeon) .header {
+  border-bottom: 1px solid #1e2d3d;
+  width: 16.7rem;
+  margin: 0;
+  padding-block: 0.625rem;
+  padding-inline-start: 1.375rem;
 }
 .flex-wrapper {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  gap: 4rem;
+  flex-flow: row wrap;
   margin: 2rem;
+  max-height: 100%;
+  justify-content: flex-start;
 }
 .checkbox {
   display: flex;
   gap: 1rem;
-  height: 0.875rem;
-  margin-block-end: 1.5rem;
+  margin-block: 1.0625rem;
+  align-items: center;
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 input[type="checkbox"] {
+  position: relative;
   width: 0.875rem;
   height: 0.875rem;
   aspect-ratio: 1;
   appearance: none;
-  background: #607b96;
+  background: $font-lynch;
   display: grid;
   place-items: center;
   border-radius: 2px;
@@ -121,8 +149,10 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked:after {
+  position: absolute;
   content: "✔";
-  color: white;
+  color: $white-full;
+  height: 0.875rem;
 }
 .list-enter-active,
 .list-leave-active {

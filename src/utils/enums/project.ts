@@ -7,7 +7,7 @@ export enum PROJECT_TYPE {
   ALL = "ALL",
 }
 export type ProjectType = {
-  id: string;
+  _id: string;
   name: string;
   project_description: string;
   type: PROJECT_TYPE;

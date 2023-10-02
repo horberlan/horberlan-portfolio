@@ -66,7 +66,7 @@ $orange: #E99287;
       span {
         font-size: 1.125rem;
         &:last-child {
-         color:#4D5BCE;
+         color: $indigo;
          font-size: 2rem;
         }
       }
@@ -79,23 +79,33 @@ $orange: #E99287;
       margin-block-start: 4rem;
     }
     .desc {
-      color: #607B96;
+      color: $font-lynch;
     }
     .github {
       &:nth-child(1n) {
-        color: $green;
+        color: $turquoise;
       }
       &:nth-child(2n) {
         color: $blue;
         &::after {
           content: "= ";
-          color: white;
+          color: $white-full;
         }
       }
       &:nth-child(3n) {
-        color: $orange;
+        color: $tonys-pink;
       }
     }
   }
+}
+@media screen and (max-width: 768px) {
+.hero_container {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  .hello {
+    margin-inline-start: 1rem;
+  }
+}  
 }
 </style>

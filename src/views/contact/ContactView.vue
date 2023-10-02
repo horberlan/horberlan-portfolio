@@ -2,8 +2,7 @@
   <PanelView>
     <template #panel-1> </template>
     <template #panel-2>
-      <form @submit.prevent="submitContact(formValue)" class="contact">
-        {{ formValue }}
+      <div class="contact">
         <label for="input">name</label>
         <input v-model="formValue.name" name="input" type="text" />
         <label for="input">email</label>
@@ -14,10 +13,12 @@
           name="input"
           type="text"
         ></textarea>
-        <button class="submit" type="submit">submit</button>
-      </form>
+        <button class="submit" type="submit" @click="submitContact(formValue)">submit</button>
+      </div>
     </template>
-    <template #panel-3> </template>
+    <template #panel-3>
+      {{ formValue }}
+    </template>
   </PanelView>
 </template>
 <script setup lang="ts">
@@ -32,7 +33,11 @@ const formValue = ref({
 });
 const submitContact = async (value) => {
   try {
-    await postContact(value);
+    await postContact({
+      name: value.name,
+      email: value.email,
+      message: value.message,
+    });
   } catch {
     console.log("error");
   } finally {
@@ -52,10 +57,10 @@ input,
 textarea {
   padding: 0.7rem 0rem;
   background: #011221;
-  border: 1px solid #607b96;
+  border: 1px solid $font-lynch;
   box-shadow: 0px 0px 0px 2px rgba(96, 123, 150, 0.3);
   border-radius: 8px;
-  color: white;
+  color: $white-full;
 }
 .submit {
   background: #1c2b3a;
@@ -63,5 +68,7 @@ textarea {
   border: none;
   padding: 14px 10px;
   max-width: 30%;
+  cursor: pointer;
+  color: white;
 }
 </style>

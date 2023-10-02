@@ -23,19 +23,22 @@
       </button>
       <div>Scores: {{ scores }}</div>
     </div>
-    <div>
+    <div id="label">
       <div class="snake_keymap">
         <p>// use keyboard</p>
         <p>// arrows to play</p>
       </div>
       <p>// food left</p>
-      <SvgIcon
-        v-for="(foods, index) in foodLoop"
-        :key="index"
-        :name="foods.name"
-        :empty="foods.empty"
-        size="xl"
-      />
+
+      <div>
+        <SvgIcon
+          v-for="(foods, index) in foodLoop"
+          :key="index"
+          :name="foods.name"
+          :empty="foods.empty"
+          size="xl"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -54,13 +57,6 @@ const food = ref(true);
 const winner = ref(false);
 
 const foodLoop = [
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
   { name: "SnakeFood", empty: food.value },
   { name: "SnakeFood", empty: food.value },
   { name: "SnakeFood", empty: food.value },
@@ -86,6 +82,12 @@ const addScores = () => {
 </script>
 
 <style lang="scss" scoped>
+#label {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2%;
+}
 .snake {
   display: flex;
   position: relative;
@@ -96,6 +98,11 @@ const addScores = () => {
   background: url("../../assets/snake_game_bg.svg") no-repeat;
   gap: 2rem;
   margin: 0.25rem;
+}
+@media screen and (max-width: 768px) {
+  .snake {
+    width: auto;
+  }
 }
 .snake_keymap {
   background: url("../../assets/snake_game_keymap.svg") no-repeat;

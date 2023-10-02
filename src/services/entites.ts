@@ -1,12 +1,14 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3004/api",
+  baseURL: "https://ms-backend-wjkb.onrender.com/api",
 });
-
-export const searchOutFit = async (value) => {
+const api2 = axios.create({
+  baseURL: "https://ms-backend-wjkb.onrender.com",
+});
+export const searchOutFit = async (params) => {
   try {
-    const { data } = await api.post("/projects", value);
+    const { data } = await api.post("/projects", params);
     return data;
   } catch (error) {
     console.log(error);
@@ -15,7 +17,9 @@ export const searchOutFit = async (value) => {
 
 const getProjects = async (param: Record<string, string>): Promise<any> => {
   try {
-    const { data } = await api.get(`/projects?type=${Object.values(param).join(";") ?? ""}`);
+    const { data } = await api.get(
+      `/projects?type=${Object.values(param).join(";") ?? ""}`
+    );
     return data;
   } catch (error) {
     console.error(error);
@@ -25,7 +29,7 @@ const getProjects = async (param: Record<string, string>): Promise<any> => {
 export { getProjects };
 export const getSnippet = async () => {
   try {
-    const { data } = await api.get("/snippet");
+    const { data } = await api.get("/snippets");
     return data;
   } catch (error) {
     console.log(error);
@@ -34,7 +38,7 @@ export const getSnippet = async () => {
 
 export const updateSnippet = async (snippet) => {
   try {
-    const { data } = await api.put(`/snippet/${snippet.id}`, snippet);
+    const { data } = await api.put(`/snippets/${snippet.id}`, snippet);
     return data;
   } catch (error) {
     console.log(error);
@@ -52,7 +56,7 @@ export const getContact = async () => {
 
 export const postContact = async (form) => {
   try {
-    await api.put("/form", form);
+    await api.post("/form", form);
   } catch (error) {
     console.log(error);
   }
