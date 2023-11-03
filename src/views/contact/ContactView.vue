@@ -4,16 +4,33 @@
     <template #panel-2>
       <form class="contact" @submit.prevent="validateAndSubmit">
         <label for="input">Name</label>
-        <input v-model="formValue.name" name="input" type="text" />
+        <input
+          v-model="formValue.name"
+          name="input"
+          type="text"
+          @input="() => (formValue?.response ? delete formValue.response : {})"
+        />
         <label for="input">Email</label>
-        <input v-model="formValue.email" name="input" type="email" />
+        <input
+          v-model="formValue.email"
+          name="input"
+          type="email"
+          @input="() => (formValue?.response ? delete formValue.response : {})"
+        />
         <label for="input">Message</label>
-        <textarea v-model="formValue.message" name="input" type="text" />
+        <textarea
+          v-model="formValue.message"
+          name="input"
+          type="text"
+          @input="() => (formValue?.response ? delete formValue.response : {})"
+        />
         <button
           class="submit"
           type="submit"
           :disabled="!isValidEmail(formValue.email)"
-          :style="{ cursor: !isValidEmail(formValue.email) ? 'not-allowed' : 'pointer' }"
+          :style="{
+            cursor: !isValidEmail(formValue.email) ? 'not-allowed' : 'pointer',
+          }"
           @click="validateAndSubmit"
         >
           Submit
@@ -35,7 +52,7 @@ type FormValue = {
   name?: string;
   email?: string;
   message?: string;
-  response?: string,
+  response?: string;
 };
 
 const formValue: Ref<FormValue> = ref({
