@@ -1,21 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://ms-backend-wjkb.onrender.com/api",
+  baseURL: import.meta.env.VITE_BASE_URL,
 });
-const api2 = axios.create({
-  baseURL: "https://ms-backend-wjkb.onrender.com",
-});
-export const searchOutFit = async (params) => {
-  try {
-    const { data } = await api.post("/projects", params);
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
 
-const getProjects = async (param: Record<string, string>): Promise<any> => {
+export const getProjects = async (param: Record<string, string>): Promise<any> => {
   try {
     const { data } = await api.get(
       `/projects?type=${Object.values(param).join(";") ?? ""}`
@@ -26,7 +15,7 @@ const getProjects = async (param: Record<string, string>): Promise<any> => {
     throw error;
   }
 };
-export { getProjects };
+
 export const getSnippet = async () => {
   try {
     const { data } = await api.get("/snippets");

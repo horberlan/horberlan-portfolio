@@ -1,8 +1,8 @@
 <template>
-  <div class="card">
+  <div class="card" v-if="name">
     <span class="project-title"> {{ name }}</span>
     <div class="flag">
-      <SvgIcon :name="iconType[ flag as keyof typeof iconType ]" size="lg" />
+      <SvgIcon :name="iconType[flag as keyof typeof iconType]" size="lg" />
     </div>
     <Suspense>
       <SvgIcon class="img" :name="props.bg" margin="0" />
@@ -11,9 +11,11 @@
       </template>
     </Suspense>
     <div class="card-content">
-      <p>{{ props.desc }}</p>
-      <a class="primary-btn" role="button" :href="props.href" target="_blank">view-project</a>
-      <slot name="index"> </slot>
+      <p v-if="props.desc">{{ truncateText(props.desc, 80) }}</p>
+      <a class="primary-btn" role="button" :href="props.href" target="_blank"
+        >view-project</a
+      >
+      <slot name="index"></slot>
     </div>
   </div>
 </template>
@@ -34,6 +36,27 @@ enum iconType {
   REACT = "ReactIconFlag",
   NODE = "NodeJs",
   VANILLA = "VanillaIcon",
+}
+function truncateText(text: string, maxLength: number) {
+  if (!text.length) return "";
+  if (text.length > maxLength) {
+    const words = text.split(" ");
+
+    let truncatedText = "";
+
+    for (const word of words) {
+      if ((truncatedText + word).length > maxLength) {
+        break;
+      }
+      truncatedText += word + " ";
+    }
+
+    truncatedText = truncatedText.trim().replace(/,\s*$/, "") + "...";
+
+    return truncatedText;
+  }
+
+  return text;
 }
 </script>
 
@@ -65,7 +88,7 @@ enum iconType {
   .skeleton {
     width: 100%;
     border-radius: 15px;
-   
+
     background-repeat: repeat-y;
     background-size: 33.75rem 43.75rem;
     animation: shine 1.6s infinite;

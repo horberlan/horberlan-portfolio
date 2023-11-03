@@ -9,7 +9,12 @@
         icon="ArrowIconSecundary"
       >
         <div class="checkbox" v-for="(project, index) in allProjects" :key="index">
-          <input type="checkbox" :id="`scales-${index}`" :ref="`theCheckbox-${index}`" @click="cardsGroup(project.type, $event?.currentTarget)" />
+          <input
+            type="checkbox"
+            :id="`scales-${index}`"
+            :ref="`theCheckbox-${index}`"
+            @click="cardsGroup(project.type, $event?.currentTarget as EventTarget)"
+          />
           <label :for="`scales-${index}`">
             <SvgIcon :name="project.icon" size="md" />
             {{ project.type.toLocaleLowerCase() }}
@@ -17,13 +22,22 @@
         </div>
       </box-accordeon>
     </template>
-    <template #left>
+    <template #left v-if="filtredProjectsList.length">
       <div class="flex-wrapper">
-        <TransitionGroup name="list">
-          <div v-for="project in filtredProjectsList" :key="project._id">
-            <ProjectCard :flag="project.type" :bg="project.background" :desc="project.project_description" :href="project.href" :name="project.name" />
-          </div>
-        </TransitionGroup>
+        <Suspense>
+          <TransitionGroup name="list">
+            <div v-for="(project, index) in filtredProjectsList" :key="index">
+              <ProjectCard
+                :flag="project.type"
+                :bg="project.background"
+                :desc="project.project_description"
+                :href="project.href"
+                :name="project.name"
+              />
+            </div>
+          </TransitionGroup>
+          <template #fallback> Loading... </template>
+        </Suspense>
       </div>
     </template>
   </PanelView>
@@ -37,7 +51,8 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
-import { computed, watchEffect, ref, onMounted} from "vue";
+import { computed, watchEffect, ref, onMounted, Suspense } from "vue";
+import { useMutation } from "@tanstack/vue-query";
 
 interface ProjectType {
   _id: string;
@@ -74,8 +89,8 @@ const allProjects = computed(() => [
   },
 ]);
 
-const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
-  if (index.checked) {
+const cardsGroup = async (data: PROJECT_TYPE, index: EventTarget) => {
+  if ((index as HTMLInputElement).checked) {
     listFilters.value.push(data);
 
     searchParams.value.type = data;
@@ -85,11 +100,9 @@ const cardsGroup = async (data: PROJECT_TYPE, index: HTMLInputElement) => {
     );
   } else {
     listFilters.value = listFilters.value.filter((number) => number !== data);
-    filtredProjectsList.value = projectsList.value.filter(
-      (e) => e.type !== data
-    );
+    filtredProjectsList.value = projectsList.value.filter((e) => e.type !== data);
   }
-  await getSafeProjects(listFilters.value);
+  await mutateGetSafeProjects();
 };
 
 const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
@@ -101,8 +114,20 @@ const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
     console.error(error);
   }
 };
-
-watchEffect(async () => await getSafeProjects([]));
+const {
+  data: mutatedProjects,
+  isLoading,
+  isError,
+  error,
+  isSuccess,
+  mutateAsync: mutateGetSafeProjects,
+} = useMutation({
+  mutationFn: () => getSafeProjects(listFilters.value),
+});
+watchEffect(() => {
+  if (mutatedProjects.value)
+    listFilters.value = (mutatedProjects as typeof listFilters).value;
+});
 onMounted(async () => await getSafeProjects([]));
 </script>
 
@@ -110,6 +135,7 @@ onMounted(async () => await getSafeProjects([]));
 :deep(.panel_content) {
   width: $nav-size;
 }
+
 :deep(.box-accordeon) .header {
   border-bottom: 1px solid #1e2d3d;
   width: 16.7rem;
@@ -117,6 +143,7 @@ onMounted(async () => await getSafeProjects([]));
   padding-block: 0.625rem;
   padding-inline-start: 1.375rem;
 }
+
 .flex-wrapper {
   display: flex;
   gap: 4rem;
@@ -125,17 +152,20 @@ onMounted(async () => await getSafeProjects([]));
   max-height: 100%;
   justify-content: flex-start;
 }
+
 .checkbox {
   display: flex;
   gap: 1rem;
   margin-block: 1.0625rem;
   align-items: center;
+
   label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 }
+
 input[type="checkbox"] {
   position: relative;
   width: 0.875rem;
@@ -155,10 +185,12 @@ input[type="checkbox"]:checked:after {
   color: $white-full;
   height: 0.875rem;
 }
+
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
 }
+
 .list-enter-from,
 .list-leave-to {
   opacity: 0;

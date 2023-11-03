@@ -2,28 +2,27 @@
   <PanelView>
     <template #panel-1> </template>
     <template #panel-2>
-      <div class="contact">
-        <label for="input">name</label>
+      <form class="contact" @submit.prevent="validateAndSubmit">
+        <label for="input">Name</label>
         <input v-model="formValue.name" name="input" type="text" />
-        <label for="input">email</label>
+        <label for="input">Email</label>
         <input v-model="formValue.email" name="input" type="email" />
-        <label for="input">message</label>
-        <textarea
-          v-model="formValue.message"
-          name="input"
-          type="text"
-        ></textarea>
-        <button class="submit" type="submit" @click="submitContact(formValue)">submit</button>
-      </div>
+        <label for="input">Message</label>
+        <textarea v-model="formValue.message" name="input" type="text" />
+        <button class="submit" type="submit" :disabled="!isValidEmail(formValue.email)"
+        :style=" { cursor: !isValidEmail(formValue.email) ? 'not-allowed' : 'pointer'} "
+        @click="validateAndSubmit">Submit</button>
+      </form>
     </template>
     <template #panel-3>
       {{ formValue }}
     </template>
   </PanelView>
 </template>
+
 <script setup lang="ts">
 import PanelView from "@/components/PanelView.vue";
-import { ref } from "vue";
+import { ref, toRaw } from "vue";
 import { postContact, getContact } from "@/services/entites";
 const { data } = getContact();
 const formValue = ref({
@@ -44,7 +43,23 @@ const submitContact = async (value) => {
     console.log("done");
   }
 };
+const validateAndSubmit =  () => {
+   if (!isValidEmail(formValue.value.email)) {
+    cantSave.value = true;
+  } else {
+    cantSave.value = false;
+     submitContact(formValue.value);
+  }
+};
+
+function isValidEmail(email: string) {
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  return emailRegex.test(email);
+}
+
+const cantSave = ref(false);
 </script>
+
 <style lang="scss">
 .contact {
   display: flex;
@@ -53,6 +68,7 @@ const submitContact = async (value) => {
   margin: 0 auto;
   gap: 1rem;
 }
+
 input,
 textarea {
   padding: 0.7rem 0rem;
@@ -62,6 +78,7 @@ textarea {
   border-radius: 8px;
   color: $white-full;
 }
+
 .submit {
   background: #1c2b3a;
   border-radius: 8px;

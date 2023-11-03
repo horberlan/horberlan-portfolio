@@ -8,7 +8,7 @@
       </div>
       <div>
         <div class="skane-actions">
-          <span>Scores: {{ scores }}</span>
+          <span>Score: {{ scores }}</span>
           <button id="play-btn" ref="buttonSnake" v-if="!isPlaying" @keydown.space="isPlaying ? stop() : start()"
             @click="isPlaying ? stop() : start()">
             {{ isPlaying ? "end-game" : "start-game" }}
@@ -148,6 +148,7 @@ watchEffect(() => {
   color: black;
   border: none;
   outline: none;
+  cursor: pointer;
 }
 
 p {
@@ -157,18 +158,13 @@ p {
 
 .winner {
   display: flex;
-  /* Use flex to center both horizontally and vertically */
   justify-content: center;
-  /* Center horizontally */
   align-items: center;
-  /* Center vertically */
   position: absolute;
   bottom: 12rem;
   left: 50%;
-  /* Center horizontally */
   transform: translateX(-50%);
-  /* Center horizontally */
-  width: 26%;
+  width: 46%;
   place-items: center;
   background: rgba(1, 22, 39, 0.84);
   box-shadow: inset 1px 5px 11px rgba(2, 18, 27, 0.71);

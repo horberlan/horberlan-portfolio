@@ -55,11 +55,7 @@
     <template #panel-3>
       <div class="right-container">
         <p ref="lineCouter" class="test-span">// Code snippet showcase:</p>
-        <div
-          class="snippet-container"
-          v-for="snippet in snippetList"
-          :key="snippet.id"
-        >
+        <div class="snippet-container" v-for="snippet in snippetList" :key="snippet.id">
           <div class="header">
             <div class="left">
               <img class="img" :src="snippet.avatar_url" :alt="snippet.name" />
@@ -71,15 +67,13 @@
             </div>
             <div class="right">
               <p @click="show = !show">details</p>
-              <p @click="updateSafeSnippet(snippet)">
-                {{ snippet.stars }} stars
-              </p>
+              <p @click="updateSafeSnippet(snippet)">{{ snippet.stars }} stars</p>
             </div>
           </div>
           <div class="snippet-content">
             <div v-highlight>
               <pre class="language-javascript">
-                <code v-html=snippet.snippet />
+                <p v-html=snippet.snippet />
               </pre>
             </div>
           </div>
@@ -126,8 +120,6 @@ const getSafeSnippet = async () => {
     snippetList.value = snippets;
   } catch {
     console.log("error");
-  } finally {
-    console.log("ok");
   }
 };
 const updateSafeSnippet = async (snippet: Snippets) => {

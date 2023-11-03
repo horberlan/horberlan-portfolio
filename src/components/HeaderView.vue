@@ -1,12 +1,22 @@
 <template>
-  <span v-if="header[0].toggle && !displayAll" class="toggle" @click="displayAll = !displayAll">
+  <span
+    v-if="header[0] && !displayAll"
+    class="toggle"
+    @click="displayAll = !displayAll"
+  >
     <div class="toggleIcon"></div>
     <div class="toggleIcon"></div>
     <div class="toggleIcon"></div>
   </span>
   <TransitionGroup name="header">
     <nav :class="containerClass" v-if="displayAll" ref="containerHeader">
-      <router-link v-for="(link, index) in header" :key="index" :to="`${link.to}`" class="navLinks">
+      <router-link
+        v-for="(link, index) in header"
+        :key="index"
+        :to="`${link.to}`"
+        class="navLinks"
+        :class="{ 'home-logo': index === 0 }"
+      >
         <span v-if="displayAll"> {{ link.title }}</span>
       </router-link>
     </nav>
@@ -14,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { onClickOutside } from '@vueuse/core'
+import { onMounted, ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
 
 const header = [
   {
@@ -39,25 +49,26 @@ const header = [
     to: "/contact",
   },
 ];
-const containerClass = ref('');
+const containerClass = ref("");
 const displayAll = ref(false);
 const updateContainerClass = () => {
   if (window.innerWidth < 768) {
-    containerClass.value = 'small-screen-nav';
-    onClickOutside(containerHeader, (event) => displayAll.value = !displayAll.value)
+    containerClass.value = "small-screen-nav";
+    onClickOutside(
+      containerHeader,
+      (event) => (displayAll.value = !displayAll.value)
+    );
   } else {
-    containerClass.value = 'large-screen-nav';
-    displayAll.value = true
+    containerClass.value = "large-screen-nav";
+    displayAll.value = true;
   }
 };
-const containerHeader = ref()
-
+const containerHeader = ref();
 
 onMounted(() => {
   updateContainerClass();
-  window.addEventListener('resize', updateContainerClass);
+  window.addEventListener("resize", updateContainerClass);
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -76,7 +87,6 @@ nav {
   .navLinks {
     border: 1px solid $bg-color;
     color: $primary;
-    header-style: none;
     text-decoration: none;
     padding: 1rem 2rem;
     transition: 200ms;
@@ -94,11 +104,9 @@ nav {
     flex-direction: column;
   }
 }
-
-.router-link-active,
-.router-link-exact-active {
+.router-link-active:not(.home-logo),
+.router-link-exact-active:not(.home-logo) {
   position: relative;
-  color: $white-full !important;
 
   &::before {
     content: "";
@@ -134,4 +142,5 @@ nav {
 .header-leave-to {
   opacity: 0;
   transform: translateY(-10px);
-}</style>
+}
+</style>

@@ -35,7 +35,7 @@ import { DragCol } from "vue-resizer";
 
 const props = withDefaults(
   defineProps<{
-    isResizable: boolean;
+    isResizable?: boolean;
   }>(),
   { isResizable: true }
 );
@@ -57,7 +57,7 @@ watchEffect(()=> {
 
 
 onMounted(() => {
-  updateContainerClass(); 
+  updateContainerClass();
   window.addEventListener("resize", updateContainerClass);
 })
 </script>
@@ -83,7 +83,7 @@ section {
       display: none;
     }
   }
-  
+
 
   .content {
     width: 100%;
