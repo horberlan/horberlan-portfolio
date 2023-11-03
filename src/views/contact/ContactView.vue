@@ -9,9 +9,15 @@
         <input v-model="formValue.email" name="input" type="email" />
         <label for="input">Message</label>
         <textarea v-model="formValue.message" name="input" type="text" />
-        <button class="submit" type="submit" :disabled="!isValidEmail(formValue.email)"
-        :style=" { cursor: !isValidEmail(formValue.email) ? 'not-allowed' : 'pointer'} "
-        @click="validateAndSubmit">Submit</button>
+        <button
+          class="submit"
+          type="submit"
+          :disabled="!isValidEmail(formValue.email)"
+          :style="{ cursor: !isValidEmail(formValue.email) ? 'not-allowed' : 'pointer' }"
+          @click="validateAndSubmit"
+        >
+          Submit
+        </button>
       </form>
     </template>
     <template #panel-3>
@@ -22,10 +28,17 @@
 
 <script setup lang="ts">
 import PanelView from "@/components/PanelView.vue";
-import { ref, toRaw } from "vue";
+import { ref, Ref } from "vue";
 import { postContact, getContact } from "@/services/entites";
-const { data } = getContact();
-const formValue = ref({
+
+type FormValue = {
+  name?: string;
+  email?: string;
+  message?: string;
+  response?: string,
+};
+
+const formValue: Ref<FormValue> = ref({
   name: "",
   email: "",
   message: "",
@@ -43,12 +56,13 @@ const submitContact = async (value) => {
     console.log("done");
   }
 };
-const validateAndSubmit =  () => {
-   if (!isValidEmail(formValue.value.email)) {
+const validateAndSubmit = () => {
+  if (!isValidEmail(formValue.value.email)) {
     cantSave.value = true;
   } else {
     cantSave.value = false;
-     submitContact(formValue.value);
+    submitContact(formValue.value);
+    formValue.value = { response: "Thanks for contacting!" };
   }
 };
 
