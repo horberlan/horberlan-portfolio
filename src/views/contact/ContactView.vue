@@ -27,9 +27,9 @@
         <button
           class="submit"
           type="submit"
-          :disabled="!isValidEmail(formValue.email)"
+          :disabled="!isValidEmail(String(formValue.email))"
           :style="{
-            cursor: !isValidEmail(formValue.email) ? 'not-allowed' : 'pointer',
+            cursor: !isValidEmail(String(formValue.email)) ? 'not-allowed' : 'pointer',
           }"
           @click="validateAndSubmit"
         >
@@ -60,7 +60,7 @@ const formValue: Ref<FormValue> = ref({
   email: "",
   message: "",
 });
-const submitContact = async (value) => {
+const submitContact = async (value: FormValue) => {
   try {
     await postContact({
       name: value.name,
@@ -74,7 +74,7 @@ const submitContact = async (value) => {
   }
 };
 const validateAndSubmit = () => {
-  if (!isValidEmail(formValue.value.email)) {
+  if (!isValidEmail(String(formValue.value.email))) {
     cantSave.value = true;
   } else {
     cantSave.value = false;
