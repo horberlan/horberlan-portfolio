@@ -10,6 +10,11 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "",
+      component: IndexHomeVue,
+    },
+    {
+      path: "/",
       name: "home",
       component: IndexHomeVue,
     },

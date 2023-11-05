@@ -79,7 +79,7 @@
           <div class="snippet-content">
             <div v-highlight>
               <pre class="language-javascript">
-                <code v-html=snippet.snippet />
+                <p v-html=snippet.snippet />
               </pre>
             </div>
           </div>
@@ -126,8 +126,6 @@ const getSafeSnippet = async () => {
     snippetList.value = snippets;
   } catch {
     console.log("error");
-  } finally {
-    console.log("ok");
   }
 };
 const updateSafeSnippet = async (snippet: Snippets) => {

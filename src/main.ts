@@ -6,6 +6,7 @@ import VueCodeHighlight from "vue-code-highlight";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import router from "./router";
+import { VueQueryPlugin } from "@tanstack/vue-query";
 
 const app = createApp(App);
 
@@ -14,6 +15,7 @@ app.use(VueCodeHighlight);
 app.use(Quasar, {
   plugins: {},
 });
+app.use(VueQueryPlugin);
 app.use(router);
 
 app.mount("#app");

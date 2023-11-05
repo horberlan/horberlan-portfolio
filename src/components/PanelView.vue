@@ -35,12 +35,12 @@ import { DragCol } from "vue-resizer";
 
 const props = withDefaults(
   defineProps<{
-    isResizable: boolean;
+    isResizable?: boolean;
   }>(),
   { isResizable: true }
 );
 const leftSize = ref(60);
-const containerClass = ref('');
+const containerClass = ref("");
 const windowSize = ref();
 const updateContainerClass = () => {
   windowSize.value = `${window.outerWidth}px`;
@@ -51,15 +51,14 @@ const updateContainerClass = () => {
     containerClass.value = "large-screen";
   }
 };
-watchEffect(()=> {
-  updateContainerClass()
-})
-
+watchEffect(() => {
+  updateContainerClass();
+});
 
 onMounted(() => {
-  updateContainerClass(); 
+  updateContainerClass();
   window.addEventListener("resize", updateContainerClass);
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -83,7 +82,6 @@ section {
       display: none;
     }
   }
-  
 
   .content {
     width: 100%;
@@ -100,12 +98,10 @@ section {
 @media screen and (max-width: 768px) {
   .resized {
     height: auto;
-
   }
 }
 .left-div {
   width: v-bind(windowSize);
-
 }
 * {
   scrollbar-width: thin;

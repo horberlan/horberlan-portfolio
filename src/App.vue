@@ -6,13 +6,15 @@ import Footer from "./views/home/Footer.vue";
 <template>
   <Header />
   <router-view v-slot="{ Component }">
-    <transition name="slide-fade">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
+    <transition name="slide-fade" v-if="Component">
+      <main>
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </main>
     </transition>
   </router-view>
-  <Footer></Footer>
+  <Footer />
 </template>
 
 <style scoped lang="scss">
