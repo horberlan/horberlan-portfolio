@@ -8,12 +8,18 @@
         @close-all="null"
         icon="ArrowIconSecundary"
       >
-        <div class="checkbox" v-for="(project, index) in allProjects" :key="index">
+        <div
+          class="checkbox"
+          v-for="(project, index) in allProjects"
+          :key="index"
+        >
           <input
             type="checkbox"
             :id="`scales-${index}`"
             :ref="`theCheckbox-${index}`"
-            @click="cardsGroup(project.type, $event?.currentTarget as EventTarget)"
+            @click="
+              cardsGroup(project.type, $event?.currentTarget as EventTarget)
+            "
           />
           <label :for="`scales-${index}`">
             <SvgIcon :name="project.icon" size="md" />
@@ -49,7 +55,7 @@ import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
-import { PROJECT_TYPE } from "@/utils/enums/project";
+import {  PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
 import { computed, watchEffect, ref, onMounted, Suspense } from "vue";
 import { useMutation } from "@tanstack/vue-query";
@@ -100,7 +106,9 @@ const cardsGroup = async (data: PROJECT_TYPE, index: EventTarget) => {
     );
   } else {
     listFilters.value = listFilters.value.filter((number) => number !== data);
-    filtredProjectsList.value = projectsList.value.filter((e) => e.type !== data);
+    filtredProjectsList.value = projectsList.value.filter(
+      (e) => e.type !== data
+    );
   }
   await mutateGetSafeProjects();
 };

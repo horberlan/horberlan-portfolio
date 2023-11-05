@@ -4,7 +4,9 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
 
-export const getProjects = async (param: Record<string, string>): Promise<any> => {
+export const getProjects = async (
+  param: Record<string, string>
+): Promise<any> => {
   try {
     const { data } = await api.get(
       `/projects?type=${Object.values(param).join(";") ?? ""}`

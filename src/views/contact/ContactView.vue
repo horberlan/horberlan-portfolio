@@ -29,7 +29,9 @@
           type="submit"
           :disabled="!isValidEmail(String(formValue.email))"
           :style="{
-            cursor: !isValidEmail(String(formValue.email)) ? 'not-allowed' : 'pointer',
+            cursor: !isValidEmail(String(formValue.email))
+              ? 'not-allowed'
+              : 'pointer',
           }"
           @click="validateAndSubmit"
         >
@@ -45,8 +47,8 @@
 
 <script setup lang="ts">
 import PanelView from "@/components/PanelView.vue";
-import { ref, Ref } from "vue";
-import { postContact, getContact } from "@/services/entites";
+import { ref, type Ref } from "vue";
+import { postContact } from "@/services/entites";
 
 type FormValue = {
   name?: string;

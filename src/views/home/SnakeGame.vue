@@ -1,16 +1,28 @@
 <template>
   <div class="snake">
     <div id="app">
-      <SnakeCanvas :cellSize="cellSize" :boardSize="boardSize" :speed="speed" :isPlaying="isPlaying" :stop="stop"
-        :addScores="addScores" :scores="scores" />
+      <SnakeCanvas
+        :cellSize="cellSize"
+        :boardSize="boardSize"
+        :speed="speed"
+        :isPlaying="isPlaying"
+        :stop="stop"
+        :addScores="addScores"
+        :scores="scores"
+      />
       <div v-if="winner" class="winner">
         <span> WELL DONE! </span>
       </div>
       <div>
         <div class="skane-actions">
           <span>Score: {{ scores }}</span>
-          <button id="play-btn" ref="buttonSnake" v-if="!isPlaying" @keydown.space="isPlaying ? stop() : start()"
-            @click="isPlaying ? stop() : start()">
+          <button
+            id="play-btn"
+            ref="buttonSnake"
+            v-if="!isPlaying"
+            @keydown.space="isPlaying ? stop() : start()"
+            @click="isPlaying ? stop() : start()"
+          >
             {{ isPlaying ? "end-game" : "start-game" }}
           </button>
         </div>
@@ -25,7 +37,13 @@
       <p>// food left</p>
 
       <div v-if="scores <= 6" class="foods">
-        <SvgIcon v-for="foods in foodLoop" :key="foods.name" :name="foods.name" :empty="foods.empty" size="xl" />
+        <SvgIcon
+          v-for="foods in foodLoop"
+          :key="foods.name"
+          :name="foods.name"
+          :empty="foods.empty"
+          size="xl"
+        />
       </div>
       <div v-else>
         {{ textFinish }}
@@ -66,7 +84,7 @@ const start = () => {
 };
 
 const stop = () => {
-  console.log("oi")
+  console.log("oi");
   isPlaying.value = false;
   scores.value = 0;
 };
@@ -83,8 +101,7 @@ const addScores = () => {
 };
 
 watchEffect(() => {
-  if (buttonSnake.value)
-    buttonSnake.value.focus();
+  if (buttonSnake.value) buttonSnake.value.focus();
 });
 </script>
 
@@ -131,7 +148,6 @@ watchEffect(() => {
     background-size: cover;
     width: 11.3362rem;
     height: 8.875rem;
-
   }
 }
 
@@ -188,4 +204,5 @@ p {
   display: grid;
   align-items: center;
   grid-template-columns: 1fr 1fr 1fr;
-}</style>
+}
+</style>
