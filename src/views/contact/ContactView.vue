@@ -8,24 +8,25 @@
           v-model="formValue.name"
           name="input"
           type="text"
-          @input="() => (formValue?.response ? delete formValue.response : {})"
+          @input="clearResponse"
         />
         <label for="input">Email</label>
         <input
           v-model="formValue.email"
           name="input"
           type="email"
-          @input="() => (formValue?.response ? delete formValue.response : {})"
+          @input="clearResponse"
         />
         <label for="input">Message</label>
         <textarea
           v-model="formValue.message"
           name="input"
           type="text"
-          @input="() => (formValue?.response ? delete formValue.response : {})"
+          @input="clearResponse"
         />
         <button
           class="submit"
+          :class="{canSave : isValidEmail(String(formValue.email))}"
           type="submit"
           :disabled="!isValidEmail(String(formValue.email))"
           :style="{
@@ -89,6 +90,9 @@ function isValidEmail(email: string) {
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
   return emailRegex.test(email);
 }
+const clearResponse = () => {
+  formValue.value?.response ? delete formValue.value.response : {};
+};
 
 const cantSave = ref(false);
 </script>
@@ -120,5 +124,9 @@ textarea {
   max-width: 30%;
   cursor: pointer;
   color: white;
+  &.canSave {
+  background: #5178a0;
+
+  }
 }
 </style>
