@@ -26,7 +26,7 @@
         />
         <button
           class="submit"
-          :class="{canSave : isValidEmail(String(formValue.email))}"
+          :class="{ canSave: isValidEmail(String(formValue.email)) }"
           type="submit"
           :disabled="!isValidEmail(String(formValue.email))"
           :style="{
@@ -44,12 +44,14 @@
       {{ formValue }}
     </template>
   </PanelView>
+  <PopUp :showMessage="showPopUp" @update:showMessage="showPopUp = false" />
 </template>
 
 <script setup lang="ts">
 import PanelView from "@/components/PanelView.vue";
 import { ref, type Ref } from "vue";
 import { postContact } from "@/services/entites";
+import PopUp from "./PopUp.vue";
 
 type FormValue = {
   name?: string;
@@ -63,6 +65,8 @@ const formValue: Ref<FormValue> = ref({
   email: "",
   message: "",
 });
+const showPopUp = ref(false);
+
 const submitContact = async (value: FormValue) => {
   try {
     await postContact({
@@ -74,6 +78,7 @@ const submitContact = async (value: FormValue) => {
     console.log("error");
   } finally {
     console.log("done");
+    showPopUp.value = true;
   }
 };
 const validateAndSubmit = () => {
@@ -125,8 +130,7 @@ textarea {
   cursor: pointer;
   color: white;
   &.canSave {
-  background: #5178a0;
-
+    background: #5178a0;
   }
 }
 </style>
