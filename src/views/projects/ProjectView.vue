@@ -13,19 +13,19 @@
         </div>
       </box-accordeon>
     </template>
-    <template #left v-if="filtredProjectsList.length">
-      <div class="flex-wrapper">
-        <Suspense>
+    <template #left>
+      <template v-if="filtredProjectsList.length">
+        <div class="flex-wrapper">
           <TransitionGroup name="list">
             <div v-for="(project, index) in filtredProjectsList" :key="index" class="cards-container">
               <ProjectCard :flag="project.type" :bg="project.background" :desc="project.project_description"
                 :href="project.href" :name="project.name" />
             </div>
           </TransitionGroup>
-          <template #fallback> Loading... </template>
-        </Suspense>
-      </div>
-    </template>
+        </div>
+      </template>
+        <template v-else> Loading... </template>
+      </template>
   </PanelView>
 </template>
 
@@ -102,24 +102,21 @@ const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
     console.error(error);
   }
 };
-const {
-  data: mutatedProjects,
-  mutateAsync: mutateGetSafeProjects,
-} = useMutation({
-  mutationFn: () => getSafeProjects(listFilters.value),
-});
+
+const { data: mutatedProjects, mutateAsync: mutateGetSafeProjects } =
+  useMutation({
+    mutationFn: () => getSafeProjects(listFilters.value),
+  });
+
 watchEffect(() => {
   if (mutatedProjects.value)
     listFilters.value = (mutatedProjects as typeof listFilters).value;
 });
+
 onMounted(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
-// :deep(.panel_content), .panel_content {
-//   width: $nav-size;
-// }
-
 :deep(.box-accordeon) .header {
   border-bottom: 1px solid #1e2d3d;
   width: 16.7rem;
