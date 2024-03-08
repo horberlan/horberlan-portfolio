@@ -1,26 +1,11 @@
 <template>
   <PanelView :isResizable="false">
     <template #panel-1>
-      <box-accordeon
-        title="projects"
-        :open="true"
-        @selected="null"
-        @close-all="null"
-        icon="ArrowIconSecundary"
-      >
-        <div
-          class="checkbox"
-          v-for="(project, index) in allProjects"
-          :key="index"
-        >
-          <input
-            type="checkbox"
-            :id="`scales-${index}`"
-            :ref="`theCheckbox-${index}`"
-            @click="
-              cardsGroup(project.type, $event?.currentTarget as EventTarget)
-            "
-          />
+      <box-accordeon title="projects" :open="true" @selected="null" @close-all="null" icon="ArrowIconSecundary">
+        <div class="checkbox" v-for="(project, index) in allProjects" :key="index">
+          <input type="checkbox" :id="`scales-${index}`" :ref="`theCheckbox-${index}`" @click="
+    cardsGroup(project.type, $event?.currentTarget as EventTarget)
+    " />
           <label :for="`scales-${index}`">
             <SvgIcon :name="project.icon" size="md" />
             {{ project.type.toLocaleLowerCase() }}
@@ -32,14 +17,9 @@
       <div class="flex-wrapper">
         <Suspense>
           <TransitionGroup name="list">
-            <div v-for="(project, index) in filtredProjectsList" :key="index">
-              <ProjectCard
-                :flag="project.type"
-                :bg="project.background"
-                :desc="project.project_description"
-                :href="project.href"
-                :name="project.name"
-              />
+            <div v-for="(project, index) in filtredProjectsList" :key="index" class="cards-container">
+              <ProjectCard :flag="project.type" :bg="project.background" :desc="project.project_description"
+                :href="project.href" :name="project.name" />
             </div>
           </TransitionGroup>
           <template #fallback> Loading... </template>
@@ -55,7 +35,7 @@ import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
-import {  PROJECT_TYPE } from "@/utils/enums/project";
+import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
 import { computed, watchEffect, ref, onMounted, Suspense } from "vue";
 import { useMutation } from "@tanstack/vue-query";
@@ -124,10 +104,6 @@ const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
 };
 const {
   data: mutatedProjects,
-  isLoading,
-  isError,
-  error,
-  isSuccess,
   mutateAsync: mutateGetSafeProjects,
 } = useMutation({
   mutationFn: () => getSafeProjects(listFilters.value),
@@ -140,9 +116,9 @@ onMounted(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
-:deep(.panel_content) {
-  width: $nav-size;
-}
+// :deep(.panel_content), .panel_content {
+//   width: $nav-size;
+// }
 
 :deep(.box-accordeon) .header {
   border-bottom: 1px solid #1e2d3d;
@@ -154,11 +130,20 @@ onMounted(async () => await getSafeProjects([]));
 
 .flex-wrapper {
   display: flex;
-  gap: 4rem;
   flex-flow: row wrap;
   margin: 2rem;
   max-height: 100%;
   justify-content: flex-start;
+
+  .cards-container {
+    margin-block: map-get($margins, "block-large-screen");
+    margin-inline: map-get($margins, "inline-large-screen");
+  }
+
+  @media screen and (max-width: 760px) {
+    margin-block: map-get($margins, "block-small-screen");
+    margin-inline: map-get($margins, "inline-small-screen");
+  }
 }
 
 .checkbox {
