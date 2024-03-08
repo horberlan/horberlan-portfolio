@@ -77,7 +77,7 @@ section {
   .panel_content {
     height: 100%;
     border: 1px solid #1e2d3d;
-    width: 20.5rem;
+    width: $nav-size;
     &.small-screen {
       display: none;
     }
@@ -101,7 +101,7 @@ section {
   }
 }
 .left-div {
-  width: v-bind(windowSize);
+  width: 85%;
 }
 * {
   scrollbar-width: thin;

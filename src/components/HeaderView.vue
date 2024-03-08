@@ -91,10 +91,6 @@ nav {
     padding: 1rem 2rem;
     transition: 200ms;
 
-    &:nth-child(1) {
-      width: $nav-size;
-    }
-
     &:last-child {
       margin-inline-start: auto;
     }
@@ -142,5 +138,8 @@ nav {
 .header-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+.home-logo {
+  width: $nav-size;
 }
 </style>

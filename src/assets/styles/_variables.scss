@@ -1,4 +1,12 @@
-$nav-size: 15rem;
+
+$margins: (
+  "block-large-screen": 1%,
+  "block-small-screen": 4%,
+  "inline-large-screen": 2%,
+  "inline-small-screen": 2rem,
+);
+
+$nav-size: 17.4rem;
 $background-midnight:#011627;
 $mirage-primary:#1e2d3d;
 $mirage-secundary:#1c2b3a;
