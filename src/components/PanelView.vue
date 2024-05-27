@@ -66,7 +66,7 @@ onMounted(() => {
   color: $white-full;
 }
 .projects-content {
-  width: v-bind(windowSize);
+  // width: v-bind(windowSize);
   height: 100%;
 }
 section {

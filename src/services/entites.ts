@@ -1,5 +1,14 @@
+import { PROJECT_TYPE } from "@/utils/enums/project";
 import axios from "axios";
 
+export interface Project {
+    _id: string
+    name: string
+    project_description: string
+    background: string
+    href: string
+    type: PROJECT_TYPE
+}
 export interface Snippet {
   _id: string
   name: string
@@ -22,11 +31,11 @@ const api = axios.create({
 });
 
 export const getProjects = async (
-  param: Record<string, string>
-): Promise<any> => {
+  param: Array<String>
+): Promise<Project[]> => {
   try {
     const { data } = await api.get(
-      `/projects?type=${Object.values(param).join(";") ?? ""}`
+      `/projects?type=${param.length ? Object.values(param).join(";") : PROJECT_TYPE.ALL}`
     );
     return data;
   } catch (error) {

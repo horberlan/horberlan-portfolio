@@ -43,7 +43,7 @@ import { useMutation } from "@tanstack/vue-query";
 interface ProjectType {
   _id: string;
   type: PROJECT_TYPE;
-  icon: string;
+  icon?: string;
   background: string;
   project_description: string;
   href: string;
