@@ -1,7 +1,7 @@
 <template>
   <ol>
     <li>/**</li>
-    <li>* Courses of my interest; ></li>
+    <li>* Courses of my interest;</li>
     <li>
       *
       <a

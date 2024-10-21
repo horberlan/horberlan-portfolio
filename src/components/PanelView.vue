@@ -39,6 +39,7 @@ const props = withDefaults(
   }>(),
   { isResizable: true }
 );
+
 const leftSize = ref(60);
 const containerClass = ref("");
 const windowSize = ref();
@@ -51,6 +52,7 @@ const updateContainerClass = () => {
     containerClass.value = "large-screen";
   }
 };
+
 watchEffect(() => {
   updateContainerClass();
 });
@@ -58,6 +60,10 @@ watchEffect(() => {
 onMounted(() => {
   updateContainerClass();
   window.addEventListener("resize", updateContainerClass);
+  if (containerClass.value == "large-screen") {
+    leftSize.value = 0;
+    setTimeout(() => (leftSize.value = 60), 1400);
+  }
 });
 </script>
 
@@ -90,6 +96,7 @@ section {
 .resized {
   padding: 0.5rem;
   height: 100vw;
+  transition: width 0.5s ease-in-out;
   :deep(ol) li .link {
     color: $white-full;
     text-decoration: none;
