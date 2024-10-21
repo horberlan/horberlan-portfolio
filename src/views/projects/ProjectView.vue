@@ -1,11 +1,26 @@
 <template>
   <PanelView :isResizable="false">
     <template #panel-1>
-      <box-accordeon title="projects" :open="true" @selected="null" @close-all="null" icon="ArrowIconSecundary">
-        <div class="checkbox" v-for="(project, index) in allProjects" :key="index">
-          <input type="checkbox" :id="`scales-${index}`" :ref="`theCheckbox-${index}`" @click="
-    cardsGroup(project.type, $event?.currentTarget as EventTarget)
-    " />
+      <box-accordeon
+        title="projects"
+        :open="true"
+        @selected="null"
+        @close-all="null"
+        icon="ArrowIconSecundary"
+      >
+        <div
+          class="checkbox"
+          v-for="(project, index) in allProjects"
+          :key="index"
+        >
+          <input
+            type="checkbox"
+            :id="`scales-${index}`"
+            :ref="`theCheckbox-${index}`"
+            @click="
+              cardsGroup(project.type, $event?.currentTarget as EventTarget)
+            "
+          />
           <label :for="`scales-${index}`">
             <SvgIcon :name="project.icon" size="md" />
             {{ project.type.toLocaleLowerCase() }}
@@ -17,15 +32,24 @@
       <template v-if="filtredProjectsList.length">
         <div class="flex-wrapper">
           <TransitionGroup name="list">
-            <div v-for="(project, index) in filtredProjectsList" :key="index" class="cards-container">
-              <ProjectCard :flag="project.type" :bg="project.background" :desc="project.project_description"
-                :href="project.href" :name="project.name" />
+            <div
+              v-for="(project, index) in filtredProjectsList"
+              :key="index"
+              class="cards-container"
+            >
+              <ProjectCard
+                :flag="project.type"
+                :bg="project.background"
+                :desc="project.project_description"
+                :href="project.href"
+                :name="project.name"
+              />
             </div>
           </TransitionGroup>
         </div>
       </template>
-        <template v-else> Loading... </template>
-      </template>
+      <template v-else> <span class="loading"> Loading</span></template>
+    </template>
   </PanelView>
 </template>
 
@@ -185,5 +209,37 @@ input[type="checkbox"]:checked:after {
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+
+.loading {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 10rem;
+  color: white;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  position: relative;
+}
+
+@keyframes dots {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+
+.loading::after {
+  content: "";
+  animation: dots 500ms steps(1, end) infinite;
 }
 </style>

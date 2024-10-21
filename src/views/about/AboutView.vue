@@ -50,7 +50,22 @@
       </box-accordeon>
     </template>
     <template #panel-2>
-      <component :is="componentValue" />
+      About me
+      <component :is="bio[0].component" />
+      Publications
+      <MediumPublications />
+      Interests
+      <component
+        v-for="component in interests"
+        :key="component.title"
+        :is="component.component"
+      />
+      Education
+      <component
+        v-for="component in educations"
+        :key="component.title"
+        :is="component.component"
+      />
     </template>
     <template #panel-3>
       <div class="right-container">
@@ -102,10 +117,12 @@ import Web3Interests from "./Web3Interests.vue";
 import Values from "./ValuesComp.vue";
 import ValuesSec from "./TestTwo.vue";
 import AboutMe from "./AboutMe.vue";
+import MediumPublications from "./MediumPublications.vue";
 import Courses from "./Courses.vue";
 import { getSnippet, updateSnippet } from "@/services/entites";
 import "vue-code-highlight/themes/duotone-sea.css";
 import moment from "moment";
+import { MediumArticles } from "medium-article-api";
 
 const componentValue = ref(markRaw(AboutMe));
 const snippetList = ref([]) as Ref<Snippets[]>;
@@ -153,6 +170,7 @@ const educations = ref([
     component: markRaw(Courses),
   },
 ]);
+
 const interests = ref([
   {
     title: "Web3",
@@ -169,6 +187,30 @@ const bio = ref([
     component: markRaw(AboutMe),
   },
 ]);
+const articles = ref([]);
+
+onMounted(async () => {
+  try {
+    const mediumArticles = MediumArticles();
+    const username = "horberlan";
+    const result = await mediumArticles.getData(username);
+    articles.value = result.items.map((item) => ({
+      title: item.title,
+      categories: item.categories,
+      description: item.description,
+    }));
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+  }
+});
+
+const publications = ref([
+  {
+    title: "Publications",
+    component: markRaw(MediumPublications),
+  },
+]);
+
 const personalInfo = ref([
   {
     title: "bio",
@@ -186,6 +228,12 @@ const personalInfo = ref([
     title: "education",
     content: educations.value,
     iconFill: "#3A49A4",
+    isOpened: false,
+  },
+  {
+    title: "publications",
+    content: publications.value,
+    iconFill: "#008080",
     isOpened: false,
   },
 ]);
