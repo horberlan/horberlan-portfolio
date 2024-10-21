@@ -6,8 +6,8 @@ import Footer from "./views/home/Footer.vue";
 <template>
   <Header />
   <router-view v-slot="{ Component }">
-    <transition name="slide-fade" v-if="Component">
-      <main>
+    <transition name="slide-fade">
+      <main v-if="Component">
         <keep-alive>
           <component :is="Component" />
         </keep-alive>
