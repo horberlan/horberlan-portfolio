@@ -1,11 +1,12 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
+"extends": "@vue/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "ignoreDeprecations": "5.0",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "lib": [ "es2015", "DOM"]
   }
 }
