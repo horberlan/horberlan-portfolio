@@ -31,7 +31,6 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRoute } from "vue-router";
-import { computed } from "vue";
 
 const route = useRoute();
 
@@ -79,7 +78,11 @@ onMounted(() => {
   updateContainerClass();
   window.addEventListener("resize", updateContainerClass);
   window.addEventListener("scroll", handleScroll);
-  if (isFirstLoad.value && route.path === header[0].to) {
+  if (
+    isFirstLoad.value &&
+    route.path === header[0].to &&
+    window.innerWidth <= 780
+  ) {
     displayAll.value = false;
   }
   isFirstLoad.value = false;
