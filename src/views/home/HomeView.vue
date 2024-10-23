@@ -50,8 +50,7 @@ $orange: #e99287;
   display: grid;
   gap: 6rem;
   padding-block-start: 10rem;
-  padding-inline: 5rem;
-  margin-inline: 5rem;
+  padding-inline: 10rem;
   background: url("../../assets/background_blurs.svg") center no-repeat
     transparent;
   background-position: 100% 0%;
