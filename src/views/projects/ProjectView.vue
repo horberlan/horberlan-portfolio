@@ -7,6 +7,7 @@
         @selected="null"
         @close-all="null"
         icon="ArrowIconSecundary"
+        class="container-left-side"
       >
         <div
           class="checkbox"
@@ -61,7 +62,7 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import { getProjects } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
-import { computed, watchEffect, ref, onMounted, Suspense } from "vue";
+import { computed, watchEffect, ref, onMounted } from "vue";
 import { useMutation } from "@tanstack/vue-query";
 
 interface ProjectType {
@@ -143,7 +144,6 @@ onMounted(async () => await getSafeProjects([]));
 <style lang="scss" scoped>
 :deep(.box-accordeon) .header {
   border-bottom: 1px solid #1e2d3d;
-  width: 16.7rem;
   margin: 0;
   padding-block: 0.625rem;
   padding-inline-start: 1.375rem;
@@ -211,35 +211,7 @@ input[type="checkbox"]:checked:after {
   transform: translateX(30px);
 }
 
-.loading {
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  height: 10rem;
-  color: white;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
-  position: relative;
-}
-
-@keyframes dots {
-  0% {
-    content: "";
-  }
-  33% {
-    content: ".";
-  }
-  66% {
-    content: "..";
-  }
-  100% {
-    content: "...";
-  }
-}
-
-.loading::after {
-  content: "";
-  animation: dots 500ms steps(1, end) infinite;
+.container-left-side {
+  width: 20vw;
 }
 </style>

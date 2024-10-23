@@ -6,7 +6,6 @@
     <DragCol
       v-if="props.isResizable"
       :sliderWidth="5"
-      width="100%"
       height="auto"
       padding="10"
       sliderBgColor="#1e2d3d"
@@ -72,7 +71,6 @@ onMounted(() => {
   color: $white-full;
 }
 .projects-content {
-  // width: v-bind(windowSize);
   height: 100%;
 }
 section {
@@ -82,11 +80,23 @@ section {
 
   .panel_content {
     height: 100%;
+    position: relative;
     border: 1px solid #1e2d3d;
     width: $nav-size;
     &.small-screen {
       display: none;
     }
+    &.large-screen {
+      width: 20.1vw;
+      border: 1px solid #1e2d3d;
+      height: auto;
+      min-height: 100%;
+      box-sizing: border-box;
+    }
+  }
+  :deep(.panel-1-content) {
+    position: fixed;
+    width: 20vw;
   }
 
   .content {
@@ -127,5 +137,8 @@ section {
 *::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: #091e31;
+}
+:deep(.drager_col) {
+  min-width: 76vw;
 }
 </style>
