@@ -1,38 +1,52 @@
 <template>
   <div class="articles-container" ref="scrollContainer">
-    <div v-for="(article, index) in articles" :key="index" class="article-card">
-      <div class="card-header">
-        <h2 class="title">{{ article.title }}</h2>
+    <Suspense>
+      <template #fallback>
+        <span class="loading">Loading</span>
+      </template>
+      <div
+        v-for="(article, index) in articles"
+        :key="index"
+        class="article-card"
+      >
+        <div class="card-header">
+          <h2 class="title">
+            <a :href="article.link">
+              {{ article.title }}
+            </a>
+          </h2>
+        </div>
+        <div class="card-body">
+          <p class="categories">
+            Categorias:
+            <span
+              v-for="(category, index) in article.categories"
+              :key="`article-${index}`"
+              class="category"
+            >
+              <span v-if="index === article.categories.length - 1">{{
+                category
+              }}</span>
+              <span v-else>{{ category }}, </span>
+            </span>
+          </p>
+          <p class="date">{{ formatDate(article.date) }}</p>
+        </div>
       </div>
-      <div class="card-body">
-        <p class="categories">
-          Categorias:
-          <span
-            v-for="(category, index) in article.categories"
-            :key="`article-${index}`"
-            class="category"
-          >
-            <span v-if="index === article.categories.length - 1">{{
-              category
-            }}</span>
-            <span v-else>{{ category }}, </span>
-          </span>
-        </p>
-        <p class="date">{{ formatDate(article.date) }}</p>
-      </div>
-    </div>
+    </Suspense>
   </div>
 </template>
 
 <script setup lang="ts">
 import { MediumArticles } from "medium-article-api";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 
 interface Article {
   title: string;
   categories: string[];
   description: string;
   date: string;
+  link: string;
 }
 
 const mediumArticles = MediumArticles();
@@ -50,12 +64,22 @@ const formatDate = (dateString: string): string => {
 };
 
 const handleMouseDown = (e: MouseEvent): void => {
-  console.log(e);
   e.preventDefault();
-  const startX: number = e.pageX - e?.target?.offsetLeft;
+
+  if (e.target === null) {
+    console.error("e.target is null, cannot calculate offsetLeft");
+    return;
+  }
+
+  const startX: number = e.pageX - e.target.offsetLeft;
   scrollContainer.value.style.cursor = "grabbing";
 
   const handleMouseMove = (moveEvent: MouseEvent): void => {
+    if (moveEvent.target === null) {
+      console.error("moveEvent.target is null, skipping calculation");
+      return;
+    }
+
     const x: number = moveEvent.pageX - e.target.offsetLeft;
     const walk: number = (x - startX) * 3;
     scrollContainer.value.scrollLeft -= walk;
@@ -67,14 +91,12 @@ const handleMouseDown = (e: MouseEvent): void => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  // Add event listeners
   document.addEventListener("mousemove", handleMouseMove);
   document.addEventListener("mouseup", handleMouseUp);
 };
 
 const scrollContainer = ref<HTMLDivElement | null>(null);
-
-onMounted(async (): Promise<void> => {
+const syncMediumArticles = async () => {
   try {
     const result: any = await mediumArticles.getData(username);
     articles.value = result.items.map((item: any) => ({
@@ -82,6 +104,7 @@ onMounted(async (): Promise<void> => {
       categories: item.categories,
       description: item.description,
       date: item.pubDate,
+      link: item.link,
     }));
   } catch (error) {
     console.error("Error fetching articles:", error);
@@ -89,6 +112,12 @@ onMounted(async (): Promise<void> => {
   if (scrollContainer.value) {
     scrollContainer.value.addEventListener("mousedown", handleMouseDown);
   }
+};
+onMounted(async (): Promise<void> => {
+  await syncMediumArticles();
+});
+watchEffect(async () => {
+  await syncMediumArticles();
 });
 </script>
 
@@ -109,7 +138,8 @@ onMounted(async (): Promise<void> => {
 .article-card {
   flex-shrink: 0;
   scroll-snap-align: center;
-  background-color: #fff;
+  background-color: #1c1b1b;
+  color: #607b96;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 16px;
@@ -125,10 +155,11 @@ onMounted(async (): Promise<void> => {
   margin-bottom: 12px;
 }
 
-.title {
+.title,
+.title a {
   font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: #607b96;
   margin: 0;
 }
 
@@ -143,17 +174,44 @@ onMounted(async (): Promise<void> => {
 
 .categories {
   font-size: 14px;
-  color: #555;
+  color: #817f7f;
   margin-bottom: 8px;
 }
 
 .category {
   font-weight: bold;
-  color: #333;
+  color: rgb(151, 148, 148);
 }
 
 .description {
   font-size: 16px;
   color: #555;
+}
+@media only screen and (max-width: 768px) {
+  .articles-container {
+    flex-direction: flex;
+    gap: 1rem;
+    padding-bottom: 10px;
+  }
+
+  .article-card {
+    max-width: 78vw;
+    margin-bottom: 1rem;
+    padding: 12px;
+  }
+
+  .card-header {
+    margin-bottom: 8px;
+  }
+
+  .title,
+  .title a {
+    font-size: 18px;
+  }
+
+  .date,
+  .categories {
+    font-size: 12px;
+  }
 }
 </style>
