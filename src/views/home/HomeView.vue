@@ -99,10 +99,17 @@ $orange: #e99287;
   }
 }
 @media screen and (max-width: 768px) {
+  .hero {
+    display: none;
+  }
+  .desc:first-of-type,
+  .content:first-child {
+    display: none;
+  }
   .hero_container {
     padding: 0;
     margin: 0;
-    height: 100%;
+    height: 200vw;
     .hello {
       margin-inline-start: 1rem;
     }
