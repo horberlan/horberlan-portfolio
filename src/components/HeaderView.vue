@@ -89,6 +89,7 @@ onMounted(() => {
 });
 
 const handleScroll = () => {
+  if (window.innerWidth >= 780) return;
   if (isFirstLoad.value) return;
   if (window.scrollY === 0 && window.innerWidth <= 780) {
     if (!displayAll.value) {
