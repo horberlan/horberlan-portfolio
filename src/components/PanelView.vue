@@ -1,8 +1,8 @@
 <template>
   <section class="projects-content">
-    <div :class="['panel_content', containerClass]">
+    <aside :class="['panel_content', containerClass]">
       <slot name="panel-1"></slot>
-    </div>
+    </aside>
     <DragCol
       v-if="props.isResizable"
       :sliderWidth="5"
