@@ -7,7 +7,7 @@
     <Suspense>
       <SvgIcon class="img" :name="props.bg" margin="0" />
       <template #fallback>
-        <span class="loading skeleton">Loading...</span>
+        <span class="loading">Loading</span>
       </template>
     </Suspense>
     <div class="card-content">
@@ -85,21 +85,6 @@ function truncateText(text: string, maxLength: number) {
     z-index: 2;
   }
 
-  .skeleton {
-    width: 100%;
-    border-radius: 15px;
-
-    background-repeat: repeat-y;
-    background-size: 33.75rem 43.75rem;
-    animation: shine 1.6s infinite;
-  }
-
-  @keyframes shine {
-    to {
-      background-position: 100% 0;
-    }
-  }
-
   .img {
     width: 100%;
     height: 8rem;
@@ -130,14 +115,5 @@ function truncateText(text: string, maxLength: number) {
   text-decoration: none;
   text-align: center;
   flex-shrink: 0;
-}
-
-.loading {
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  height: 10rem;
-  color: white;
 }
 </style>

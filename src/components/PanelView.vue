@@ -1,12 +1,11 @@
 <template>
   <section class="projects-content">
-    <div :class="['panel_content', containerClass]">
+    <aside :class="['panel_content', containerClass]">
       <slot name="panel-1"></slot>
-    </div>
+    </aside>
     <DragCol
       v-if="props.isResizable"
       :sliderWidth="5"
-      width="100%"
       height="auto"
       padding="10"
       sliderBgColor="#1e2d3d"
@@ -39,6 +38,7 @@ const props = withDefaults(
   }>(),
   { isResizable: true }
 );
+
 const leftSize = ref(60);
 const containerClass = ref("");
 const windowSize = ref();
@@ -51,6 +51,7 @@ const updateContainerClass = () => {
     containerClass.value = "large-screen";
   }
 };
+
 watchEffect(() => {
   updateContainerClass();
 });
@@ -58,6 +59,10 @@ watchEffect(() => {
 onMounted(() => {
   updateContainerClass();
   window.addEventListener("resize", updateContainerClass);
+  if (containerClass.value == "large-screen") {
+    leftSize.value = 0;
+    setTimeout(() => (leftSize.value = 60), 1400);
+  }
 });
 </script>
 
@@ -66,7 +71,6 @@ onMounted(() => {
   color: $white-full;
 }
 .projects-content {
-  // width: v-bind(windowSize);
   height: 100%;
 }
 section {
@@ -76,11 +80,23 @@ section {
 
   .panel_content {
     height: 100%;
+    position: relative;
     border: 1px solid #1e2d3d;
     width: $nav-size;
     &.small-screen {
       display: none;
     }
+    &.large-screen {
+      width: 20.1vw;
+      border: 1px solid #1e2d3d;
+      height: auto;
+      min-height: 100%;
+      box-sizing: border-box;
+    }
+  }
+  :deep(.panel-1-content) {
+    position: fixed;
+    width: 20vw;
   }
 
   .content {
@@ -90,6 +106,7 @@ section {
 .resized {
   padding: 0.5rem;
   height: 100vw;
+  transition: width 0.5s ease-in-out;
   :deep(ol) li .link {
     color: $white-full;
     text-decoration: none;
@@ -120,5 +137,8 @@ section {
 *::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: #091e31;
+}
+:deep(.drager_col) {
+  min-width: 76vw;
 }
 </style>

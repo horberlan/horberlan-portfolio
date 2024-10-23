@@ -1,8 +1,7 @@
 <template>
   <ol>
     <li>/**</li>
-    <li>* About me</li>
-    <li>* About me Working as a Full Stack developer with</li>
+    <li>* Working as a Full Stack developer with</li>
     <li>* emphasis on Front-end javaScript frameworks such</li>
     <li>* as React.js and Vue.js 3 (Composition API),</li>
     <li>* Back-end inpython3 (Django) and Node.js. Mobile application</li>

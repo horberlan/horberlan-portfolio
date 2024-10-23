@@ -44,10 +44,24 @@ const toggleAccordeon = () => {
     emit("selected", opened.value);
   }
 };
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    toggleAccordeon();
+  }
+};
 </script>
+
 <template>
   <div v-if="mode === 'subitem'" :class="['box-accordeon noselect']">
-    <div class="header" @click="toggleAccordeon()">
+    <div
+      class="header"
+      @click="toggleAccordeon()"
+      @keydown="handleKeydown"
+      role="button"
+      tabindex="0"
+    >
       <SvgIcon
         :name="icon ? icon : 'chevronIcon'"
         :rotate="opened ? '0deg' : '-90deg'"
@@ -65,7 +79,13 @@ const toggleAccordeon = () => {
     </Transition>
   </div>
   <div v-else :class="['box-accordeon noselect', 'item']">
-    <div class="header" @click="toggleAccordeon()">
+    <div
+      class="header"
+      @click="toggleAccordeon()"
+      @keydown="handleKeydown"
+      role="button"
+      tabindex="0"
+    >
       <SvgIcon
         :name="icon ? icon : 'chevronIcon'"
         :rotate="opened ? '0deg' : '-90deg'"
@@ -85,6 +105,7 @@ const toggleAccordeon = () => {
     </Transition>
   </div>
 </template>
+
 <style lang="scss" scoped>
 :deep(.svg-icon) {
   transition: transform 200ms ease-in-out;
@@ -112,6 +133,10 @@ const toggleAccordeon = () => {
     cursor: pointer;
     margin-block-end: 0;
     align-items: center;
+    &:focus {
+      outline: 2px solid #42b983;
+      outline-offset: 2px;
+    }
   }
   .body {
     padding-right: 0;

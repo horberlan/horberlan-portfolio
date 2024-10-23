@@ -1,61 +1,58 @@
 <script setup lang="ts">
-import SnakeGame from "./SnakeGame.vue"
+import SnakeGame from "./SnakeGame.vue";
 const hello = [
-  { pre: "Hi all. I am", current: "Horberlan Brito", pos:"> Frontend developer", } ];
-  const desc = [
-    "// complete the game to continue",
-    "// you can also see it on my Github page",
-  ];
-  const github = [
-    "const ",
-    "githubLink ",
-    "“https://github.com/horberlan”",
-]
+  {
+    pre: "Hi all. I am",
+    current: "Horberlan Brito",
+    pos: "> Frontend developer",
+  },
+];
+const desc = [
+  "// complete the game to continue",
+  "// you can also see it on my Github page",
+];
+const github = ["const ", "githubLink ", "“https://github.com/horberlan”"];
 </script>
 <template>
   <section class="hero_container">
     <div class="hello">
       <p v-for="(intro, index) in hello" :key="index">
-        <span>
-          {{intro.pre}}
-        </span>
-        <h1>
-          {{intro.current}}
-        </h1>
-        <span>
-          {{intro.pos}}
-        </span>
+        <span
+          v-for="text of intro"
+          :key="text"
+          v-html="text"
+          :class="text === intro.current ? 'current' : null"
+        />
       </p>
       <div class="content">
-      <p v-for="descriptions in desc" :key="descriptions" class="desc">
-      {{descriptions}}
-      </p>
-    </div>
+        <p v-for="descriptions in desc" :key="descriptions" class="desc">
+          {{ descriptions }}
+        </p>
+      </div>
       <span v-for="link in github" :key="link" class="github">
-        {{link}}
+        {{ link }}
       </span>
     </div>
     <div class="hero">
-      <SnakeGame/>
+      <SnakeGame />
     </div>
   </section>
 </template>
 <style scoped lang="scss">
-
-$green :#43D9AD;
-$blue: #4D5BCE;
-$orange: #E99287;
+$green: #43d9ad;
+$blue: #4d5bce;
+$orange: #e99287;
 
 .hero_container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
-  color: #E5E9F0;
+  color: #e5e9f0;
   display: grid;
   gap: 6rem;
   padding-block-start: 10rem;
-  padding-inline: 5rem;
-  margin-inline: 5rem;
-  background: url("../../assets/background_blurs.svg") center no-repeat transparent;
+  padding-inline: 10rem;
+  background: url("../../assets/background_blurs.svg") center no-repeat
+    transparent;
   background-position: 100% 0%;
   height: 92vh;
   .hello {
@@ -63,17 +60,19 @@ $orange: #E99287;
     background-color: transparent;
     margin-inline-start: 8rem;
     p {
+      display: flex;
+      flex-direction: column;
       span {
         font-size: 1.125rem;
         &:last-child {
-         color: $indigo;
-         font-size: 2rem;
+          color: $indigo;
+          font-size: 2rem;
         }
       }
-      h1 {
+      .current {
         font-size: 3.875rem;
         margin: 0;
-    }
+      }
     }
     .content {
       margin-block-start: 4rem;
@@ -99,13 +98,20 @@ $orange: #E99287;
   }
 }
 @media screen and (max-width: 768px) {
-.hero_container {
-  padding: 0;
-  margin: 0;
-  height: 100%;
-  .hello {
-    margin-inline-start: 1rem;
+  .hero {
+    display: none;
   }
-}
+  .desc:first-of-type,
+  .content:first-child {
+    display: none;
+  }
+  .hero_container {
+    padding: 0;
+    margin: 0;
+    height: 200vw;
+    .hello {
+      margin-inline-start: 1rem;
+    }
+  }
 }
 </style>

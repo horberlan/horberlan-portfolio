@@ -19,8 +19,6 @@
     </li>
     <li>* Testing procedures;</li>
     <li>* Cryptography;</li>
-    <li>* Web3 and web5;</li>
-
     <li>**/</li>
   </ol>
 </template>
