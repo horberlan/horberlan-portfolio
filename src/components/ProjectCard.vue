@@ -116,36 +116,4 @@ function truncateText(text: string, maxLength: number) {
   text-align: center;
   flex-shrink: 0;
 }
-
-.loading {
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  height: 10rem;
-  color: white;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
-  position: relative;
-}
-
-@keyframes dots {
-  0% {
-    content: "";
-  }
-  33% {
-    content: ".";
-  }
-  66% {
-    content: "..";
-  }
-  100% {
-    content: "...";
-  }
-}
-
-.loading::after {
-  content: "";
-  animation: dots 500ms steps(1, end) infinite;
-}
 </style>
