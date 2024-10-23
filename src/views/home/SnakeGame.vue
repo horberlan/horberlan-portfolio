@@ -62,42 +62,47 @@ const boardSize = ref(40);
 const speed = ref(15);
 const scores = ref(0);
 const isPlaying = ref(false);
-const food = ref(true);
 const winner = ref(false);
 const textFinish = ref("");
 const buttonSnake = ref(null) as Ref<HTMLElement | null>;
 
 const foodLoop = ref([
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
-  { name: "SnakeFood", empty: food.value },
+  { name: "SnakeFood", empty: true },
+  { name: "SnakeFood", empty: true },
+  { name: "SnakeFood", empty: true },
+  { name: "SnakeFood", empty: true },
+  { name: "SnakeFood", empty: true },
+  { name: "SnakeFood", empty: true },
 ]);
 
 const start = () => {
   isPlaying.value = true;
-  foodLoop.value = [];
   winner.value = false;
   scores.value = 0;
 };
 
 const stop = () => {
-  console.log("oi");
   isPlaying.value = false;
   scores.value = 0;
 };
 
 const addScores = () => {
   scores.value = ++scores.value;
-  foodLoop.value.push({ name: "SnakeFood", empty: !food.value });
+
+  const nextEmptyItemIndex = foodLoop.value.findIndex(
+    (item) => item.empty === true
+  );
+
+  if (nextEmptyItemIndex !== -1) {
+    foodLoop.value[nextEmptyItemIndex].empty = false;
+  }
 
   if (scores.value === 6) {
     winner.value = true;
     stop();
+
+    foodLoop.value.forEach((item) => (item.empty = true));
   }
-  foodLoop.value[0].empty = false;
 };
 
 watchEffect(() => {
@@ -177,10 +182,10 @@ p {
   justify-content: center;
   align-items: center;
   position: absolute;
-  bottom: 12rem;
+  bottom: 15rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 46%;
+  width: 50%;
   place-items: center;
   background: rgba(1, 22, 39, 0.84);
   box-shadow: inset 1px 5px 11px rgba(2, 18, 27, 0.71);
