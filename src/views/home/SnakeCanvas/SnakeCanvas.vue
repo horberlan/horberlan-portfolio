@@ -9,6 +9,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { defaultKeysAndMoveDirection } from "./index";
 import loserSond from "@/assets/loser.mp3";
 import eatSond from "@/assets/eat.mp3";
+import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
 
 interface Props {
   cellSize: number;
@@ -24,12 +25,18 @@ interface Props {
   virtualKeyboardDirection: any;
 }
 
+interface TargetCell {
+  x: number;
+  y: number;
+  shape: "circle" | "diamond" | "square";
+}
+
 const props = withDefaults(defineProps<Props>(), {
   snakeColor: () => ["#43D9AD", "#2b8a7f"],
   foodColor: "#2b897f",
 });
 
-defineEmits(["update:isPlaying"]);
+defineEmits(["update:is-playing"]);
 
 const boardContext = ref<CanvasRenderingContext2D | null>(null);
 const snake = ref<{ x: number; y: number }[]>([]);
@@ -38,7 +45,7 @@ const direction = ref<{
   keyCode: number;
 } | null>(null);
 
-const targetCell = ref<{ x: number; y: number } | null>(null);
+const targetCell = ref<TargetCell | null>(null);
 
 const boardSizePx = computed(() => props.cellSize * props.boardSize);
 
@@ -53,7 +60,6 @@ watch(
   (newValue) => {
     if (newValue) {
       updateDirection();
-      // move();
     }
   }
 );
@@ -76,9 +82,7 @@ const resetSnake = () => {
 };
 
 const move = () => {
-  if (!props.isPlaying) {
-    return;
-  }
+  if (!props.isPlaying) return;
 
   clear();
   setTargetCell();
@@ -146,74 +150,80 @@ const onKeyPress = (event: KeyboardEvent) => {
     (c) => c.keyCode === event.keyCode
   );
 
-  if (!newDirection) {
-    return;
-  }
+  if (!newDirection) return;
   if (!direction.value) return;
   if (Math.abs(newDirection.keyCode - direction.value.keyCode) !== 2) {
     direction.value = newDirection;
   }
 };
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number
-) {
-  if (!ctx) return;
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.arcTo(x + width, y, x + width, y + height, radius);
-  ctx.arcTo(x + width, y + height, x, y + height, radius);
-  ctx.arcTo(x, y + height, x, y, radius);
-  ctx.arcTo(x, y, x + width, y, radius);
-  ctx.closePath();
-}
-
-const setTargetCell = () => {
-  if (!targetCell.value) {
-    let targetCell2 = getRandomCell();
-    while (amountCellsInSnake(targetCell as never) > 0) {
-      targetCell2 = getRandomCell();
-    }
-    targetCell.value = targetCell2;
-  }
-  if (!boardContext.value) return;
-
-  boardContext.value.fillStyle = props.foodColor;
-  // round food here
-  roundRect(
-    boardContext.value,
-    targetCell.value.x * props.cellSize,
-    targetCell.value.y * props.cellSize,
-    props.cellSize,
-    props.cellSize,
-    props.cellSize / 2 // a circle :)
-  );
-  boardContext.value.fill();
-
-  // color border, the same of bachground
-  boardContext.value.strokeStyle = "#052430";
-  boardContext.value.lineWidth = 2;
-  roundRect(
-    boardContext.value,
-    targetCell.value.x * props.cellSize,
-    targetCell.value.y * props.cellSize,
-    props.cellSize,
-    props.cellSize,
-    props.cellSize / 5
-  );
-  boardContext.value.stroke();
-};
+// todo: change to enum
+const shapeTypes = ["circle", "diamond", "square"];
 
 const getRandomCell = () => {
+  const shape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
   return {
     x: Math.floor(Math.random() * props.boardSize),
     y: Math.floor(Math.random() * props.boardSize),
+    shape,
+  } as TargetCell;
+};
+
+const setTargetCell = () => {
+  if (!targetCell.value) {
+    let localTargetCell = getRandomCell();
+    while (amountCellsInSnake(localTargetCell as never) > 0) {
+      localTargetCell = getRandomCell();
+    }
+    targetCell.value = localTargetCell;
+  }
+  if (!boardContext.value) return;
+
+  const position = {
+    x: targetCell.value.x * props.cellSize,
+    y: targetCell.value.y * props.cellSize,
   };
+  const size = props.cellSize;
+  const fillColor = props.foodColor;
+  const strokeWidth = 2;
+  const strokeColor = "#052430";
+
+  switch (targetCell.value.shape) {
+    case "circle":
+      drawCircle(
+        boardContext.value,
+        position.x,
+        position.y,
+        size,
+        fillColor,
+        strokeWidth,
+        strokeColor
+      );
+      break;
+    case "diamond":
+      drawDiamond(
+        boardContext.value,
+        position.x,
+        position.y,
+        size,
+        fillColor,
+        strokeWidth,
+        strokeColor
+      );
+      break;
+    case "square":
+      drawSquare(
+        boardContext.value,
+        position.x,
+        position.y,
+        size,
+        fillColor,
+        strokeWidth,
+        strokeColor
+      );
+      break;
+    default:
+      console.info(`Unknown shape type: ${targetCell.value.shape}`);
+  }
 };
 
 const amountCellsInSnake = (cell: (typeof snake.value)[0]) => {
@@ -287,7 +297,6 @@ watch(
   }
 );
 </script>
-
 <style scoped>
 #snake-canvas {
   padding: 1px;
