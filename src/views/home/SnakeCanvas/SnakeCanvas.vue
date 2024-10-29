@@ -2,6 +2,7 @@
   <canvas id="snake-canvas" :width="boardSizePx" :height="boardSizePx"></canvas>
   <audio id="game-over-song" :src="loserSond" type="audio/mp3"></audio>
   <audio id="eat-food-song" :src="eatSond" type="audio/mp3"></audio>
+  <audio id="win-game-song" :src="winnerSond" type="audio/mp3"></audio>
 </template>
 
 <script setup lang="ts">
@@ -9,6 +10,8 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { defaultKeysAndMoveDirection } from "./index";
 import loserSond from "@/assets/loser.mp3";
 import eatSond from "@/assets/eat.mp3";
+import winnerSond from "@/assets/winner.wav";
+
 import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
 
 interface Props {
@@ -55,15 +58,6 @@ function updateDirection() {
   direction.value = props.virtualKeyboardDirection;
 }
 
-watch(
-  () => props.virtualKeyboardDirection,
-  (newValue) => {
-    if (newValue) {
-      updateDirection();
-    }
-  }
-);
-
 const resetSnake = () => {
   const middleCell = getMiddleCell();
   const initialDirection = defaultKeysAndMoveDirection[0];
@@ -103,6 +97,8 @@ const move = () => {
       targetCell.value = null;
       props.addScores(props.speed);
       playEatFoodSong();
+      console.log(props.scores);
+      if (props.scores === 5) playWinGameSong();
     } else {
       snake.value.unshift(newHeadCell);
       snake.value.pop();
@@ -185,7 +181,7 @@ const setTargetCell = () => {
   const size = props.cellSize;
   const fillColor = props.foodColor;
   const strokeWidth = 2;
-  const strokeColor = "#052430";
+  const strokeColor = "transparent";
 
   switch (targetCell.value.shape) {
     case "circle":
@@ -252,6 +248,10 @@ const playEatFoodSong = () => {
   const audio = document.getElementById("eat-food-song") as HTMLAudioElement;
   audio.play();
 };
+const playWinGameSong = () => {
+  const audio = document.getElementById("win-game-song") as HTMLAudioElement;
+  audio.play();
+};
 
 const blinkThenLose = () => {
   if (blinkCount.value <= 3) {
@@ -273,6 +273,16 @@ const blinkThenLose = () => {
     props.lose();
   }
 };
+
+watch(
+  () => props.virtualKeyboardDirection,
+  (newValue) => {
+    console.log(newValue);
+    if (newValue) {
+      updateDirection();
+    }
+  }
+);
 
 onMounted(() => {
   boardContext.value = (

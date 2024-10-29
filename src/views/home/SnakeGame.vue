@@ -28,7 +28,7 @@
           <span>Score: {{ scores }}</span>
           <button
             id="play-btn"
-            ref="buttonSnake"
+            ref="playButton"
             v-if="!isPlaying"
             @keydown.space="isPlaying ? stop() : start()"
             @click="isPlaying ? stop() : start()"
@@ -80,7 +80,7 @@ const isPlaying = ref(false);
 const winner = ref(false);
 const loser = ref(false);
 
-const buttonSnake = ref(null) as Ref<HTMLElement | null>;
+const playButton = ref(null) as Ref<HTMLElement | null>;
 const virtualKeyboardDirection = ref(null);
 
 const foodLoop = ref([
@@ -134,7 +134,7 @@ const addScores = () => {
 };
 
 watchEffect(() => {
-  if (buttonSnake.value) buttonSnake.value.focus();
+  if (playButton.value) playButton.value.focus();
 });
 </script>
 
