@@ -1,4 +1,4 @@
-export default [
+const defaultKeysAndMoveDirection = [
   {
     direction: "left",
     keyCode: 37,
@@ -39,3 +39,6 @@ export default [
     y: number;
   };
 }[];
+
+export { default } from "./SnakeCanvas.vue";
+export { defaultKeysAndMoveDirection };

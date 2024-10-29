@@ -1,5 +1,4 @@
 export enum PROJECT_TYPE {
-  // EMPTY = "EMPTY",
   VUE = "VUE",
   REACT = "REACT",
   NODE = "NODE",

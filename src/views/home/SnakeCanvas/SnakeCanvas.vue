@@ -1,10 +1,14 @@
 <template>
   <canvas id="snake-canvas" :width="boardSizePx" :height="boardSizePx"></canvas>
+  <audio id="game-over-song" :src="loserSond" type="audio/mp3"></audio>
+  <audio id="eat-food-song" :src="eatSond" type="audio/mp3"></audio>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import constants from "./constants";
+import { defaultKeysAndMoveDirection } from "./index";
+import loserSond from "@/assets/loser.mp3";
+import eatSond from "@/assets/eat.mp3";
 
 interface Props {
   cellSize: number;
@@ -17,6 +21,7 @@ interface Props {
   scores: number;
   foodColor?: string;
   snakeColor?: string[];
+  virtualKeyboardDirection: any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -39,9 +44,23 @@ const boardSizePx = computed(() => props.cellSize * props.boardSize);
 
 const getMiddleCell = () => Math.round(props.boardSize / 2);
 
+function updateDirection() {
+  direction.value = props.virtualKeyboardDirection;
+}
+
+watch(
+  () => props.virtualKeyboardDirection,
+  (newValue) => {
+    if (newValue) {
+      updateDirection();
+      // move();
+    }
+  }
+);
+
 const resetSnake = () => {
   const middleCell = getMiddleCell();
-  const initialDirection = constants[0];
+  const initialDirection = defaultKeysAndMoveDirection[0];
   const snakeInitialSkeletCells = [];
 
   for (let i = 0; i < 9; i++) {
@@ -63,7 +82,6 @@ const move = () => {
 
   clear();
   setTargetCell();
-
   const newHeadCell = {
     x: direction.value ? snake.value[0].x + direction.value.move.x : 0,
     y: direction.value ? snake.value[0].y + direction.value.move.y : 0,
@@ -71,15 +89,16 @@ const move = () => {
 
   if (isCellOutOfBoard(newHeadCell) || amountCellsInSnake(snake.value[0]) > 1) {
     props.stop();
-    isBlinking.value = true; // Inicia o piscar
-    blinkCount.value = 0; // Reseta o contador de piscadas
-    blinkThenLose(); // Chama a função que gerencia o piscar e o game over
+    isBlinking.value = true;
+    blinkCount.value = 0;
+    blinkThenLose();
   } else {
     if (isTargetNewHead()) {
       if (!targetCell.value) return;
       snake.value.unshift(targetCell.value);
       targetCell.value = null;
       props.addScores(props.speed);
+      playEatFoodSong();
     } else {
       snake.value.unshift(newHeadCell);
       snake.value.pop();
@@ -123,7 +142,9 @@ const isCellOutOfBoard = ({ x, y }: { x: number; y: number }) => {
 };
 
 const onKeyPress = (event: KeyboardEvent) => {
-  const newDirection = constants.find((c) => c.keyCode === event.keyCode);
+  const newDirection = defaultKeysAndMoveDirection.find(
+    (c) => c.keyCode === event.keyCode
+  );
 
   if (!newDirection) {
     return;
@@ -212,6 +233,16 @@ const isTargetNewHead = () => {
 const isBlinking = ref(false);
 const blinkCount = ref(0);
 
+const playGameOverSong = () => {
+  const audio = document.getElementById("game-over-song") as HTMLAudioElement;
+  audio.play();
+};
+
+const playEatFoodSong = () => {
+  const audio = document.getElementById("eat-food-song") as HTMLAudioElement;
+  audio.play();
+};
+
 const blinkThenLose = () => {
   if (blinkCount.value <= 3) {
     if (isBlinking.value) {
@@ -225,6 +256,7 @@ const blinkThenLose = () => {
     isBlinking.value = !isBlinking.value;
     blinkCount.value++;
     setTimeout(blinkThenLose, 200);
+    playGameOverSong();
   } else {
     isBlinking.value = false;
     console.info(`Game over! You've scored ${props.scores} points.`);

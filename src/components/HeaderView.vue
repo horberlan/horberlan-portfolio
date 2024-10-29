@@ -213,6 +213,7 @@ nav {
 
 .toggle {
   position: fixed;
+  top: 2dvh;
   left: 80%;
   display: flex;
   flex-direction: column;
