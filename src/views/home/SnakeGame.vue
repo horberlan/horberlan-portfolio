@@ -195,7 +195,7 @@ p {
   justify-content: center;
   align-items: center;
   position: absolute;
-  bottom: 15rem;
+  bottom: 15.5rem;
   left: 55%;
   transform: translateX(-49.9%);
   width: 110%;

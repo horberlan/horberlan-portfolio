@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import constants from "./constants";
+
 interface Props {
   cellSize: number;
   boardSize: number;
@@ -70,21 +71,22 @@ const move = () => {
 
   if (isCellOutOfBoard(newHeadCell) || amountCellsInSnake(snake.value[0]) > 1) {
     props.stop();
-    props.lose();
-    console.info(`Game over! You've scored ${props.scores} points.`);
-  }
-
-  if (isTargetNewHead()) {
-    if (!targetCell.value) return;
-    snake.value.unshift(targetCell.value);
-    targetCell.value = null;
-    props.addScores(props.speed);
+    isBlinking.value = true; // Inicia o piscar
+    blinkCount.value = 0; // Reseta o contador de piscadas
+    blinkThenLose(); // Chama a função que gerencia o piscar e o game over
   } else {
-    snake.value.unshift(newHeadCell);
-    snake.value.pop();
+    if (isTargetNewHead()) {
+      if (!targetCell.value) return;
+      snake.value.unshift(targetCell.value);
+      targetCell.value = null;
+      props.addScores(props.speed);
+    } else {
+      snake.value.unshift(newHeadCell);
+      snake.value.pop();
+    }
+    drawSnake();
+    setTimeout(move, getMoveDelay());
   }
-  drawSnake();
-  setTimeout(move, getMoveDelay());
 };
 
 const clear = () => {
@@ -205,6 +207,29 @@ const isTargetNewHead = () => {
     snake.value[0].x + direction.value.move.x === targetCell.value.x &&
     snake.value[0].y + direction.value.move.y === targetCell.value.y
   );
+};
+
+const isBlinking = ref(false);
+const blinkCount = ref(0);
+
+const blinkThenLose = () => {
+  if (blinkCount.value <= 3) {
+    if (isBlinking.value) {
+      clear();
+    } else {
+      drawSnake();
+      if (targetCell.value) {
+        setTargetCell();
+      }
+    }
+    isBlinking.value = !isBlinking.value;
+    blinkCount.value++;
+    setTimeout(blinkThenLose, 200);
+  } else {
+    isBlinking.value = false;
+    console.info(`Game over! You've scored ${props.scores} points.`);
+    props.lose();
+  }
 };
 
 onMounted(() => {
