@@ -7,11 +7,15 @@
         :speed="speed"
         :isPlaying="isPlaying"
         :stop="stop"
+        :lose="lose"
         :addScores="addScores"
         :scores="scores"
       />
       <div v-if="winner" class="winner">
         <span> WELL DONE! </span>
+      </div>
+      <div v-if="loser" class="winner">
+        <span> YOU LOSE! </span>
       </div>
       <div>
         <div class="skane-actions">
@@ -58,11 +62,13 @@ import SnakeCanvas from "@/views/home/SnakeCanvas/SnakeCanvas.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 
 const cellSize = ref(50);
-const boardSize = ref(40);
+const boardSize = ref(25);
 const speed = ref(15);
 const scores = ref(0);
 const isPlaying = ref(false);
 const winner = ref(false);
+const loser = ref(false);
+
 const textFinish = ref("");
 const buttonSnake = ref(null) as Ref<HTMLElement | null>;
 
@@ -78,12 +84,17 @@ const foodLoop = ref([
 const start = () => {
   isPlaying.value = true;
   winner.value = false;
+  loser.value = false;
   scores.value = 0;
 };
 
 const stop = () => {
   isPlaying.value = false;
   scores.value = 0;
+};
+const lose = () => {
+  stop();
+  loser.value = true;
 };
 
 const addScores = () => {
@@ -126,13 +137,15 @@ watchEffect(() => {
 }
 
 .snake {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   position: relative;
   padding-block: 2.5rem;
   padding-inline: 2rem;
   width: 31.875rem;
   height: 29.6875rem;
   background: url("../../assets/snake_game_bg.svg") no-repeat;
+  background-size: cover;
   gap: 2rem;
   margin: 0.25rem;
 }
@@ -183,9 +196,9 @@ p {
   align-items: center;
   position: absolute;
   bottom: 15rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50%;
+  left: 55%;
+  transform: translateX(-49.9%);
+  width: 110%;
   place-items: center;
   background: rgba(1, 22, 39, 0.84);
   box-shadow: inset 1px 5px 11px rgba(2, 18, 27, 0.71);

@@ -1,3 +1,7 @@
+<template>
+  <canvas id="snake-canvas" :width="boardSizePx" :height="boardSizePx"></canvas>
+</template>
+
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import constants from "./constants";
@@ -7,6 +11,7 @@ interface Props {
   speed: number;
   isPlaying: boolean;
   stop: () => void;
+  lose: () => void;
   addScores: (score: number) => void;
   scores: number;
   foodColor?: string;
@@ -17,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   snakeColor: () => ["#43D9AD", "#2b8a7f"],
   foodColor: "#2b897f",
 });
+
 defineEmits(["update:isPlaying"]);
 
 const boardContext = ref<CanvasRenderingContext2D | null>(null);
@@ -64,6 +70,7 @@ const move = () => {
 
   if (isCellOutOfBoard(newHeadCell) || amountCellsInSnake(snake.value[0]) > 1) {
     props.stop();
+    props.lose();
     console.info(`Game over! You've scored ${props.scores} points.`);
   }
 
@@ -125,6 +132,24 @@ const onKeyPress = (event: KeyboardEvent) => {
   }
 };
 
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  if (!ctx) return;
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+}
+
 const setTargetCell = () => {
   if (!targetCell.value) {
     let targetCell2 = getRandomCell();
@@ -134,16 +159,31 @@ const setTargetCell = () => {
     targetCell.value = targetCell2;
   }
   if (!boardContext.value) return;
-  boardContext.value.beginPath();
-  boardContext.value.rect(
+
+  boardContext.value.fillStyle = props.foodColor;
+  // round food here
+  roundRect(
+    boardContext.value,
     targetCell.value.x * props.cellSize,
     targetCell.value.y * props.cellSize,
     props.cellSize,
-    props.cellSize
+    props.cellSize,
+    props.cellSize / 2 // a circle :)
   );
-  boardContext.value.fillStyle = props.foodColor;
   boardContext.value.fill();
-  boardContext.value.closePath();
+
+  // color border, the same of bachground
+  boardContext.value.strokeStyle = "#052430";
+  boardContext.value.lineWidth = 2;
+  roundRect(
+    boardContext.value,
+    targetCell.value.x * props.cellSize,
+    targetCell.value.y * props.cellSize,
+    props.cellSize,
+    props.cellSize,
+    props.cellSize / 5
+  );
+  boardContext.value.stroke();
 };
 
 const getRandomCell = () => {
@@ -191,13 +231,10 @@ watch(
 );
 </script>
 
-<template>
-  <canvas id="snake-canvas" :width="boardSizePx" :height="boardSizePx"></canvas>
-</template>
-
 <style scoped>
 #snake-canvas {
-  width: 100%;
+  padding: 1px;
+  width: 110%;
   background: rgba(1, 22, 39, 0.84);
   box-shadow: inset 1px 5px 11px rgba(2, 18, 27, 0.71);
   border-radius: 8px;
