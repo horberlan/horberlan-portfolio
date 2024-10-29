@@ -1,10 +1,15 @@
 <template>
-  <svg
-    viewBox="0 0 182 143"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    @click="handleClick($event)"
-  >
+  <svg viewBox="0 0 182 143" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect
+      x="0.309082"
+      y="0.69104"
+      width="181.382"
+      height="142"
+      rx="8"
+      fill="#011423"
+      fill-opacity="0.19"
+    />
+
     <rect
       id="topKeyRect"
       x="67.4609"
@@ -16,6 +21,7 @@
       stroke="#1E2D3D"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
     <path
       id="topKeyArrow"
@@ -23,6 +29,7 @@
       fill="white"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
 
     <rect
@@ -37,6 +44,7 @@
       stroke="#1E2D3D"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
     <path
       id="bottomKeyArrow"
@@ -44,6 +52,7 @@
       fill="white"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
 
     <rect
@@ -58,6 +67,7 @@
       stroke="#1E2D3D"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
     <path
       id="rightKeyArrow"
@@ -65,6 +75,7 @@
       fill="white"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
 
     <rect
@@ -79,6 +90,7 @@
       stroke="#1E2D3D"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
     <path
       id="leftKeyArrow"
@@ -86,6 +98,7 @@
       fill="white"
       class="pointer key"
       tabindex="0"
+      @click="handleClick($event)"
     />
   </svg>
 </template>
