@@ -1,10 +1,14 @@
 <template>
   <canvas id="snake-canvas" :width="boardSizePx" :height="boardSizePx"></canvas>
+  <audio id="game-over-song" :src="loserSond" type="audio/mp3"></audio>
+  <audio id="eat-food-song" :src="eatSond" type="audio/mp3"></audio>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import constants from "./constants";
+import loserSond from "@/assets/loser.mp3";
+import eatSond from "@/assets/eat.mp3";
 
 interface Props {
   cellSize: number;
@@ -71,15 +75,16 @@ const move = () => {
 
   if (isCellOutOfBoard(newHeadCell) || amountCellsInSnake(snake.value[0]) > 1) {
     props.stop();
-    isBlinking.value = true; // Inicia o piscar
-    blinkCount.value = 0; // Reseta o contador de piscadas
-    blinkThenLose(); // Chama a função que gerencia o piscar e o game over
+    isBlinking.value = true;
+    blinkCount.value = 0;
+    blinkThenLose();
   } else {
     if (isTargetNewHead()) {
       if (!targetCell.value) return;
       snake.value.unshift(targetCell.value);
       targetCell.value = null;
       props.addScores(props.speed);
+      playEatFoodSong();
     } else {
       snake.value.unshift(newHeadCell);
       snake.value.pop();
@@ -212,6 +217,16 @@ const isTargetNewHead = () => {
 const isBlinking = ref(false);
 const blinkCount = ref(0);
 
+const playGameOverSong = () => {
+  const audio = document.getElementById("game-over-song") as HTMLAudioElement;
+  audio.play();
+};
+
+const playEatFoodSong = () => {
+  const audio = document.getElementById("eat-food-song") as HTMLAudioElement;
+  audio.play();
+};
+
 const blinkThenLose = () => {
   if (blinkCount.value <= 3) {
     if (isBlinking.value) {
@@ -225,6 +240,7 @@ const blinkThenLose = () => {
     isBlinking.value = !isBlinking.value;
     blinkCount.value++;
     setTimeout(blinkThenLose, 200);
+    playGameOverSong();
   } else {
     isBlinking.value = false;
     console.info(`Game over! You've scored ${props.scores} points.`);

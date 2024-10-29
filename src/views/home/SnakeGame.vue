@@ -95,6 +95,7 @@ const stop = () => {
 const lose = () => {
   stop();
   loser.value = true;
+  foodLoop.value = foodLoop.value.map((item) => ({ ...item, empty: true }));
 };
 
 const addScores = () => {
