@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import constants from "./constants";
+import { defaultKeysAndMoveDirection } from "./index";
 import loserSond from "@/assets/loser.mp3";
 import eatSond from "@/assets/eat.mp3";
 
@@ -21,6 +21,7 @@ interface Props {
   scores: number;
   foodColor?: string;
   snakeColor?: string[];
+  virtualKeyboardDirection: any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -43,9 +44,23 @@ const boardSizePx = computed(() => props.cellSize * props.boardSize);
 
 const getMiddleCell = () => Math.round(props.boardSize / 2);
 
+function updateDirection() {
+  direction.value = props.virtualKeyboardDirection;
+}
+
+watch(
+  () => props.virtualKeyboardDirection,
+  (newValue) => {
+    if (newValue) {
+      updateDirection();
+      // move();
+    }
+  }
+);
+
 const resetSnake = () => {
   const middleCell = getMiddleCell();
-  const initialDirection = constants[0];
+  const initialDirection = defaultKeysAndMoveDirection[0];
   const snakeInitialSkeletCells = [];
 
   for (let i = 0; i < 9; i++) {
@@ -67,7 +82,6 @@ const move = () => {
 
   clear();
   setTargetCell();
-
   const newHeadCell = {
     x: direction.value ? snake.value[0].x + direction.value.move.x : 0,
     y: direction.value ? snake.value[0].y + direction.value.move.y : 0,
@@ -128,7 +142,9 @@ const isCellOutOfBoard = ({ x, y }: { x: number; y: number }) => {
 };
 
 const onKeyPress = (event: KeyboardEvent) => {
-  const newDirection = constants.find((c) => c.keyCode === event.keyCode);
+  const newDirection = defaultKeysAndMoveDirection.find(
+    (c) => c.keyCode === event.keyCode
+  );
 
   if (!newDirection) {
     return;

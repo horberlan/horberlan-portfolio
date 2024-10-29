@@ -10,13 +10,19 @@
         :lose="lose"
         :addScores="addScores"
         :scores="scores"
+        :virtual-keyboard-direction="virtualKeyboardDirection"
       />
-      <div v-if="winner" class="winner">
-        <span> WELL DONE! </span>
-      </div>
-      <div v-if="loser" class="winner">
-        <span> YOU LOSE! </span>
-      </div>
+      <template
+        v-for="(placement, key) in [
+          { place: toRaw(winner), label: 'well done!' },
+          { place: toRaw(loser), label: 'you lose!' },
+        ]"
+        :key="key"
+      >
+        <div v-if="placement.place" class="winner">
+          <span v-html="String(placement.label).toLocaleUpperCase()" />
+        </div>
+      </template>
       <div>
         <div class="skane-actions">
           <span>Score: {{ scores }}</span>
@@ -34,12 +40,18 @@
     </div>
     <div id="label">
       <div class="snake_keymap">
-        <p>// use keyboard</p>
-        <p>// arrows to play</p>
-        <div class="keymap"></div>
+        <template
+          v-for="half in twoAndAHalfWords(boxIntl.useKeyboard)"
+          :key="half"
+        >
+          <p>// {{ half }}</p>
+        </template>
+        <VirtualKeyboard
+          class="keymap"
+          @update-direction="virtualKeyboardDirection = $event"
+        />
       </div>
-      <p>// food left</p>
-
+      <p>// {{ boxIntl.foodLeft }}</p>
       <div v-if="scores <= 6" class="foods">
         <SvgIcon
           v-for="foods in foodLoop"
@@ -49,17 +61,16 @@
           size="xl"
         />
       </div>
-      <div v-else>
-        {{ textFinish }}
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref, watchEffect } from "vue";
+import { ref, type Ref, watchEffect, toRaw } from "vue";
 import SnakeCanvas from "@/views/home/SnakeCanvas/SnakeCanvas.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
+import VirtualKeyboard from "@/components/icons/ArrowsIcon.vue";
+import { twoAndAHalfWords } from "@/utils/strings";
 
 const cellSize = ref(50);
 const boardSize = ref(25);
@@ -69,8 +80,8 @@ const isPlaying = ref(false);
 const winner = ref(false);
 const loser = ref(false);
 
-const textFinish = ref("");
 const buttonSnake = ref(null) as Ref<HTMLElement | null>;
+const virtualKeyboardDirection = ref(null);
 
 const foodLoop = ref([
   { name: "SnakeFood", empty: true },
@@ -80,6 +91,11 @@ const foodLoop = ref([
   { name: "SnakeFood", empty: true },
   { name: "SnakeFood", empty: true },
 ]);
+
+const boxIntl = {
+  useKeyboard: "use keyboard arrows to play",
+  foodLeft: "food left",
+};
 
 const start = () => {
   isPlaying.value = true;
@@ -145,8 +161,8 @@ watchEffect(() => {
   padding-inline: 2rem;
   width: 31.875rem;
   height: 29.6875rem;
-  background: url("../../assets/snake_game_bg.svg") no-repeat;
-  background-size: cover;
+  background: url("../../assets/snake_game_bg.svg");
+  margin: 0.25rem;
   gap: 2rem;
   margin: 0.25rem;
 }
@@ -163,8 +179,6 @@ watchEffect(() => {
   flex-flow: column;
 
   .keymap {
-    background: url("../../assets/snake_game_keymap.svg") no-repeat;
-    background-size: cover;
     width: 11.3362rem;
     height: 8.875rem;
   }
