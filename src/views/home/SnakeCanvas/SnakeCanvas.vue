@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import constants from "./constants";
-
 interface Props {
   cellSize: number;
   boardSize: number;
@@ -11,11 +10,11 @@ interface Props {
   addScores: (score: number) => void;
   scores: number;
   foodColor?: string;
-  snakeColor?: string;
+  snakeColor?: string[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  snakeColor: "#43D9AD",
+  snakeColor: () => ["#43D9AD", "#2b8a7f"],
   foodColor: "#2b897f",
 });
 defineEmits(["update:isPlaying"]);
@@ -34,14 +33,28 @@ const boardSizePx = computed(() => props.cellSize * props.boardSize);
 const getMiddleCell = () => Math.round(props.boardSize / 2);
 
 const resetSnake = () => {
-  snake.value = [
-    {
-      x: getMiddleCell(),
-      y: getMiddleCell(),
-    },
+  const middleCell = getMiddleCell();
+
+  const initialDirection = constants[0];
+  // todo: change this logic, can be loop inside a index
+  const snakeInitialSkeletCells = [
+    { x: middleCell, y: middleCell },
+    { x: middleCell, y: middleCell + 1 },
+    { x: middleCell, y: middleCell + 2 },
+    { x: middleCell, y: middleCell + 3 },
+    { x: middleCell, y: middleCell + 4 },
+    { x: middleCell, y: middleCell + 5 },
+    { x: middleCell, y: middleCell + 6 },
+    { x: middleCell, y: middleCell + 7 },
+    { x: middleCell, y: middleCell + 8 },
   ];
-  const randomDirectionIndex = Math.floor(Math.random() * 4);
-  direction.value = constants[randomDirectionIndex];
+
+  if (initialDirection.move.y === -1) {
+    snakeInitialSkeletCells.reverse();
+  }
+
+  snake.value = snakeInitialSkeletCells;
+  direction.value = initialDirection;
   targetCell.value = null;
 };
 
@@ -72,11 +85,7 @@ const move = () => {
     snake.value.unshift(newHeadCell);
     snake.value.pop();
   }
-  if (!boardContext.value) return;
-  boardContext.value.beginPath();
-  snake.value.forEach(drawCell);
-  boardContext.value.closePath();
-
+  drawSnake();
   setTimeout(move, getMoveDelay());
 };
 
@@ -85,16 +94,26 @@ const clear = () => {
   boardContext.value.clearRect(0, 0, boardSizePx.value, boardSizePx.value);
 };
 
-const drawCell = ({ x, y }: { x: number; y: number }) => {
+const drawSnake = () => {
   if (!boardContext.value) return;
-  boardContext.value.rect(
-    x * props.cellSize,
-    y * props.cellSize,
-    props.cellSize,
-    props.cellSize
+  const gradient = boardContext.value.createLinearGradient(
+    snake.value[0].x * props.cellSize,
+    snake.value[0].y * props.cellSize,
+    snake.value[snake.value.length - 1].x * props.cellSize,
+    snake.value[snake.value.length - 1].y * props.cellSize
   );
-  boardContext.value.fillStyle = "#43D9AD";
-  boardContext.value.fill();
+  gradient.addColorStop(0, props.snakeColor[0]);
+  gradient.addColorStop(1, props.snakeColor[1]);
+  boardContext.value.fillStyle = gradient;
+  snake.value.forEach((cell) => {
+    if (!boardContext.value) return;
+    boardContext.value.fillRect(
+      cell.x * props.cellSize,
+      cell.y * props.cellSize,
+      props.cellSize,
+      props.cellSize
+    );
+  });
 };
 
 const getMoveDelay = () => (2 / Number(props.speed)) * 1000;
