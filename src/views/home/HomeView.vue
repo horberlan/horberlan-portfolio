@@ -99,7 +99,7 @@ $orange: #e99287;
 }
 @media screen and (max-width: 768px) {
   .hero {
-    display: none;
+    display: block;
   }
   .desc:first-of-type,
   .content:first-child {
@@ -109,6 +109,7 @@ $orange: #e99287;
     padding: 0;
     margin: 0;
     height: 200vw;
+    overflow-y: auto;
     .hello {
       margin-inline-start: 1rem;
     }

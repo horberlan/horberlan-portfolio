@@ -44,14 +44,14 @@
           v-for="half in twoAndAHalfWords(boxIntl.useKeyboard)"
           :key="half"
         >
-          <p>// {{ half }}</p>
+          <p class="half-words">// {{ half }}</p>
         </template>
         <VirtualKeyboard
           class="keymap"
           @update-direction="virtualKeyboardDirection = $event"
         />
       </div>
-      <p>// {{ boxIntl.foodLeft }}</p>
+      <p class="half-words">// {{ boxIntl.foodLeft }}</p>
       <div v-if="scores <= 6" class="foods">
         <SvgIcon
           v-for="foods in foodLoop"
@@ -161,15 +161,46 @@ watchEffect(() => {
   padding-inline: 2rem;
   width: 31.875rem;
   height: 29.6875rem;
-  background: url("../../assets/snake_game_bg.svg");
+  background: url("../../assets/snake_game_bg.svg") no-repeat;
   margin: 0.25rem;
   gap: 2rem;
   margin: 0.25rem;
 }
-
+.foods {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 1fr 1fr;
+}
 @media screen and (max-width: 768px) {
+  #app {
+    width: 13.75rem;
+  }
+  #label {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 2%;
+    height: 6.25rem;
+    width: 12rem;
+  }
+
+  .half-words {
+    display: none;
+  }
   .snake {
-    width: auto;
+    margin-left: 1.5rem;
+    width: 100%;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+    height: 100%;
+    padding: 10px;
+    background: url("../../assets/background-snake-box-mobile.svg") no-repeat;
+  }
+  .foods {
+    grid-template-columns: 1fr 1fr;
+  }
+  :deep(#snake-canvas) {
+    width: 130%;
   }
 }
 
@@ -223,19 +254,20 @@ p {
   font-size: 1.5rem;
   color: #43d9ad;
 }
+@media screen and (max-width: 768px) {
+  .winner {
+    width: 130%;
+    left: 65%;
+  }
+}
 
 .skane-actions {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap-reverse;
 
   span {
     line-height: 2.3rem;
   }
-}
-
-.foods {
-  display: grid;
-  align-items: center;
-  grid-template-columns: 1fr 1fr 1fr;
 }
 </style>
