@@ -11,30 +11,40 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { ref, onMounted, watch, nextTick, onBeforeUnmount } from "vue";
 
-const contentList = `Working as a Full Stack developer with emphasis on Front-end javaScript frameworks such as React.js and Vue.js 3 (Composition API), Back-end in python3 (Django) and Node.js. Mobile application development using React Native Framework. Worked on 11 new products in the last 6 months for Fermen.to and Flow E.F inc. Aiming at a minimum of 95% performance in collaborative development applications. Passionate about decentralized projects on WEB3. One of my projects created in 2021 got 4600+ downloads and 8.8 rating on Pling Store. In my spare time I contribute as a translation reviewer for GitLab inc.`;
+const props = defineProps<{
+  label: string | string[];
+}>();
+
+const labelList = computed(() => props.label);
 
 const container = ref<HTMLElement | null>(null);
 const formattedContent = ref<string[]>([]);
 
 const calculateFormattedLines = () => {
-  const words = contentList.split(" ");
+  if (typeof labelList.value !== "string") return;
+
+  const words = labelList.value.split(" ");
   let currentLine = "";
   const lines: string[] = [];
 
   if (!container.value) return;
 
   const containerWidth = container.value.clientWidth - 40;
-  const testElement = document.createElement("span");
-  testElement.style.cssText =
-    "position: absolute; visibility: hidden; white-space: nowrap;";
-  document.body.appendChild(testElement);
+  const spanTestElement = document.createElement("span");
+  spanTestElement.style.cssText = `
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+`;
+  document.body.appendChild(spanTestElement);
 
   for (const word of words) {
-    testElement.innerText = currentLine + word + " ";
+    spanTestElement.innerText = currentLine + word + " ";
 
-    if (testElement.clientWidth > containerWidth) {
+    if (spanTestElement.clientWidth > containerWidth) {
       lines.push(currentLine.trim());
       currentLine = word + " ";
     } else {
@@ -42,14 +52,12 @@ const calculateFormattedLines = () => {
     }
   }
 
-  // Push the last line if it exists
   if (currentLine.trim()) {
     lines.push(currentLine.trim());
   }
 
-  document.body.removeChild(testElement);
+  document.body.removeChild(spanTestElement);
 
-  // Update formattedContent with the lines
   formattedContent.value = lines;
 };
 
