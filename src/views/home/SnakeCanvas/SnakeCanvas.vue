@@ -34,23 +34,14 @@ const getMiddleCell = () => Math.round(props.boardSize / 2);
 
 const resetSnake = () => {
   const middleCell = getMiddleCell();
-
   const initialDirection = constants[0];
-  // todo: change this logic, can be loop inside a index
-  const snakeInitialSkeletCells = [
-    { x: middleCell, y: middleCell },
-    { x: middleCell, y: middleCell + 1 },
-    { x: middleCell, y: middleCell + 2 },
-    { x: middleCell, y: middleCell + 3 },
-    { x: middleCell, y: middleCell + 4 },
-    { x: middleCell, y: middleCell + 5 },
-    { x: middleCell, y: middleCell + 6 },
-    { x: middleCell, y: middleCell + 7 },
-    { x: middleCell, y: middleCell + 8 },
-  ];
+  const snakeInitialSkeletCells = [];
 
-  if (initialDirection.move.y === -1) {
-    snakeInitialSkeletCells.reverse();
+  for (let i = 0; i < 9; i++) {
+    snakeInitialSkeletCells.push({
+      x: middleCell,
+      y: middleCell + (initialDirection.move.y === -1 ? -i : i),
+    });
   }
 
   snake.value = snakeInitialSkeletCells;
