@@ -4,7 +4,7 @@ const hello = [
   {
     pre: "Hi all. I am",
     current: "Horberlan Brito",
-    pos: "> Frontend developer",
+    pos: "> FullStack developer",
   },
 ];
 const desc = [
