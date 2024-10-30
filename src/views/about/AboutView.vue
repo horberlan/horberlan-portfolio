@@ -63,9 +63,7 @@
     </template>
     <template #panel-3>
       <div class="right-container">
-        <p ref="lineCouter" class="test-span section-titles">
-          // Code snippet showcase:
-        </p>
+        <p class="test-span section-titles">// Code snippet showcase:</p>
         <span v-if="!snippetList.length" class="loading">Loading</span>
 
         <div
