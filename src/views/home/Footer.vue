@@ -16,11 +16,13 @@ $primary: #607b96;
 
 footer {
   display: flex;
-  position: fixed;
-  bottom: 0;
   border: 1px solid $bg-color;
   width: 100%;
-  background-color: $background-midnight;
+  background: rgba(255, 255, 255, 0);
+  border: 1px solid $bg-color;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
   z-index: 2;
   a {
     color: $primary;
@@ -29,7 +31,16 @@ footer {
   li {
     list-style: none;
     padding: 1rem 2rem;
-    border: 1px solid $bg-color;
+    &:first-of-type {
+      border-right: 1px solid $bg-color;
+      border-top-right-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+    }
+    &:last-of-type {
+      border-left: 1px solid $bg-color;
+      border-top-left-radius: 1rem;
+      border-bottom-left-radius: 1rem;
+    }
     height: 100%;
     color: $primary;
     list-style: none;

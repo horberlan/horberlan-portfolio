@@ -102,13 +102,19 @@ const clearResponse = () => {
 const cantSave = ref(false);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .contact {
   display: flex;
   flex-direction: column;
   width: 70%;
   margin: 0 auto;
   gap: 1rem;
+}
+@media (max-width: 968px) {
+  .contact {
+    margin-top: 10dvh;
+    height: 90dvh;
+  }
 }
 
 input,
