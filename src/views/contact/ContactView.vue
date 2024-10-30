@@ -113,7 +113,6 @@ const cantSave = ref(false);
 @media (max-width: 968px) {
   .contact {
     margin-top: 10dvh;
-    height: 90dvh;
   }
 }
 
