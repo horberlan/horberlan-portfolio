@@ -83,7 +83,10 @@
               </p>
             </div>
             <div class="right">
-              <p @click="updateSafeSnippet(snippet)">
+              <p
+                @click.once="updateSafeSnippet(snippet), (isClicked = true)"
+                :class="{ clicked: isClicked }"
+              >
                 {{ snippet.stars }} stars
               </p>
             </div>
@@ -116,6 +119,7 @@ import { markRaw } from "vue";
 import { type Snippet } from "@/services/entites";
 
 const snippetList = ref<Snippet[]>([]);
+const isClicked = ref(false);
 
 const educations = ref([
   { title: "university", component: markRaw(Values) },
@@ -284,5 +288,8 @@ onMounted(async () => {
     margin-inline-start: 0rem;
     padding-inline-start: 0rem;
   }
+}
+.clicked {
+  cursor: not-allowed;
 }
 </style>
