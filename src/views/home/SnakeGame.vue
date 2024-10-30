@@ -27,10 +27,10 @@
         <span>Score: {{ scores }}</span>
         <button
           id="play-btn"
-          ref="playButton"
           v-if="!isPlaying"
           @keydown.space="isPlaying ? stop() : start()"
           @click="isPlaying ? stop() : start()"
+          autofocus
         >
           {{ isPlaying ? "end-game" : "start-game" }}
         </button>
@@ -78,7 +78,6 @@ const isPlaying = ref(false);
 const winner = ref(false);
 const loser = ref(false);
 
-const playButton = ref(null) as Ref<HTMLElement | null>;
 const virtualKeyboardDirection = ref(null);
 
 const foodLoop = ref([
@@ -130,10 +129,6 @@ const addScores = () => {
     foodLoop.value.forEach((item) => (item.empty = true));
   }
 };
-
-watchEffect(() => {
-  if (playButton.value) playButton.value.focus();
-});
 </script>
 
 <style lang="scss" scoped>
@@ -226,6 +221,11 @@ watchEffect(() => {
   border: none;
   outline: none;
   cursor: pointer;
+  &:focus {
+    box-shadow: 0px 0px 3px 2px rgba(2, 18, 27, 0.71);
+    color: rgba(0, 0, 0);
+    transition: box-shadow 0.2s, outline 0.2s;
+  }
 }
 
 p {

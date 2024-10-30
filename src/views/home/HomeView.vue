@@ -12,10 +12,14 @@ const desc = [
   "// you can also see it on my Github page",
 ];
 const github = ["const ", "githubLink ", "“https://github.com/horberlan”"];
+
+const redirectToGitHub = (url: string) => {
+  window.location.href = url;
+};
 </script>
 <template>
-  <section class="hero_container">
-    <div class="hello">
+  <section class="hero">
+    <div class="hero-hello">
       <p v-for="(intro, index) in hello" :key="index">
         <span
           v-for="text of intro"
@@ -29,11 +33,19 @@ const github = ["const ", "githubLink ", "“https://github.com/horberlan”"];
           {{ descriptions }}
         </p>
       </div>
-      <span v-for="link in github" :key="link" class="github">
+      <span
+        v-for="link in github"
+        :key="link"
+        class="github"
+        role="button"
+        @click="
+          redirectToGitHub('https://github.com/horberlan/horberlan-portfolio')
+        "
+      >
         {{ link }}
       </span>
     </div>
-    <div class="hero">
+    <div class="hero-snake-game">
       <SnakeGame />
     </div>
   </section>
@@ -43,7 +55,7 @@ $green: #43d9ad;
 $blue: #4d5bce;
 $orange: #e99287;
 
-.hero_container {
+.hero {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
   color: #e5e9f0;
@@ -59,7 +71,7 @@ $orange: #e99287;
     grid-template-columns: 1fr;
   }
 
-  .hello {
+  &-hello {
     grid-column: 1/ 2;
     background-color: transparent;
     margin-inline-start: 8rem;
@@ -98,22 +110,26 @@ $orange: #e99287;
       &:nth-child(3n) {
         color: $tonys-pink;
       }
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
+  &-snake-game {
+    display: flex;
+    justify-content: center;
+  }
 }
-.hero {
-  display: flex;
-  justify-content: center;
-}
+
 @media screen and (max-width: 768px) {
   .desc:first-of-type,
   .content:first-child {
     display: none;
   }
-  .hero_container {
+  .hero {
     margin: 0;
     overflow-y: auto;
-    .hello {
+    &-hello {
       margin-inline-start: 1rem;
     }
   }

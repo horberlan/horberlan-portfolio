@@ -141,10 +141,14 @@ nav {
   &.small-screen-nav {
     position: fixed;
     flex-direction: column;
-    background-color: #011627;
     z-index: 3;
     left: 0;
     top: 0;
+    background: rgba(255, 255, 255, 0);
+    border: 1px solid $bg-color;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
   }
 }
 
