@@ -23,19 +23,17 @@
           <span v-html="String(placement.label).toLocaleUpperCase()" />
         </div>
       </template>
-      <div>
-        <div class="skane-actions">
-          <span>Score: {{ scores }}</span>
-          <button
-            id="play-btn"
-            ref="playButton"
-            v-if="!isPlaying"
-            @keydown.space="isPlaying ? stop() : start()"
-            @click="isPlaying ? stop() : start()"
-          >
-            {{ isPlaying ? "end-game" : "start-game" }}
-          </button>
-        </div>
+      <div class="skane-actions">
+        <span>Score: {{ scores }}</span>
+        <button
+          id="play-btn"
+          ref="playButton"
+          v-if="!isPlaying"
+          @keydown.space="isPlaying ? stop() : start()"
+          @click="isPlaying ? stop() : start()"
+        >
+          {{ isPlaying ? "end-game" : "start-game" }}
+        </button>
       </div>
     </div>
     <div id="label">
@@ -72,9 +70,9 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import VirtualKeyboard from "@/components/icons/ArrowsIcon.vue";
 import { twoAndAHalfWords } from "@/utils/strings";
 
-const cellSize = ref(50);
+const cellSize = ref(25);
 const boardSize = ref(25);
-const speed = ref(15);
+const speed = ref(18);
 const scores = ref(0);
 const isPlaying = ref(false);
 const winner = ref(false);
@@ -188,13 +186,12 @@ watchEffect(() => {
     display: none;
   }
   .snake {
-    margin-left: 1.5rem;
-    width: 100%;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr;
-    height: 100%;
+    height: auto;
     padding: 10px;
-    background: url("../../assets/background-snake-box-mobile.svg") no-repeat;
+    background: url("/src/assets/background-snake-box-mobile.svg") no-repeat;
+    max-width: 20rem;
   }
   .foods {
     grid-template-columns: 1fr 1fr;

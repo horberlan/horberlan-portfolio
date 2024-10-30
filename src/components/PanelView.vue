@@ -76,7 +76,6 @@ onMounted(() => {
 section {
   display: flex;
   width: 100%;
-  padding-block-end: 2rem;
 
   .panel_content {
     height: 100%;

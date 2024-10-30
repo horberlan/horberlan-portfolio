@@ -47,14 +47,18 @@ $orange: #e99287;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
   color: #e5e9f0;
-  display: grid;
   gap: 6rem;
-  padding-block-start: 10rem;
+  padding-block-start: calc(8px + 16vh);
   padding-inline: calc(8px + 1.5625vw);
   background: url("../../assets/background_blurs.svg") center no-repeat
     transparent;
   background-position: 100% 0%;
-  height: 92vh;
+  height: 100%;
+
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+
   .hello {
     grid-column: 1/ 2;
     background-color: transparent;
@@ -97,18 +101,17 @@ $orange: #e99287;
     }
   }
 }
+.hero {
+  display: flex;
+  justify-content: center;
+}
 @media screen and (max-width: 768px) {
-  .hero {
-    display: block;
-  }
   .desc:first-of-type,
   .content:first-child {
     display: none;
   }
   .hero_container {
-    padding: 0;
     margin: 0;
-    height: 200vw;
     overflow-y: auto;
     .hello {
       margin-inline-start: 1rem;
