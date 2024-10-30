@@ -72,7 +72,7 @@ import { twoAndAHalfWords } from "@/utils/strings";
 
 const cellSize = ref(25);
 const boardSize = ref(25);
-const speed = ref(18);
+const speed = ref(16);
 const scores = ref(0);
 const isPlaying = ref(false);
 const winner = ref(false);

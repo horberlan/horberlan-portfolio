@@ -1,16 +1,13 @@
 <template>
   <canvas id="snake-canvas" :width="boardSizePx" :height="boardSizePx"></canvas>
-  <audio id="game-over-song" :src="loserSond" type="audio/mp3"></audio>
-  <audio id="eat-food-song" :src="eatSond" type="audio/mp3"></audio>
-  <audio id="win-game-song" :src="winnerSond" type="audio/mp3"></audio>
+  <audio id="game-over-song" :src="sound.loser" type="audio/mp3"></audio>
+  <audio id="eat-food-song" :src="sound.eat" type="audio/mp3"></audio>
+  <audio id="win-game-song" :src="sound.winner" type="audio/mp3"></audio>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import { defaultKeysAndMoveDirection } from "./index";
-import loserSond from "@/assets/loser.mp3";
-import eatSond from "@/assets/eat.mp3";
-import winnerSond from "@/assets/winner.wav";
+import { defaultKeysAndMoveDirection, sound } from "./index";
 
 import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
 
@@ -97,7 +94,6 @@ const move = () => {
       targetCell.value = null;
       props.addScores(props.speed);
       playEatFoodSong();
-      console.log(props.scores);
       if (props.scores === 5) playWinGameSong();
     } else {
       snake.value.unshift(newHeadCell);

@@ -107,7 +107,7 @@
 import { defaultKeysAndMoveDirection } from "@/views/home/SnakeCanvas";
 import { ref } from "vue";
 
-const keyMapping: { [key: string]: string } = {
+const keyMapping = {
   topKeyRect: "top",
   topKeyArrow: "top",
   bottomKeyRect: "bottom",
@@ -121,39 +121,45 @@ const keyMapping: { [key: string]: string } = {
 const emit = defineEmits(["update-direction"]);
 
 const currentDirection = ref<string | null>(null);
-const oppositeDirections: { [key: string]: string } = {
+
+const oppositeDirections = {
   top: "bottom",
   bottom: "top",
   left: "right",
   right: "left",
 };
 
-const handleClick = (event: MouseEvent) => {
-  if (event.target && (event.target as HTMLElement).classList.contains("key")) {
-    const targetId = (event.target as HTMLElement).id;
-    const newDirection = keyMapping[targetId];
-    if (newDirection) {
-      if (validateDirection(currentDirection.value, newDirection)) {
-        const moveDirection = defaultKeysAndMoveDirection.find(
-          (item) => item.direction === newDirection
-        );
-        if (moveDirection) {
-          emit("update-direction", moveDirection);
-          currentDirection.value = newDirection;
-        }
-      }
-    }
-  }
-};
-
 const validateDirection = (
   current: string | null,
   newDirection: string
 ): boolean => {
-  if (!current) return true;
   if (current === newDirection) return false;
-  if (oppositeDirections[current] === newDirection) return false;
+  if (
+    oppositeDirections[current as keyof typeof oppositeDirections] ===
+    newDirection
+  )
+    return false;
   return true;
+};
+
+const handleDirectionChange = (newDirection: string) => {
+  if (validateDirection(currentDirection.value, newDirection)) {
+    currentDirection.value = newDirection;
+    const moveDirection = defaultKeysAndMoveDirection.find(
+      (item) => item.direction === newDirection
+    );
+    if (moveDirection) {
+      emit("update-direction", moveDirection);
+    }
+  }
+};
+
+const handleClick = (event: MouseEvent) => {
+  if (event.target && (event.target as HTMLElement).classList.contains("key")) {
+    const targetId = (event.target as HTMLElement).id;
+    const newDirection = keyMapping[targetId as never];
+    handleDirectionChange(newDirection);
+  }
 };
 </script>
 

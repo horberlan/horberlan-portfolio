@@ -1,4 +1,4 @@
-const defaultKeysAndMoveDirection = [
+export const defaultKeysAndMoveDirection = [
   {
     direction: "left",
     keyCode: 37,
@@ -40,5 +40,10 @@ const defaultKeysAndMoveDirection = [
   };
 }[];
 
+import loser from "@/assets/loser.mp3";
+import eat from "@/assets/eat.mp3";
+import winner from "@/assets/winner.wav";
+
+export const sound = { loser, eat, winner };
+
 export { default } from "./SnakeCanvas.vue";
-export { defaultKeysAndMoveDirection };
