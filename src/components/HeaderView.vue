@@ -36,7 +36,7 @@ const route = useRoute();
 
 const header = [
   {
-    title: "Horberlan-Brito",
+    title: "horberlan-brito",
     to: "/",
   },
   {
@@ -236,6 +236,15 @@ nav {
 .home-logo {
   width: $nav-size;
   border-left-color: transparent;
+}
+@media screen and (max-width: 868px) {
+  $nav-size: $nav-size + 4.7vw;
+  .home-logo {
+    width: $nav-size;
+    text-overflow: ellipsis;
+    overflow: scroll;
+    white-space: pre;
+  }
 }
 @media screen and (max-width: 768px) {
   .nav-links {

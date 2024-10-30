@@ -23,6 +23,7 @@ footer {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(9px);
   -webkit-backdrop-filter: blur(9px);
+  margin-block-start: auto;
   z-index: 2;
   a {
     color: $primary;

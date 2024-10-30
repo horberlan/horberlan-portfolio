@@ -71,9 +71,6 @@ onMounted(() => {
   color: $white-full;
 }
 .projects-content {
-  height: 100%;
-}
-section {
   display: flex;
   width: 100%;
 
@@ -82,6 +79,7 @@ section {
     position: relative;
     border: 1px solid #1e2d3d;
     width: $nav-size;
+
     &.small-screen {
       display: none;
     }
@@ -91,6 +89,9 @@ section {
       height: auto;
       min-height: 100%;
       box-sizing: border-box;
+      @media screen and (max-width: 868px) {
+        width: $nav-size / 1.38;
+      }
     }
   }
   :deep(.panel-1-content) {
@@ -104,7 +105,6 @@ section {
 }
 .resized {
   padding: 0.5rem;
-  height: 100vw;
   transition: width 0.5s ease-in-out;
   :deep(ol) li .link {
     color: $white-full;
