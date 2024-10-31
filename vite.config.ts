@@ -17,9 +17,9 @@ export default defineConfig({
       scss: {
         api: "modern-compiler",
         additionalData: `
+          @use "sass:math";
           @use "sass:meta";
-          @import "./src/assets/styles/_variables.scss";
-        `,
+          @use "./src/assets/styles/_variables.scss" as *;`,
       },
     },
   },
