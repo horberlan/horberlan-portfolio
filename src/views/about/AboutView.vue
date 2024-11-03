@@ -42,6 +42,7 @@
       </div>
     </template>
     <template #panel-2>
+      🚨 this is an WIP 🚨
       <p class="section-titles">About me</p>
       <component :is="first(bio)?.component" :id="first(bio)?.title" />
       <p class="section-titles">Publications</p>

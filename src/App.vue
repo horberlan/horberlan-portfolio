@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import Header from "./components/HeaderView.vue";
-import Footer from "./views/home/Footer.vue";
+import Footer from "./views/home/FooterView.vue";
 </script>
 <template>
   <article class="main-grid">

@@ -8,7 +8,7 @@
     <li>
       * Development and maintenance of Web3.js applications and smart contracts;
     </li>
-    <li>* Development of apllication on Lightning Network in web5;</li>
+    <li>* Development of application on Lightning Network in web3;</li>
     <li>**/</li>
   </ol>
 </template>

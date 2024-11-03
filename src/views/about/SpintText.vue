@@ -1,12 +1,14 @@
 <template>
   <div ref="container" class="container">
+    <span class="line-item">1. /**</span>
     <span
       v-for="(line, index) in formattedContent"
       :key="index"
       class="line-item"
     >
-      {{ index + 1 }}. {{ line }}
+      {{ index + 2 }}. * {{ line }}
     </span>
+    <span class="line-item">{{ formattedContent.length + 2 }} **/</span>
   </div>
 </template>
 
@@ -15,7 +17,7 @@ import { computed } from "vue";
 import { ref, onMounted, watch, nextTick, onBeforeUnmount } from "vue";
 
 const props = defineProps<{
-  label: string | string[];
+  label: string;
 }>();
 
 const labelList = computed(() => props.label);
@@ -26,39 +28,41 @@ const formattedContent = ref<string[]>([]);
 const calculateFormattedLines = () => {
   if (typeof labelList.value !== "string") return;
 
-  const words = labelList.value.split(" ");
-  let currentLine = "";
-  const lines: string[] = [];
+  const lines = labelList.value.split("\n");
+  const formattedLines: string[] = [];
 
   if (!container.value) return;
 
   const containerWidth = container.value.clientWidth - 40;
-  const spanTestElement = document.createElement("span");
-  spanTestElement.style.cssText = `
-  position: absolute;
-  visibility: hidden;
-  white-space: nowrap;
-`;
-  document.body.appendChild(spanTestElement);
 
-  for (const word of words) {
-    spanTestElement.innerText = currentLine + word + " ";
+  const lineLengthByChars = containerWidth / 10;
 
-    if (spanTestElement.clientWidth > containerWidth) {
-      lines.push(currentLine.trim());
-      currentLine = word + " ";
-    } else {
-      currentLine += word + " ";
+  for (const line of lines) {
+    const words = line.split(" ");
+    let currentLine = "";
+    let currentLineLengthByChars = 0;
+
+    for (const word of words) {
+      if (currentLineLengthByChars + word.length + 1 > lineLengthByChars) {
+        formattedLines.push(currentLine.trim());
+        currentLine = word + " ";
+        currentLineLengthByChars = word.length + 1;
+      } else {
+        if (currentLine.length > 0) {
+          currentLine += " ";
+          currentLineLengthByChars += 1;
+        }
+        currentLine += word;
+        currentLineLengthByChars += word.length;
+      }
+    }
+
+    if (currentLine.trim()) {
+      formattedLines.push(currentLine.trim());
     }
   }
 
-  if (currentLine.trim()) {
-    lines.push(currentLine.trim());
-  }
-
-  document.body.removeChild(spanTestElement);
-
-  formattedContent.value = lines;
+  formattedContent.value = formattedLines;
 };
 
 const handleResize = () => {
