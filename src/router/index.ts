@@ -4,6 +4,7 @@ import AboutView from "@/views/about/AboutView.vue";
 import ContactView from "@/views/contact/ContactView.vue";
 import HomeView from "@/views/home/IndexHome.vue";
 import ProjectView from "@/views/projects/ProjectView.vue";
+import InternProjects from "@/views/projects/InternProjects.vue";
 
 const router = createRouter({
   history: createWebHistory(), // import.meta.env.BASE_URL
@@ -27,6 +28,10 @@ const router = createRouter({
       path: "/projects",
       name: "project",
       component: ProjectView,
+    },
+    {
+      path: "/projects/:name",
+      component: InternProjects,
     },
     {
       path: "/contact",
