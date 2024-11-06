@@ -83,7 +83,7 @@ export default defineComponent({
         });
         return component;
       } catch (error) {
-        globalThis.console.error(`'${importPath}' not found.`, error);
+        globalThis.console.error(`'${this.name}' not found.`, error);
         return MissingIconComponent;
       }
     },
