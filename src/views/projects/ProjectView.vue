@@ -59,7 +59,7 @@ import BoxAccordeon from "@/components/BoxAccordeon.vue";
 import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
-import { getProjects } from "@/services/entites";
+import { projectsByType } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
 import { computed, watchEffect, ref, onMounted } from "vue";
@@ -120,7 +120,8 @@ const cardsGroup = async (data: PROJECT_TYPE, index: EventTarget) => {
 
 const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
   try {
-    const data = await getProjects(value);
+    const { data } = await projectsByType(value);
+    console.log("data:", data);
     filtredProjectsList.value = data;
     filtredProjectsList.value = uniqBy(filtredProjectsList.value, "_id");
   } catch (error) {

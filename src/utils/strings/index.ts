@@ -16,4 +16,26 @@ function twoAndAHalfWords(input: string): string[] {
   return [firstPart, secondPart];
 }
 
-export { twoAndAHalfWords };
+function truncateText(text: string, maxLength: number) {
+  if (!text.length) return "";
+  if (text.length > maxLength) {
+    const words = text.split(" ");
+
+    let truncatedText = "";
+
+    for (const word of words) {
+      if ((truncatedText + word).length > maxLength) {
+        break;
+      }
+      truncatedText += word + " ";
+    }
+
+    truncatedText = truncatedText.trim().replace(/,\s*$/, "") + "...";
+
+    return truncatedText;
+  }
+
+  return text;
+}
+
+export { twoAndAHalfWords, truncateText };
