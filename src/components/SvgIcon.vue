@@ -69,18 +69,15 @@ export default defineComponent({
 
       const componentName =
         this.name.charAt(0).toUpperCase() + this.name.slice(1) + "";
-
-      const importPath = `./icons/${componentName}.vue`;
-
       try {
         const component = defineAsyncComponent({
-          loader: () => import(importPath),
+          loader: () => import(`@/components/icons/${componentName}.vue`),
           loadingComponent: this.$props.skeleton
             ? SkeletonBox
             : LoadingIconComponent,
           delay: 200,
           errorComponent: MissingIconComponent,
-          timeout: 10500,
+          timeout: 8500,
           hydrate: hydrateOnInteraction("click"),
           suspensible: true,
         });
