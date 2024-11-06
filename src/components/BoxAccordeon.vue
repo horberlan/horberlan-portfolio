@@ -63,6 +63,7 @@ const handleKeydown = (event: KeyboardEvent) => {
       tabindex="0"
     >
       <SvgIcon
+        skeleton
         :name="icon ? icon : 'chevronIcon'"
         :rotate="opened ? '0deg' : '-90deg'"
         size="sm"
@@ -87,6 +88,7 @@ const handleKeydown = (event: KeyboardEvent) => {
       tabindex="0"
     >
       <SvgIcon
+        skeleton
         :name="icon ? icon : 'chevronIcon'"
         :rotate="opened ? '0deg' : '-90deg'"
         size="sm"
