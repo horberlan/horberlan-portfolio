@@ -1,8 +1,41 @@
 <script lang="ts">
-import { defineAsyncComponent } from "vue";
+import {
+  defineAsyncComponent,
+  hydrateOnInteraction,
+  h,
+  defineComponent,
+} from "vue";
 import { sizes, defaults } from "./constants";
 
-export default {
+const MissingIconComponent = () => {
+  const style = {
+    p: `
+  display: flex;
+  flex-flow: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  `,
+    span: `
+  color: #ccc;
+  font-size: 12px;
+  `,
+  };
+  return h("p", { style: style.p }, [
+    h("p", "Icon not provided"),
+    h("span", { style: style.span }, "This is likely a new item"),
+  ]);
+};
+
+const SkeletonBox = () => {
+  return h("div", { class: "skeleton-box" });
+};
+
+const LoadingIconComponent = ({ label = "Loading" }: { label: string }) => {
+  return h("span", { class: "loading" }, label);
+};
+
+export default defineComponent({
   props: {
     name: {
       type: String,
@@ -17,6 +50,11 @@ export default {
       default: defaults.size,
       validator: (val: string) => Object.keys(sizes).includes(val),
     },
+    skeleton: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
     hoverColor: [Boolean, String],
     rotate: String,
     margin: {
@@ -27,8 +65,27 @@ export default {
 
   computed: {
     dynamicComponent() {
-      const name = this.name.charAt(0).toUpperCase() + this.name.slice(1) + "";
-      return defineAsyncComponent(() => import(`./icons/${name}.vue`));
+      if (!this.name) return MissingIconComponent;
+
+      const componentName =
+        this.name.charAt(0).toUpperCase() + this.name.slice(1) + "";
+      try {
+        const component = defineAsyncComponent({
+          loader: () => import(`@/components/icons/${componentName}.vue`),
+          loadingComponent: this.$props.skeleton
+            ? SkeletonBox
+            : LoadingIconComponent,
+          delay: 200,
+          errorComponent: MissingIconComponent,
+          timeout: 14500,
+          hydrate: hydrateOnInteraction("click"),
+          suspensible: true,
+        });
+        return component;
+      } catch (error) {
+        globalThis.console.error(`'${this.name}' not found.`, error);
+        return MissingIconComponent;
+      }
     },
     Rotation() {
       return `rotate(${this.rotate || 0})`;
@@ -47,10 +104,10 @@ export default {
       return this.getVarOrColorValue(this.hoverColor);
     },
     svgSize() {
-      return sizes[this.size].size;
+      return sizes[this.size as keyof typeof sizes].size;
     },
     strokeWidth() {
-      return sizes[this.size].strokeWidth;
+      return sizes[this.size as keyof typeof sizes].strokeWidth;
     },
   },
 
@@ -61,11 +118,15 @@ export default {
         : str;
     },
   },
-};
+  setup() {
+    return { MissingIconComponent, LoadingIconComponent };
+  },
+});
 </script>
 
 <template>
   <component
+    v-if="name"
     :is="dynamicComponent"
     class="svg-icon"
     :width="svgSize"

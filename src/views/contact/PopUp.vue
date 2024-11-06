@@ -3,7 +3,7 @@
     <div class="container" v-if="showPopUp">
       <div class="container_pop-up">
         <div class="container_pop-up_icon">
-          <SvgIcon name="WarningIcon" size="md" />
+          <SvgIcon skeleton name="WarningIcon" size="md" />
         </div>
         <p class="container_pop-up_message">Message sent successfully</p>
         <div

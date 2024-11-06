@@ -116,9 +116,9 @@ onMounted(() => {
     height: auto;
   }
 }
-.left-div {
-  width: 85%;
-}
+// .left-div {
+//   width: 85%;
+// }
 * {
   scrollbar-width: thin;
   scrollbar-color: #011221 transparent;

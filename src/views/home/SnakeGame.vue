@@ -52,6 +52,7 @@
       <p class="half-words">// {{ boxIntl.foodLeft }}</p>
       <div v-if="scores <= 6" class="foods">
         <SvgIcon
+          skeleton
           v-for="foods in foodLoop"
           :key="foods.name"
           :name="foods.name"
@@ -163,6 +164,7 @@ const addScores = () => {
   display: grid;
   align-items: center;
   grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
 }
 @media screen and (max-width: 768px) {
   #app {
