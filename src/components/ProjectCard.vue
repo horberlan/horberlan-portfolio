@@ -6,9 +6,10 @@
         v-if="iconType[flag as keyof typeof iconType]"
         :name="iconType[flag as keyof typeof iconType]"
         size="lg"
+        skeleton
       />
     </div>
-    <SvgIcon class="img" :name="bg" margin="0" skeleton />
+    <SvgIcon class="img" :name="bg" margin="0" />
     <div class="card-content">
       <p v-if="desc">{{ truncateText(desc, 80) }}</p>
       <a class="primary-btn" role="button" :href="href" target="_blank"
