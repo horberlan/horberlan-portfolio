@@ -52,6 +52,7 @@
       <p class="half-words">// {{ boxIntl.foodLeft }}</p>
       <div v-if="scores <= 6" class="foods">
         <SvgIcon
+          skeleton
           v-for="foods in foodLoop"
           :key="foods.name"
           :name="foods.name"

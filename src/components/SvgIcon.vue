@@ -165,7 +165,7 @@ $skeleton-color-secundary: #cfcfcf;
   );
   background-size: 1200px 104px;
   animation: skeleton-box-loading 900ms infinite linear;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 @keyframes skeleton-box-loading {
