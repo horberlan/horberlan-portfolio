@@ -55,7 +55,6 @@ export const projectsByType = async (param: Array<String>) => {
         param.length ? Object.values(param).join(";") : PROJECT_TYPE.ALL
       }`
     );
-    console.log(data);
     return data;
   } catch (err) {
     console.error(err);

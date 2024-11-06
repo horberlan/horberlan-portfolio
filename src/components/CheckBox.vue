@@ -9,7 +9,7 @@
       @keydown.down.prevent="$emit('focus-next', $event)"
     />
     <label :for="id">
-      <SvgIcon :name="labelIcon" size="md" />
+      <SvgIcon :name="labelIcon" size="md" skeleton />
       {{ label }}
     </label>
   </div>

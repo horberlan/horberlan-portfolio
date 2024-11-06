@@ -9,43 +9,35 @@
         icon="ArrowIconSecundary"
         class="container-left-side"
       >
-        <div
-          class="checkbox"
-          v-for="(project, index) in allProjects"
-          :key="index"
-        >
-          <input
-            type="checkbox"
+        <template v-for="(project, index) in allProjects" :key="index">
+          <CheckBox
+            :label="project.type.toLocaleLowerCase()"
+            :label-icon="project.icon"
             :id="`scales-${index}`"
-            :ref="`theCheckbox-${index}`"
-            @click="
+            font-size="1.2rem"
+            @handle-click="
               cardsGroup(project.type, $event?.currentTarget as EventTarget)
             "
+            @on-press-enter="(event: KeyboardEvent) => handleCheckboxEnter(event, project.type)"
+            @focus-previous="focusPrevious(index)"
+            @focus-next="focusNext(index)"
           />
-          <label :for="`scales-${index}`">
-            <SvgIcon :name="project.icon" size="md" />
-            {{ project.type.toLocaleLowerCase() }}
-          </label>
-        </div>
+        </template>
       </box-accordeon>
     </template>
     <template #left>
       <template v-if="filtredProjectsList.length">
         <div class="flex-wrapper">
           <TransitionGroup name="list">
-            <div
+            <ProjectCard
               v-for="(project, index) in filtredProjectsList"
               :key="index"
-              class="cards-container"
-            >
-              <ProjectCard
-                :flag="project.type"
-                :bg="project.background"
-                :desc="project.project_description"
-                :href="project.href"
-                :name="project.name"
-              />
-            </div>
+              :flag="project.type"
+              :bg="project.background"
+              :desc="project.project_description"
+              :href="project.href"
+              :name="project.name"
+            />
           </TransitionGroup>
         </div>
       </template>
@@ -58,12 +50,12 @@
 import BoxAccordeon from "@/components/BoxAccordeon.vue";
 import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
-import SvgIcon from "@/components/SvgIcon.vue";
 import { projectsByType } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
-import { computed, watchEffect, ref, onMounted } from "vue";
+import { computed, watchEffect, ref, onMounted, onBeforeMount } from "vue";
 import { useMutation } from "@tanstack/vue-query";
+import CheckBox from "@/components/CheckBox.vue";
 
 interface ProjectType {
   _id: string;
@@ -78,8 +70,9 @@ interface ProjectType {
 const projectsList = ref<ProjectType[]>([]);
 const filtredProjectsList = ref<ProjectType[]>([]);
 const listFilters = ref<PROJECT_TYPE[]>([]);
-const searchParams = ref<{ type: PROJECT_TYPE }>({
+const searchParams = ref<{ type: PROJECT_TYPE; search_term: string }>({
   type: PROJECT_TYPE.ALL,
+  search_term: "",
 });
 const allProjects = computed(() => [
   {
@@ -121,7 +114,6 @@ const cardsGroup = async (data: PROJECT_TYPE, index: EventTarget) => {
 const getSafeProjects = async (value: PROJECT_TYPE[] | any) => {
   try {
     const { data } = await projectsByType(value);
-    console.log("data:", data);
     filtredProjectsList.value = data;
     filtredProjectsList.value = uniqBy(filtredProjectsList.value, "_id");
   } catch (error) {
@@ -134,12 +126,35 @@ const { data: mutatedProjects, mutateAsync: mutateGetSafeProjects } =
     mutationFn: () => getSafeProjects(listFilters.value),
   });
 
+const handleCheckboxEnter = (
+  event: KeyboardEvent,
+  ProjectType: PROJECT_TYPE
+) => {
+  event.preventDefault();
+  (event.currentTarget as HTMLInputElement).checked = !(
+    event.currentTarget as HTMLInputElement
+  ).checked;
+  cardsGroup(ProjectType, event.currentTarget as EventTarget);
+};
+const focusPrevious = (index: number) => {
+  if (index > 0) {
+    const previousCheckbox = document.getElementById(`scales-${index - 1}`);
+    previousCheckbox?.focus();
+  }
+};
+
+const focusNext = (index: number) => {
+  if (index < allProjects.value.length - 1) {
+    const nextCheckbox = document.getElementById(`scales-${index + 1}`);
+    nextCheckbox?.focus();
+  }
+};
 watchEffect(() => {
   if (mutatedProjects.value)
     listFilters.value = (mutatedProjects as typeof listFilters).value;
 });
 
-onMounted(async () => await getSafeProjects([]));
+onBeforeMount(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
@@ -153,9 +168,11 @@ onMounted(async () => await getSafeProjects([]));
 .flex-wrapper {
   display: flex;
   flex-flow: row wrap;
+  justify-content: flex-start;
+  flex-shrink: 0;
   margin: 2rem;
   max-height: 100%;
-  justify-content: flex-start;
+  gap: 2rem;
 
   .cards-container {
     margin-block: map-get($margins, "block-large-screen");
@@ -165,40 +182,8 @@ onMounted(async () => await getSafeProjects([]));
   @media screen and (max-width: 760px) {
     margin-block: map-get($margins, "block-small-screen");
     margin-inline: map-get($margins, "inline-small-screen");
+    justify-content: center;
   }
-}
-
-.checkbox {
-  display: flex;
-  gap: 1rem;
-  margin-block: 1.0625rem;
-  align-items: center;
-
-  label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-}
-
-input[type="checkbox"] {
-  position: relative;
-  width: 0.875rem;
-  height: 0.875rem;
-  aspect-ratio: 1;
-  appearance: none;
-  background: $font-lynch;
-  display: grid;
-  place-items: center;
-  border-radius: 2px;
-  padding: 0;
-}
-
-input[type="checkbox"]:checked:after {
-  position: absolute;
-  content: "✔";
-  color: $white-full;
-  height: 0.875rem;
 }
 
 .list-enter-active,
