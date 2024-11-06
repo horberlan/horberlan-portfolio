@@ -137,9 +137,6 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-$skeleton-color: #e0e0e0;
-$skeleton-color-secundary: #cfcfcf;
-
 .svg-icon {
   color: v-bind(colorBind);
   transition: color 0.2s ease-in-out;
@@ -148,32 +145,6 @@ $skeleton-color-secundary: #cfcfcf;
 
   &.add-hover:hover {
     color: v-bind(hoverColorBind);
-  }
-}
-.skeleton-box {
-  display: block;
-  width: auto;
-  min-width: 32px;
-  height: 1.875rem;
-  background-color: $skeleton-color;
-  border-radius: 4px;
-  background-image: linear-gradient(
-    90deg,
-    $skeleton-color 8%,
-    $skeleton-color-secundary 18%,
-    $skeleton-color 33%
-  );
-  background-size: 1200px 104px;
-  animation: skeleton-box-loading 900ms infinite linear;
-  opacity: 0.3;
-}
-
-@keyframes skeleton-box-loading {
-  0% {
-    background-position: -1200px 0;
-  }
-  100% {
-    background-position: 1200px 0;
   }
 }
 </style>

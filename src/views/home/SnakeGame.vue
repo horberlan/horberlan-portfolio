@@ -164,6 +164,7 @@ const addScores = () => {
   display: grid;
   align-items: center;
   grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
 }
 @media screen and (max-width: 768px) {
   #app {
