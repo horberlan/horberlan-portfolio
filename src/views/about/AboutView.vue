@@ -18,7 +18,12 @@
               :open="item.isOpened"
             >
               <template #icon-folder>
-                <SvgIcon name="FolderIcon" size="md" :fill="item.iconFill" />
+                <SvgIcon
+                  skeleton
+                  name="FolderIcon"
+                  size="md"
+                  :fill="item.iconFill"
+                />
               </template>
               <button
                 v-for="(education, index) in item.content"
@@ -26,7 +31,7 @@
                 @click="scrollToElement(education.title)"
                 class="btn"
               >
-                <SvgIcon name="AboutMd" size="md" />
+                <SvgIcon skeleton name="AboutMd" size="md" />
                 {{ education.title || "" }}
               </button>
             </box-accordeon>
@@ -34,7 +39,7 @@
           <template v-else-if="accordion.content === contacts">
             <h4 v-for="(link, index) in accordion.content" :key="index">
               <button class="btn">
-                <SvgIcon :name="link.icon" size="md" />{{ link.title }}
+                <SvgIcon skeleton :name="link.icon" size="md" />{{ link.title }}
               </button>
             </h4>
           </template>
