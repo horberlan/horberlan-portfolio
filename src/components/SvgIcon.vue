@@ -77,7 +77,7 @@ export default defineComponent({
             : LoadingIconComponent,
           delay: 200,
           errorComponent: MissingIconComponent,
-          timeout: 8500,
+          timeout: 14500,
           hydrate: hydrateOnInteraction("click"),
           suspensible: true,
         });
