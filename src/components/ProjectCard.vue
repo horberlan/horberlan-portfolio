@@ -1,29 +1,29 @@
 <template>
-  <div class="card" v-if="name">
-    <span class="project-title"> {{ name }}</span>
+  <div class="card" :key="name">
+    <span class="project-title">{{ name }}</span>
     <div class="flag">
-      <SvgIcon :name="iconType[flag as keyof typeof iconType]" size="lg" />
+      <SvgIcon
+        v-if="iconType[flag as keyof typeof iconType]"
+        :name="iconType[flag as keyof typeof iconType]"
+        size="lg"
+      />
     </div>
-    <Suspense>
-      <SvgIcon class="img" :name="props.bg" margin="0" />
-      <template #fallback>
-        <span class="loading">Loading</span>
-      </template>
-    </Suspense>
+    <SvgIcon class="img" :name="bg" margin="0" skeleton />
     <div class="card-content">
-      <p v-if="props.desc">{{ truncateText(props.desc, 80) }}</p>
-      <a class="primary-btn" role="button" :href="props.href" target="_blank"
+      <p v-if="desc">{{ truncateText(desc, 80) }}</p>
+      <a class="primary-btn" role="button" :href="href" target="_blank"
         >view-project</a
       >
       <slot name="index"></slot>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import SvgIcon from "@/components/SvgIcon.vue";
 import type { PROJECT_TYPE } from "@/utils/enums/project";
-
-const props = defineProps<{
+import { truncateText } from "@/utils/strings/index";
+defineProps<{
   flag: PROJECT_TYPE | string;
   bg: string;
   desc: string;
@@ -37,27 +37,6 @@ enum iconType {
   NODE = "NodeJs",
   VANILLA = "VanillaIcon",
 }
-function truncateText(text: string, maxLength: number) {
-  if (!text.length) return "";
-  if (text.length > maxLength) {
-    const words = text.split(" ");
-
-    let truncatedText = "";
-
-    for (const word of words) {
-      if ((truncatedText + word).length > maxLength) {
-        break;
-      }
-      truncatedText += word + " ";
-    }
-
-    truncatedText = truncatedText.trim().replace(/,\s*$/, "") + "...";
-
-    return truncatedText;
-  }
-
-  return text;
-}
 </script>
 
 <style scoped lang="scss">
@@ -65,9 +44,10 @@ function truncateText(text: string, maxLength: number) {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 20rem;
   background: #011221;
   border-radius: 15px;
+  max-width: 21.2rem;
+  padding: 5px;
 
   .project-title {
     text-align: center;
@@ -90,15 +70,17 @@ function truncateText(text: string, maxLength: number) {
     height: 8rem;
     border-top-left-radius: 0.9375rem;
     border-top-right-radius: 0.9375rem;
+    border-bottom-right-radius: 0.9375rem;
+    border-bottom-left-radius: 0.9375rem;
   }
 
   .card-content {
+    padding-block-end: 1.5rem;
     padding-inline: 1.875rem;
     position: relative;
-    height: 100%;
     display: flex;
     flex-direction: column;
-    padding-block-end: 1rem;
+    flex-grow: 1;
   }
 }
 
@@ -114,6 +96,6 @@ function truncateText(text: string, maxLength: number) {
   cursor: pointer;
   text-decoration: none;
   text-align: center;
-  flex-shrink: 0;
+  margin-block-start: auto;
 }
 </style>
