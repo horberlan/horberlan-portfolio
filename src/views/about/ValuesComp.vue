@@ -17,7 +17,6 @@
 <script setup lang="ts"></script>
 <style lang="scss" scoped>
 ol {
-  font-family: monospace;
   font-weight: 350;
   font-size: 1.125rem;
   line-height: 1.6875rem;
