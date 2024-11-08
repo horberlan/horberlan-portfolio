@@ -57,14 +57,14 @@ export const projectsByType = async (param: Array<String>) => {
       }`
     );
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const getMarkdown = async (fileName: string) => {
   try {
-    const { data } = await apiV1MsMarkdown.get(`/${fileName}`, {
+    const { data } = await apiV2.get(`/ms-markdown/${fileName}`, {
       responseType: "text",
       headers: {
         "Content-Type": "text/markdown",
@@ -72,7 +72,7 @@ export const getMarkdown = async (fileName: string) => {
     });
     return data;
   } catch (error) {
-    console.log("error>", error);
+    console.error("error", error);
   }
 };
 
@@ -81,7 +81,7 @@ export const getSnippet = async () => {
     const { data } = await api.get("/snippets");
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -94,7 +94,7 @@ export const updateSnippetStars = async (
     });
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -103,7 +103,7 @@ export const getContact = async () => {
     const { data } = await api.get("/form");
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -111,6 +111,6 @@ export const postContact = async (form: FormMessage) => {
   try {
     await api.post("/form", form);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

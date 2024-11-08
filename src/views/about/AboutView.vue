@@ -56,11 +56,11 @@
       </div>
     </template>
     <template #panel-2>
-      <RenderMarkdown :route="String(aboutMeMarkdown)" />
+      <RenderMarkdown :route="aboutMeMarkdown" />
       <vue-markdown :source="`## Publications`" />
       <MediumPublications :id="first(publications)?.title" />
-      <RenderMarkdown :route="String(interestsMarkdown)" id="Web3" />
-      <RenderMarkdown :route="String(skillsMarkdown)" id="Skills" />
+      <RenderMarkdown :route="interestsMarkdown" id="Web3" />
+      <RenderMarkdown :route="skillsMarkdown" id="Skills" />
     </template>
     <template #panel-3>
       <div class="right-container">
