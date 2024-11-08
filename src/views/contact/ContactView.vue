@@ -74,10 +74,10 @@ const submitContact = async (value: FormValue) => {
       email: value.email,
       message: value.message,
     });
-  } catch {
-    console.log("error");
+  } catch (error) {
+    console.error(error);
   } finally {
-    console.log("done");
+    console.info("done");
     showPopUp.value = true;
   }
 };
