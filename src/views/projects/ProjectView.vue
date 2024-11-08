@@ -1,7 +1,7 @@
 <template>
   <PanelView :isResizable="false">
     <template #panel-1>
-      <box-accordeon
+      <box-accordion
         title="projects"
         :open="true"
         @selected="null"
@@ -23,7 +23,7 @@
             @focus-next="focusNext(index)"
           />
         </template>
-      </box-accordeon>
+      </box-accordion>
     </template>
     <template #left>
       <template v-if="filtredProjectsList.length">
@@ -41,19 +41,26 @@
           </TransitionGroup>
         </div>
       </template>
-      <template v-else> <span class="loading"> Loading</span></template>
+      <template v-else>
+        <span
+          class="loading"
+          :style="{ width: '75dvw', paddingBlockStart: '1rem' }"
+        >
+          Loading</span
+        ></template
+      >
     </template>
   </PanelView>
 </template>
 
 <script setup lang="ts">
-import BoxAccordeon from "@/components/BoxAccordeon.vue";
+import BoxAccordion from "@/components/BoxAccordion.vue";
 import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import { projectsByType } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import { uniqBy } from "lodash";
-import { computed, watchEffect, ref, onMounted, onBeforeMount } from "vue";
+import { computed, watchEffect, ref, onBeforeMount } from "vue";
 import { useMutation } from "@tanstack/vue-query";
 import CheckBox from "@/components/CheckBox.vue";
 
@@ -158,7 +165,7 @@ onBeforeMount(async () => await getSafeProjects([]));
 </script>
 
 <style lang="scss" scoped>
-:deep(.box-accordeon) .header {
+:deep(.box-accordion) .header {
   border-bottom: 1px solid #1e2d3d;
   margin: 0;
   padding-block: 0.625rem;
