@@ -25,13 +25,15 @@ export interface FormMessage {
   email: string;
   message: string;
 }
-
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
 
 const apiV2 = axios.create({
   baseURL: import.meta.env.VITE_DEV_BASE_URL,
+});
+const apiV1MsMarkdown = axios.create({
+  baseURL: import.meta.env.VITE_MS_MARKDOWN_URL,
 });
 
 export const getProjects = async (param: Array<String>): Promise<Project[]> => {
@@ -41,7 +43,6 @@ export const getProjects = async (param: Array<String>): Promise<Project[]> => {
         param.length ? Object.values(param).join(";") : PROJECT_TYPE.ALL
       }`
     );
-    console.log(data);
     return data;
   } catch (error) {
     console.error(error);
@@ -60,6 +61,22 @@ export const projectsByType = async (param: Array<String>) => {
     console.error(err);
   }
 };
+
+export const getMarkdown = async (fileName: string) => {
+  try {
+    const { data } = await apiV1MsMarkdown.get(`/${fileName}`, {
+      responseType: "text",
+      headers: {
+        "Content-Type": "text/markdown",
+      },
+    });
+    console.log("data", data);
+    return data;
+  } catch (error) {
+    console.log("error>", error);
+  }
+};
+
 export const getSnippet = async () => {
   try {
     const { data } = await api.get("/snippets");
