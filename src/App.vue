@@ -2,6 +2,7 @@
 import { RouterView } from "vue-router";
 import Header from "./components/HeaderView.vue";
 import Footer from "./views/home/Footer.vue";
+import { onActivated, onDeactivated } from "vue";
 </script>
 <template>
   <article class="main-grid">
@@ -28,16 +29,12 @@ $primary: #607b96;
   height: 100dvh;
 }
 .slide-fade-enter-active {
-  transition: all 200ms ease-out;
-}
-
-.slide-fade-leave-active {
-  transition: all 200ms cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 400ms ease-out;
 }
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(20px);
+  transform: translateX(2rem);
   opacity: 0;
 }
 </style>
