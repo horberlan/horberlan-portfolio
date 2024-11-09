@@ -1,17 +1,35 @@
 <template>
-  <div class="custom-content">
+  <div
+    v-if="$route.params.name === 'v-timeline-component'"
+    class="custom-content"
+  >
     <vTimelineComponent
       layout="vertical"
       :events="timelineEvents"
-      line-width="4px"
+      line-width="3px"
       color="#bf6a53"
     >
       <template #default="{ event }: { event: TimelineEvent, index: number }">
         <p>{{ event.title }}</p>
         <p>{{ event.description }}</p>
         <p>{{ event.date }}</p>
+        <vTimelineComponent
+          v-if="event.child"
+          :events="event.child"
+          line-width="1px"
+          color="#008080"
+          marker-size="0.8rem"
+        >
+          <template
+            #default="{ event }: { event: TimelineEvent, index: number }"
+          >
+            <div class="flex">
+              <span>{{ event }} Lorem, ipsum dolor sit </span>
+            </div>
+          </template>
+        </vTimelineComponent>
       </template>
-      <template #marker> 💩</template>
+      <template #marker> <span> 💩</span></template>
     </vTimelineComponent>
     <vTimelineComponent
       layout="horizontal"
@@ -27,7 +45,9 @@
           <p>{{ event.date }}</p>
         </div>
       </template>
-      <template #marker="{ event }"> {{ event.marker }}</template>
+      <template #marker="{ event }">
+        <span>{{ event.marker }}</span></template
+      >
     </vTimelineComponent>
   </div>
 </template>
@@ -40,7 +60,7 @@ interface TimelineEvent {
   title: string;
   date: string;
   description: string;
-  child?: TimelineEvent[];
+  child?: string[];
 }
 
 const timelineEvents: Ref<TimelineEvent[]> = ref([
@@ -55,6 +75,7 @@ const timelineEvents: Ref<TimelineEvent[]> = ref([
     date: "2023-03-01",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     marker: "🥴",
+    child: ["😁", "😆", "😅", "🤣", "😂", "🙂"],
   },
   {
     title: "Lorem ipsum dolor sit amet 2",
@@ -72,14 +93,13 @@ const timelineEvents: Ref<TimelineEvent[]> = ref([
 </script>
 
 <style scoped>
-* {
-  margin: 0;
+* span {
+  z-index: 3;
 }
 .custom-content {
   position: relative;
   background-color: white;
-  height: 100dvh;
-  display: flex;
-  justify-content: space-evenly;
+  max-width: 100dvw;
+  height: 200vh;
 }
 </style>

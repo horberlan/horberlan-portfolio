@@ -90,7 +90,7 @@ onMounted(() => {
       min-height: 100%;
       box-sizing: border-box;
       @media screen and (max-width: 868px) {
-        width: $nav-size / 1.38;
+        width: calc($nav-size / 1.38);
       }
     }
   }
