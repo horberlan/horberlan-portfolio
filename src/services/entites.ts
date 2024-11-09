@@ -25,7 +25,6 @@ export interface FormMessage {
   email: string;
   message: string;
 }
-
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
@@ -41,7 +40,6 @@ export const getProjects = async (param: Array<String>): Promise<Project[]> => {
         param.length ? Object.values(param).join(";") : PROJECT_TYPE.ALL
       }`
     );
-    console.log(data);
     return data;
   } catch (error) {
     console.error(error);
@@ -56,16 +54,31 @@ export const projectsByType = async (param: Array<String>) => {
       }`
     );
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
+
+export const getMarkdown = async (path: string) => {
+  try {
+    const { data } = await apiV2.get(`/ms-markdown/${path}`, {
+      responseType: "text",
+      headers: {
+        "Content-Type": "text/markdown",
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error("error", error);
+  }
+};
+
 export const getSnippet = async () => {
   try {
     const { data } = await api.get("/snippets");
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -78,7 +91,7 @@ export const updateSnippetStars = async (
     });
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -87,7 +100,7 @@ export const getContact = async () => {
     const { data } = await api.get("/form");
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -95,6 +108,6 @@ export const postContact = async (form: FormMessage) => {
   try {
     await api.post("/form", form);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

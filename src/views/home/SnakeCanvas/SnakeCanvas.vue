@@ -273,7 +273,7 @@ const blinkThenLose = () => {
 watch(
   () => props.virtualKeyboardDirection,
   (newValue) => {
-    console.log(newValue);
+    console.info(newValue);
     if (newValue) {
       updateDirection();
     }

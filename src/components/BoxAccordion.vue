@@ -37,7 +37,7 @@ watch(
   }
 );
 
-const toggleAccordeon = () => {
+const toggleAccordion = () => {
   emit("close-all", true);
   if (defaultClickable.value) {
     opened.value = !opened.value;
@@ -48,16 +48,16 @@ const toggleAccordeon = () => {
 const handleKeydown = (event: KeyboardEvent) => {
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
-    toggleAccordeon();
+    toggleAccordion();
   }
 };
 </script>
 
 <template>
-  <div v-if="mode === 'subitem'" :class="['box-accordeon noselect']">
+  <div v-if="mode === 'subitem'" :class="['box-accordion noselect']">
     <div
       class="header"
-      @click="toggleAccordeon()"
+      @click="toggleAccordion()"
       @keydown="handleKeydown"
       role="button"
       tabindex="0"
@@ -79,10 +79,10 @@ const handleKeydown = (event: KeyboardEvent) => {
       </div>
     </Transition>
   </div>
-  <div v-else :class="['box-accordeon noselect', 'item']">
+  <div v-else :class="['box-accordion noselect', 'item']">
     <div
       class="header"
-      @click="toggleAccordeon()"
+      @click="toggleAccordion()"
       @keydown="handleKeydown"
       role="button"
       tabindex="0"
@@ -112,7 +112,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 :deep(.svg-icon) {
   transition: transform 200ms ease-in-out;
 }
-.box-accordeon {
+.box-accordion {
   display: grid;
   &.item {
     border-bottom: 1px solid #1e2d3d;
@@ -127,7 +127,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
   .header {
     display: flex;
-    gap: 1rem;
+    gap: 0.3rem;
     font-style: normal;
     font-weight: 400;
     color: $white-full;
@@ -148,7 +148,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 }
 
 @media screen and (min-width: 768px) {
-  .box-accordeon {
+  .box-accordion {
     .header {
       padding-inline-end: 1rem;
     }

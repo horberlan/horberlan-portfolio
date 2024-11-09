@@ -2,7 +2,7 @@
   <PanelView>
     <template #panel-1>
       <div class="panel-1-content">
-        <box-accordeon
+        <box-accordion
           v-for="(accordion, index) in sidebarAccordions"
           :key="index"
           mode="item"
@@ -10,31 +10,39 @@
           :open="true"
         >
           <template v-if="accordion.content === personalInfo">
-            <box-accordeon
-              v-for="(item, index) in accordion.content"
-              :key="index"
-              :title="item.title"
-              @click="scrollToElement(item.key as never)"
-              :open="item.isOpened"
-            >
-              <template #icon-folder>
-                <SvgIcon
-                  skeleton
-                  name="FolderIcon"
-                  size="md"
-                  :fill="item.iconFill"
-                />
-              </template>
+            <template v-for="(item, index) in accordion.content" :key="index">
               <button
-                v-for="(education, index) in item.content"
-                :key="index"
-                @click="scrollToElement(education.title)"
-                class="btn"
+                v-if="item.in_root"
+                class="btn is_root"
+                @click="scrollToElement('skills')"
               >
-                <SvgIcon skeleton name="AboutMd" size="md" />
-                {{ education.title || "" }}
+                <SvgIcon skeleton name="AboutMd" size="md" />{{ item.title }}
               </button>
-            </box-accordeon>
+              <box-accordion
+                v-else
+                :title="item.title"
+                @click="scrollToElement(item.key as never)"
+                :open="Boolean(item.isOpened)"
+              >
+                <template #icon-folder>
+                  <SvgIcon
+                    skeleton
+                    name="FolderIcon"
+                    size="md"
+                    :fill="item.iconFill"
+                  />
+                </template>
+                <button
+                  v-for="(education, index) in item.content"
+                  :key="index"
+                  @click="scrollToElement(education.title)"
+                  class="btn"
+                >
+                  <SvgIcon skeleton name="AboutMd" size="md" />
+                  {{ education.title || "" }}
+                </button>
+              </box-accordion>
+            </template>
           </template>
           <template v-else-if="accordion.content === contacts">
             <h4 v-for="(link, index) in accordion.content" :key="index">
@@ -42,29 +50,17 @@
                 <SvgIcon skeleton :name="link.icon" size="md" />{{ link.title }}
               </button>
             </h4>
+            <vue-markdown :source="contactSrc" />
           </template>
-        </box-accordeon>
+        </box-accordion>
       </div>
     </template>
     <template #panel-2>
-      <p class="section-titles">About me</p>
-      <component :is="first(bio)?.component" :id="first(bio)?.title" />
-      <p class="section-titles">Publications</p>
+      <RenderMarkdown :route="aboutMeMarkdown" />
+      <vue-markdown :source="`## Publications`" />
       <MediumPublications :id="first(publications)?.title" />
-      <p class="section-titles">Interests</p>
-      <component
-        v-for="component in interests"
-        :key="component.title"
-        :is="component.component"
-        :id="component.title"
-      />
-      <p class="section-titles">Education</p>
-      <component
-        v-for="component in educations"
-        :key="component.title"
-        :is="component.component"
-        :id="component.title"
-      />
+      <RenderMarkdown :route="interestsMarkdown" id="Web3" />
+      <RenderMarkdown :route="skillsMarkdown" id="Skills" />
     </template>
     <template #panel-3>
       <div class="right-container">
@@ -106,38 +102,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, type Ref } from "vue";
 import moment from "moment";
-import BoxAccordeon from "@/components/BoxAccordeon.vue";
+import BoxAccordion from "@/components/BoxAccordion.vue";
 import PanelView from "@/components/PanelView.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import MediumPublications from "./MediumPublications.vue";
-import AboutMe from "./AboutMe.vue";
-import Web3Interests from "./Web3Interests.vue";
-import Values from "./ValuesComp.vue";
-import ValuesSec from "./TestTwo.vue";
-import Courses from "./Courses.vue";
-import Skills from "./Skills.vue";
-import { getSnippet, updateSnippetStars } from "@/services/entites";
+import RenderMarkdown from "./RenderMarkdown.vue";
+import {
+  getMarkdown,
+  getSnippet,
+  updateSnippetStars,
+} from "@/services/entites";
 import { first } from "lodash";
 import { markRaw } from "vue";
 import { type Snippet } from "@/services/entites";
+import VueMarkdown from "vue-markdown-render";
 
 const snippetList = ref<Snippet[]>([]);
 const isClicked = ref(false);
 
-const educations = ref([
-  { title: "university", component: markRaw(Values) },
-  { title: "high-school", component: markRaw(ValuesSec) },
-  { title: "courses", component: markRaw(Courses) },
-]);
+const interests = ref([{ title: "Web3" }]);
 
-const interests = ref([
-  { title: "Web3", component: markRaw(Web3Interests) },
-  { title: "Skills", component: markRaw(Skills) },
-]);
+const bio = ref([{ title: "about-me" }]);
+const aboutMeMarkdown: Ref<string | null> = ref(null);
+const interestsMarkdown: Ref<string | null> = ref(null);
+const skillsMarkdown: Ref<string | null> = ref(null);
 
-const bio = ref([{ title: "about-me", component: markRaw(AboutMe) }]);
+const getMarkdownData = async (fileName: string): Promise<string> => {
+  const data = await getMarkdown(`${fileName}`);
+  return data;
+};
+onMounted(async () => {
+  if (!aboutMeMarkdown.value) {
+    aboutMeMarkdown.value = await getMarkdownData("about-me");
+  }
+  if (!interestsMarkdown.value) {
+    interestsMarkdown.value = await getMarkdownData("interests");
+  }
+  if (!skillsMarkdown.value) {
+    skillsMarkdown.value = await getMarkdownData("skills");
+  }
+});
+
 const publications = ref([
   { title: "publications", component: markRaw(MediumPublications) },
 ]);
@@ -165,24 +172,25 @@ const personalInfo = ref([
     isOpened: false,
   },
   {
-    title: "education",
-    key: first(educations.value)?.title,
-    content: educations.value,
-    iconFill: "#3A49A4",
-    isOpened: false,
+    title: "Skills",
+    in_root: true,
+    key: first(publications.value)?.title,
   },
 ]);
 
-const contacts = ref([
-  { title: "horberlan@gmail.com", icon: "MailIcon" },
-  // everyone realy need know that?
-  // { title: "+55 83 981856267", icon: "CellphoneIcon" },
-]);
+const contacts = ref([{ title: "horberlan@gmail.com", icon: "MailIcon" }]);
 
 const sidebarAccordions = ref([
   { titleAccorden: "personal-info", content: personalInfo.value },
-  { titleAccorden: "contacts", content: contacts.value },
+  { titleAccorden: "find-me-on", content: contacts.value },
 ]);
+
+const contactSrc = ref(`
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/horberlan/)
+  [![Hackerrank](https://img.shields.io/badge/-Hackerrank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://hackerrank.com/profile/@horberlan)
+  [![Medium](https://img.shields.io/badge/-Medium-%23000000?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@horberlan)
+  [![GitLab](https://img.shields.io/badge/GitLab-330F63?style=for-the-badge&logo=gitlab&logoColor=white)](https://gitlab.com/horberlan)
+  `);
 
 const scrollToElement = (id: string) => {
   const element = document.getElementById(id);
@@ -197,7 +205,6 @@ const getSafeSnippet = async () => {
   try {
     const snippets = await getSnippet();
     snippetList.value = snippets;
-    console.log(snippetList.value);
   } catch (error) {
     console.error("Error fetching snippets:", error);
   }
@@ -206,7 +213,6 @@ const getSafeSnippet = async () => {
 const updateSafeSnippet = async (snippet: Partial<Snippet>) => {
   snippet = { _id: snippet._id, stars: ++snippet.stars };
   try {
-    console.log(JSON.stringify(snippet));
     await updateSnippetStars(snippet as never);
     await getSafeSnippet();
   } catch (error) {
@@ -231,6 +237,9 @@ onMounted(async () => {
   border: none;
   cursor: pointer;
   margin-block-start: 0.5rem;
+  &.is_root {
+    margin-inline-start: 1rem;
+  }
 }
 
 .snippet-container {
@@ -287,12 +296,6 @@ onMounted(async () => {
 }
 .section-titles {
   color: $font-lynch;
-}
-@media only screen and (max-width: 768px) {
-  :deep(ol) li {
-    margin-inline-start: 0rem;
-    padding-inline-start: 0rem;
-  }
 }
 .clicked {
   cursor: not-allowed;

@@ -65,7 +65,7 @@ const isScrolled = ref(false);
 const isFirstLoad = ref(true);
 
 const updateContainerClass = () => {
-  if (window.innerWidth < 768) {
+  if (window.innerWidth <= 798) {
     containerClass.value = "small-screen-nav";
     onClickOutside(containerHeader, () => (displayAll.value = false));
   } else {
@@ -168,64 +168,60 @@ nav {
   }
 }
 
-.toggle-icon {
-  position: fixed;
-  width: 40px;
-  height: 5px;
-  background-color: white;
-  margin-block: 10px;
-  position: relative;
-  transition: transform 0.4s ease-in-out;
-  border-radius: 2px;
-
-  &::before,
-  &::after {
-    content: "";
-    width: 100%;
-    height: 5px;
-    background-color: white;
-    position: absolute;
-    left: 0;
-    transition: inherit;
-    border-radius: 2px;
-  }
-
-  &::before {
-    top: -8px;
-  }
-
-  &::after {
-    bottom: -8px;
-  }
-
-  &.active {
-    transform: rotate(45deg);
-    &::before {
-      top: 0;
-      transform: rotate(90deg);
-    }
-    &::after {
-      bottom: 0;
-      transform: rotate(90deg);
-    }
-  }
-}
-
-.toggle-icon {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
 .toggle {
   position: fixed;
-  top: 2dvh;
-  left: 80%;
+  background-color: $white-full;
+  position: fixed;
+  top: 3.13rem;
+  right: 7dvw;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
   z-index: 3;
-}
+  cursor: pointer;
 
+  &-icon {
+    width: 2.5rem;
+    height: 0.32rem;
+    position: relative;
+    transition: transform 0.4s ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    &::before,
+    &::after {
+      content: "";
+      width: 100%;
+      height: 5px;
+      background-color: white;
+      position: absolute;
+      left: 0;
+      transition: inherit;
+      border-radius: 2px;
+    }
+
+    &::before {
+      top: -8px;
+    }
+
+    &::after {
+      bottom: -8px;
+    }
+
+    &.active {
+      transform: rotate(45deg);
+      &::before {
+        top: 0;
+        transform: rotate(90deg);
+      }
+      &::after {
+        bottom: 0;
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
 .header-enter-active,
 .header-leave-active {
   transition: all 0.5s ease;
@@ -250,9 +246,10 @@ nav {
     white-space: pre;
   }
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px) {
   .nav-links {
     width: 50%;
+    transition: 400ms all;
   }
   .home-logo {
     width: 100%;

@@ -1,8 +1,3 @@
-/**
- * Splits a string into two halves
- * @param {string} input - The string to be divided.
- * @returns {string[]} An array with left and right halves
- */
 function twoAndAHalfWords(input: string): string[] {
   if (typeof input !== "string") return [input];
 
@@ -38,4 +33,9 @@ function truncateText(text: string, maxLength: number) {
   return text;
 }
 
-export { twoAndAHalfWords, truncateText };
+function redirectTo(url: string) {
+  if (url) window.location.href = url;
+  return;
+}
+
+export { twoAndAHalfWords, truncateText, redirectTo };

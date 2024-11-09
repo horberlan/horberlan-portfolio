@@ -1,26 +1,23 @@
 <script setup lang="ts">
+import { redirectTo } from "@/utils/strings";
 import SnakeGame from "./SnakeGame.vue";
-const hello = [
-  {
-    pre: "Hi all. I am",
-    current: "Horberlan Brito",
-    pos: "> FullStack developer",
-  },
-];
-const desc = [
-  "// complete the game to continue",
-  "// you can also see it on my Github page",
-];
-const github = ["const ", "githubLink ", "“https://github.com/horberlan”"];
 
-const redirectToGitHub = (url: string) => {
-  window.location.href = url;
+const intl = {
+  hello: [
+    {
+      pre: "Hi all. I am",
+      current: "Horberlan Brito",
+      pos: "> FullStack developer",
+    },
+  ],
+  desc: ["complete the game for fun", "you can also see it on my Github page"],
+  github: ["const ", "githubLink ", "“https://github.com/horberlan”"],
 };
 </script>
 <template>
   <section class="hero">
     <div class="hero-hello">
-      <p v-for="(intro, index) in hello" :key="index">
+      <p v-for="(intro, index) in intl.hello" :key="index">
         <span
           v-for="text of intro"
           :key="text"
@@ -29,18 +26,16 @@ const redirectToGitHub = (url: string) => {
         />
       </p>
       <div class="content">
-        <p v-for="descriptions in desc" :key="descriptions" class="desc">
-          {{ descriptions }}
+        <p v-for="descriptions in intl.desc" :key="descriptions" class="desc">
+          // {{ descriptions }}
         </p>
       </div>
       <span
-        v-for="link in github"
+        v-for="link in intl.github"
         :key="link"
         class="github"
         role="button"
-        @click="
-          redirectToGitHub('https://github.com/horberlan/horberlan-portfolio')
-        "
+        @click="redirectTo('https://github.com/horberlan/horberlan-portfolio')"
       >
         {{ link }}
       </span>
