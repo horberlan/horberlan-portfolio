@@ -32,9 +32,6 @@ const api = axios.create({
 const apiV2 = axios.create({
   baseURL: import.meta.env.VITE_DEV_BASE_URL,
 });
-const apiV1MsMarkdown = axios.create({
-  baseURL: import.meta.env.VITE_MS_MARKDOWN_URL,
-});
 
 export const getProjects = async (param: Array<String>): Promise<Project[]> => {
   try {
@@ -62,9 +59,9 @@ export const projectsByType = async (param: Array<String>) => {
   }
 };
 
-export const getMarkdown = async (fileName: string) => {
+export const getMarkdown = async (path: string) => {
   try {
-    const { data } = await apiV2.get(`/ms-markdown/${fileName}`, {
+    const { data } = await apiV2.get(`/ms-markdown/${path}`, {
       responseType: "text",
       headers: {
         "Content-Type": "text/markdown",
