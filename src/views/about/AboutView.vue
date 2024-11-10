@@ -57,7 +57,7 @@
     </template>
     <template #panel-2>
       <RenderMarkdown :route="aboutMeMarkdown" />
-      <vue-markdown :source="`## Publications`" />
+      <vue-markdown :source="`## Publications`" class="h2"/>
       <MediumPublications :id="first(publications)?.title" />
       <RenderMarkdown :route="interestsMarkdown" id="Web3" />
       <RenderMarkdown :route="skillsMarkdown" id="Skills" />
@@ -299,5 +299,8 @@ onMounted(async () => {
 }
 .clicked {
   cursor: not-allowed;
+}
+.h2 {
+  color: $font-lynch;
 }
 </style>

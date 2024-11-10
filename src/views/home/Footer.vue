@@ -12,7 +12,6 @@ const footerData = ["Copyright ©", "@pois.nada"];
 
 <style lang="scss" scoped>
 $bg-color: #1e2d3d;
-$primary: #607b96;
 
 footer {
   display: flex;
@@ -26,7 +25,7 @@ footer {
   margin-block-start: auto;
   z-index: 2;
   a {
-    color: $primary;
+    color: $font-lynch;
     text-decoration: none;
   }
   li {
@@ -43,7 +42,7 @@ footer {
       border-bottom-left-radius: 1rem;
     }
     height: 100%;
-    color: $primary;
+    color: $font-lynch;
     list-style: none;
     &:last-child {
       display: flex;

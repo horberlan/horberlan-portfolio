@@ -2,7 +2,6 @@
 import { RouterView } from "vue-router";
 import Header from "./components/HeaderView.vue";
 import Footer from "./views/home/Footer.vue";
-import { onActivated, onDeactivated } from "vue";
 </script>
 <template>
   <article class="main-grid">
