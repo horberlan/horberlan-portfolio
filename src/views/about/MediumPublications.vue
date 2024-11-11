@@ -138,7 +138,7 @@ watchEffect(async () => {
 .article-card {
   flex-shrink: 0;
   scroll-snap-align: center;
-  background-color: #1c1b1b;
+  background-color: #dddede17;
   color: $font-lynch;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -159,8 +159,9 @@ watchEffect(async () => {
 .title a {
   font-size: 20px;
   font-weight: bold;
-  color: $font-lynch;
+  color: #b8c6d4;
   margin: 0;
+  text-decoration: none;
 }
 
 .date {
