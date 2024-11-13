@@ -14,7 +14,7 @@
               <button
                 v-if="item.in_root"
                 class="btn is_root"
-                @click="scrollToElement('skills')"
+                @click="scrollToElement('testing')"
               >
                 <SvgIcon skeleton name="AboutMd" size="md" />{{ item.title }}
               </button>
@@ -50,15 +50,15 @@
                 <SvgIcon skeleton :name="link.icon" size="md" />{{ link.title }}
               </button>
             </h4>
-            <vue-markdown :source="contactSrc" />
+            <vue-markdown :source="contacts[0].markdown" />
           </template>
         </box-accordion>
       </div>
     </template>
     <template #panel-2>
       <RenderMarkdown :route="aboutMeMarkdown" />
-      <vue-markdown :source="`## Publications`" class="h2" />
-      <MediumPublications :id="first(publications)?.title" />
+      <vue-markdown :source="`## Publications`" />
+      <MediumPublications id="publications" />
       <RenderMarkdown :route="interestsMarkdown" id="Web3" />
       <RenderMarkdown :route="skillsMarkdown" id="Skills" />
     </template>
@@ -114,7 +114,6 @@ import {
   getSnippet,
   updateSnippetStars,
 } from "@/services/entites";
-import { first } from "lodash";
 import { markRaw } from "vue";
 import { type Snippet } from "@/services/entites";
 import VueMarkdown from "vue-markdown-render";
@@ -122,9 +121,6 @@ import VueMarkdown from "vue-markdown-render";
 const snippetList = ref<Snippet[]>([]);
 const isClicked = ref(false);
 
-const interests = ref([{ title: "Web3" }]);
-
-const bio = ref([{ title: "about-me" }]);
 const aboutMeMarkdown: Ref<string | null> = ref(null);
 const interestsMarkdown: Ref<string | null> = ref(null);
 const skillsMarkdown: Ref<string | null> = ref(null);
@@ -145,58 +141,60 @@ onMounted(async () => {
   }
 });
 
-const publications = ref([
-  { title: "publications", component: markRaw(MediumPublications) },
-]);
-
 const personalInfo = ref([
   {
     title: "bio",
-    key: first(bio.value)?.title,
-    content: bio.value,
+    key: "about-me",
+    content: [{ title: "about-me" }],
     iconFill: "#E99287",
     isOpened: true,
   },
   {
     title: "publications",
-    key: first(publications.value)?.title,
-    content: publications.value,
+    key: "publications",
+    content: [
+      { title: "publications", component: markRaw(MediumPublications) },
+    ],
     iconFill: "#008080",
     isOpened: false,
   },
   {
     title: "interests",
-    key: first(interests.value)?.title,
-    content: interests.value,
+    key: "Web3",
+    content: [{ title: "Web3" }],
     iconFill: "#43D9AD",
     isOpened: false,
   },
   {
     title: "Skills",
     in_root: true,
-    key: first(publications.value)?.title,
+    key: "Skills",
   },
 ]);
 
-const contacts = ref([{ title: "horberlan@gmail.com", icon: "MailIcon" }]);
+const contacts = ref([
+  {
+    title: "horberlan@gmail.com",
+    icon: "MailIcon",
+    markdown: `
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/horberlan/)
+  [![Hackerrank](https://img.shields.io/badge/-Hackerrank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://hackerrank.com/profile/@horberlan)
+  [![Medium](https://img.shields.io/badge/-Medium-%23000000?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@horberlan)
+  [![GitLab](https://img.shields.io/badge/GitLab-330F63?style=for-the-badge&logo=gitlab&logoColor=white)](https://gitlab.com/horberlan)
+  `,
+  },
+]);
 
 const sidebarAccordions = ref([
   { titleAccorden: "personal-info", content: personalInfo.value },
   { titleAccorden: "find-me-on", content: contacts.value },
 ]);
 
-const contactSrc = ref(`
-  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/horberlan/)
-  [![Hackerrank](https://img.shields.io/badge/-Hackerrank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://hackerrank.com/profile/@horberlan)
-  [![Medium](https://img.shields.io/badge/-Medium-%23000000?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@horberlan)
-  [![GitLab](https://img.shields.io/badge/GitLab-330F63?style=for-the-badge&logo=gitlab&logoColor=white)](https://gitlab.com/horberlan)
-  `);
-
 const scrollToElement = (id: string) => {
   const element = document.getElementById(id);
   element?.scrollIntoView({
     behavior: "smooth",
-    block: "end",
+    block: "center",
     inline: "nearest",
   });
 };
