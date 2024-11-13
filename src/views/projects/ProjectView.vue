@@ -59,10 +59,10 @@ import PanelView from "@/components/PanelView.vue";
 import ProjectCard from "@/components/ProjectCard.vue";
 import { projectsByType } from "@/services/entites";
 import { PROJECT_TYPE } from "@/utils/enums/project";
-import { uniqBy } from "lodash";
 import { computed, watchEffect, ref, onBeforeMount } from "vue";
 import { useMutation } from "@tanstack/vue-query";
 import CheckBox from "@/components/CheckBox.vue";
+import { uniqBy } from "@/utils/array";
 
 interface ProjectType {
   _id: string;
