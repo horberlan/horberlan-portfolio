@@ -1,6 +1,7 @@
 import { PROJECT_TYPE } from "@/utils/enums/project";
 import axios from "axios";
 
+// todo: move to zod schema before implementing hidrations
 export interface Project {
   _id: string;
   name: string;

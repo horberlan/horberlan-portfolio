@@ -11,7 +11,13 @@
   </span>
 
   <TransitionGroup name="header">
-    <nav :class="containerClass" v-if="displayAll" ref="containerHeader">
+    <nav
+      v-if="displayAll"
+      ref="containerHeader"
+      :class="containerClass"
+      @keydown.left.prevent="switchFocous(true)"
+      @keydown.right.prevent="switchFocous(false)"
+    >
       <ul>
         <router-link
           v-for="(link, index) in header"
@@ -96,6 +102,18 @@ const handleScroll = () => {
       displayAll.value = true;
     }
   } else displayAll.value = false;
+};
+
+const focousItem = ref(0);
+
+const switchFocous = (left: boolean) => {
+  if (left) {
+    focousItem.value = Math.max(0, focousItem.value - 1);
+  } else {
+    focousItem.value = Math.min(header.length - 1, focousItem.value + 1);
+  }
+  const navLinks = containerHeader.value.querySelectorAll(".nav-links");
+  navLinks[focousItem.value].focus();
 };
 
 onUnmounted(() => {
