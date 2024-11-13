@@ -298,4 +298,7 @@ onMounted(async () => {
 .clicked {
   cursor: not-allowed;
 }
+.h2 {
+  color: $font-lynch;
+}
 </style>
