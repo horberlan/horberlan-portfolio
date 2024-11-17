@@ -72,9 +72,11 @@ import SvgIcon from "@/components/SvgIcon.vue";
 import VirtualKeyboard from "@/components/VirtualKeyboard.vue";
 import { twoAndAHalfWords } from "@/utils/strings";
 
+const DEFAULT_SPEED = 16;
+
 const cellSize = ref(25);
 const boardSize = ref(25);
-const speed = ref(16);
+const speed = ref(DEFAULT_SPEED);
 const scores = ref(0);
 const isPlaying = ref(false);
 const winner = ref(false);
@@ -107,6 +109,7 @@ const stop = () => {
   isPlaying.value = false;
   scores.value = 0;
   virtualKeyboardDirection.value = null;
+  speed.value = DEFAULT_SPEED;
 };
 const lose = () => {
   stop();
@@ -116,7 +119,7 @@ const lose = () => {
 
 const addScores = () => {
   scores.value = ++scores.value;
-
+  speed.value = speed.value + 1;
   const nextEmptyItemIndex = foodLoop.value.findIndex(
     (item) => item.empty === true
   );
