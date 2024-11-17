@@ -105,7 +105,7 @@
 
 <script lang="ts" setup>
 import { defaultKeysAndMoveDirection } from "@/views/home/SnakeCanvas";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const keyMapping = {
   topKeyRect: "top",
@@ -118,21 +118,40 @@ const keyMapping = {
   leftKeyArrow: "left",
 };
 
+const props = defineProps<{
+  isPlaying: boolean;
+}>();
+const isPlaying = ref(props.isPlaying);
+
+watch(
+  () => props.isPlaying,
+  (newValue) => {
+    console.info(newValue);
+    if (newValue) {
+      isPlaying.value = newValue;
+      currentDirection.value = null;
+    }
+  }
+);
+
 const emit = defineEmits(["update-direction"]);
 
 const currentDirection = ref<string | null>(null);
-
 const oppositeDirections = {
   top: "bottom",
   bottom: "top",
   left: "right",
   right: "left",
 };
-
+const includedDirection = (direction: string) => {
+  return ["top", "bottom", "left", "right"].includes(direction);
+};
 const validateDirection = (
   current: string | null,
   newDirection: string
 ): boolean => {
+  if (current === null) return true;
+  if (!includedDirection(newDirection)) return false;
   if (current === newDirection) return false;
   if (
     oppositeDirections[current as keyof typeof oppositeDirections] ===
@@ -143,6 +162,7 @@ const validateDirection = (
 };
 
 const handleDirectionChange = (newDirection: string) => {
+  if (!includedDirection(newDirection)) return false;
   if (validateDirection(currentDirection.value, newDirection)) {
     currentDirection.value = newDirection;
     const moveDirection = defaultKeysAndMoveDirection.find(
@@ -155,6 +175,7 @@ const handleDirectionChange = (newDirection: string) => {
 };
 
 const handleClick = (event: MouseEvent) => {
+  if (!isPlaying.value) return;
   if (event.target && (event.target as HTMLElement).classList.contains("key")) {
     const targetId = (event.target as HTMLElement).id;
     const newDirection = keyMapping[targetId as never];

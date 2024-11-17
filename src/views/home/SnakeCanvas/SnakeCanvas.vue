@@ -148,7 +148,6 @@ const onKeyPress = (event: KeyboardEvent) => {
     direction.value = newDirection;
   }
 };
-// todo: change to enum
 const shapeTypes = ["circle", "diamond", "square"];
 
 const getRandomCell = () => {
@@ -270,16 +269,6 @@ const blinkThenLose = () => {
   }
 };
 
-watch(
-  () => props.virtualKeyboardDirection,
-  (newValue) => {
-    console.info(newValue);
-    if (newValue) {
-      updateDirection();
-    }
-  }
-);
-
 onMounted(() => {
   boardContext.value = (
     document.getElementById("snake-canvas") as HTMLCanvasElement
@@ -301,6 +290,15 @@ watch(
       move();
     }
   }
+);
+watch(
+  () => props.virtualKeyboardDirection,
+  (value) => {
+    if (value) {
+      updateDirection();
+    }
+  },
+  { deep: true }
 );
 </script>
 <style scoped>
