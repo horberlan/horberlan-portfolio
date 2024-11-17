@@ -1,6 +1,6 @@
 <template>
   <div class="snake">
-    <div id="app">
+    <div id="canvas-container">
       <SnakeCanvas
         :cellSize="cellSize"
         :boardSize="boardSize"
@@ -47,6 +47,7 @@
         <VirtualKeyboard
           class="keymap"
           @update-direction="virtualKeyboardDirection = $event"
+          :is-playing="isPlaying"
         />
       </div>
       <p class="half-words">// {{ boxIntl.foodLeft }}</p>
@@ -65,10 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref, watchEffect, toRaw } from "vue";
+import { ref, toRaw } from "vue";
 import SnakeCanvas from "@/views/home/SnakeCanvas/SnakeCanvas.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
-import VirtualKeyboard from "@/components/icons/ArrowsIcon.vue";
+import VirtualKeyboard from "@/components/VirtualKeyboard.vue";
 import { twoAndAHalfWords } from "@/utils/strings";
 
 const cellSize = ref(25);
@@ -105,6 +106,7 @@ const start = () => {
 const stop = () => {
   isPlaying.value = false;
   scores.value = 0;
+  virtualKeyboardDirection.value = null;
 };
 const lose = () => {
   stop();
@@ -133,7 +135,7 @@ const addScores = () => {
 </script>
 
 <style lang="scss" scoped>
-#app {
+#canvas-container {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -167,7 +169,7 @@ const addScores = () => {
   gap: 2px;
 }
 @media screen and (max-width: 768px) {
-  #app {
+  #canvas-container {
     width: 13.75rem;
   }
   #label {
