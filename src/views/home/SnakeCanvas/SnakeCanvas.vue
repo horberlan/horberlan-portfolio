@@ -149,16 +149,17 @@ const onKeyPress = useDebounceFn((event: KeyboardEvent) => {
   }
 }, 25);
 
-const shapeDrawingFunctions = {
+const shapeDrawing = {
   circle: drawCircle,
   diamond: drawDiamond,
   square: drawSquare,
 };
 
 const getRandomCell = () => {
-  const shape = Object.keys(shapeDrawingFunctions)[
-    Math.floor(Math.random() * Object.keys(shapeDrawingFunctions).length)
-  ];
+  const shape =
+    Object.keys(shapeDrawing)[
+      Math.floor(Math.random() * Object.keys(shapeDrawing).length)
+    ];
   return {
     x: Math.floor(Math.random() * props.boardSize),
     y: Math.floor(Math.random() * props.boardSize),
@@ -185,9 +186,9 @@ const setTargetCell = () => {
   const strokeWidth = 2;
   const strokeColor = "transparent";
 
-  const drawingFunction = shapeDrawingFunctions[targetCell.value.shape];
-  if (drawingFunction) {
-    drawingFunction(
+  const drawing = shapeDrawing[targetCell.value.shape];
+  if (drawing) {
+    drawing(
       boardContext.value,
       position.x,
       position.y,
