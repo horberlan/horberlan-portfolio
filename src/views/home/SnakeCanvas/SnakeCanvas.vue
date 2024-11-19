@@ -6,14 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  watch,
-  type PropType,
-} from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { defaultKeysAndMoveDirection, sound } from "./index";
 
 import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
@@ -54,7 +47,6 @@ const direction = ref<{
 } | null>(null);
 
 const targetCell = ref<TargetCell | null>(null);
-
 const boardSizePx = computed(() => props.cellSize * props.boardSize);
 
 const getMiddleCell = () => Math.round(props.boardSize / 2);
@@ -157,10 +149,16 @@ const onKeyPress = useDebounceFn((event: KeyboardEvent) => {
   }
 }, 25);
 
-const shapeTypes = ["circle", "diamond", "square"];
+const shapeDrawingFunctions = {
+  circle: drawCircle,
+  diamond: drawDiamond,
+  square: drawSquare,
+};
 
 const getRandomCell = () => {
-  const shape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+  const shape = Object.keys(shapeDrawingFunctions)[
+    Math.floor(Math.random() * Object.keys(shapeDrawingFunctions).length)
+  ];
   return {
     x: Math.floor(Math.random() * props.boardSize),
     y: Math.floor(Math.random() * props.boardSize),
@@ -187,42 +185,19 @@ const setTargetCell = () => {
   const strokeWidth = 2;
   const strokeColor = "transparent";
 
-  switch (targetCell.value.shape) {
-    case "circle":
-      drawCircle(
-        boardContext.value,
-        position.x,
-        position.y,
-        size,
-        fillColor,
-        strokeWidth,
-        strokeColor
-      );
-      break;
-    case "diamond":
-      drawDiamond(
-        boardContext.value,
-        position.x,
-        position.y,
-        size,
-        fillColor,
-        strokeWidth,
-        strokeColor
-      );
-      break;
-    case "square":
-      drawSquare(
-        boardContext.value,
-        position.x,
-        position.y,
-        size,
-        fillColor,
-        strokeWidth,
-        strokeColor
-      );
-      break;
-    default:
-      console.info(`Unknown shape type: ${targetCell.value.shape}`);
+  const drawingFunction = shapeDrawingFunctions[targetCell.value.shape];
+  if (drawingFunction) {
+    drawingFunction(
+      boardContext.value,
+      position.x,
+      position.y,
+      size,
+      fillColor,
+      strokeWidth,
+      strokeColor
+    );
+  } else {
+    console.info(`Unknown shape type: ${targetCell.value.shape}`);
   }
 };
 
@@ -277,7 +252,6 @@ const blinkThenLose = () => {
     props.lose();
   }
 };
-
 watch(
   () => props.isPlaying,
   (value) => {
@@ -307,6 +281,7 @@ onMounted(() => {
   // resetSnake();
   // drawSnake();
   // setTargetCell();
+  // ...maybe
 });
 
 onBeforeUnmount(() => {
