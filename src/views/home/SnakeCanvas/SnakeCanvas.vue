@@ -6,10 +6,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  type PropType,
+} from "vue";
 import { defaultKeysAndMoveDirection, sound } from "./index";
 
 import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
+import { useDebounceFn } from "@vueuse/core";
 
 interface Props {
   cellSize: number;
@@ -22,7 +30,7 @@ interface Props {
   scores: number;
   foodColor?: string;
   snakeColor?: string[];
-  virtualKeyboardDirection: any;
+  virtualKeyboardDirection: typeof direction.value;
 }
 
 interface TargetCell {
@@ -137,7 +145,7 @@ const isCellOutOfBoard = ({ x, y }: { x: number; y: number }) => {
   return x < 0 || y < 0 || x >= props.boardSize || y >= props.boardSize;
 };
 
-const onKeyPress = (event: KeyboardEvent) => {
+const onKeyPress = useDebounceFn((event: KeyboardEvent) => {
   const newDirection = defaultKeysAndMoveDirection.find(
     (c) => c.keyCode === event.keyCode
   );
@@ -147,7 +155,8 @@ const onKeyPress = (event: KeyboardEvent) => {
   if (Math.abs(newDirection.keyCode - direction.value.keyCode) !== 2) {
     direction.value = newDirection;
   }
-};
+}, 25);
+
 const shapeTypes = ["circle", "diamond", "square"];
 
 const getRandomCell = () => {
@@ -269,18 +278,6 @@ const blinkThenLose = () => {
   }
 };
 
-onMounted(() => {
-  boardContext.value = (
-    document.getElementById("snake-canvas") as HTMLCanvasElement
-  ).getContext("2d");
-  document.getElementById("snake-canvas")?.focus();
-  window.addEventListener("keydown", onKeyPress);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onKeyPress);
-});
-
 watch(
   () => props.isPlaying,
   (value) => {
@@ -300,6 +297,21 @@ watch(
   },
   { deep: true }
 );
+
+onMounted(() => {
+  boardContext.value = (
+    document.getElementById("snake-canvas") as HTMLCanvasElement
+  ).getContext("2d");
+  document.getElementById("snake-canvas")?.focus();
+  window.addEventListener("keydown", onKeyPress);
+  // resetSnake();
+  // drawSnake();
+  // setTargetCell();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onKeyPress);
+});
 </script>
 <style scoped>
 #snake-canvas {
