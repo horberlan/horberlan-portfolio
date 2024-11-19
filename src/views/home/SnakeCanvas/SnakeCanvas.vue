@@ -10,6 +10,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { defaultKeysAndMoveDirection, sound } from "./index";
 
 import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
+import { useDebounceFn } from "@vueuse/core";
 
 interface Props {
   cellSize: number;
@@ -22,7 +23,7 @@ interface Props {
   scores: number;
   foodColor?: string;
   snakeColor?: string[];
-  virtualKeyboardDirection: any;
+  virtualKeyboardDirection: typeof direction.value;
 }
 
 interface TargetCell {
@@ -46,7 +47,6 @@ const direction = ref<{
 } | null>(null);
 
 const targetCell = ref<TargetCell | null>(null);
-
 const boardSizePx = computed(() => props.cellSize * props.boardSize);
 
 const getMiddleCell = () => Math.round(props.boardSize / 2);
@@ -137,7 +137,7 @@ const isCellOutOfBoard = ({ x, y }: { x: number; y: number }) => {
   return x < 0 || y < 0 || x >= props.boardSize || y >= props.boardSize;
 };
 
-const onKeyPress = (event: KeyboardEvent) => {
+const onKeyPress = useDebounceFn((event: KeyboardEvent) => {
   const newDirection = defaultKeysAndMoveDirection.find(
     (c) => c.keyCode === event.keyCode
   );
@@ -147,11 +147,19 @@ const onKeyPress = (event: KeyboardEvent) => {
   if (Math.abs(newDirection.keyCode - direction.value.keyCode) !== 2) {
     direction.value = newDirection;
   }
+}, 25);
+
+const shapeDrawing = {
+  circle: drawCircle,
+  diamond: drawDiamond,
+  square: drawSquare,
 };
-const shapeTypes = ["circle", "diamond", "square"];
 
 const getRandomCell = () => {
-  const shape = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+  const shape =
+    Object.keys(shapeDrawing)[
+      Math.floor(Math.random() * Object.keys(shapeDrawing).length)
+    ];
   return {
     x: Math.floor(Math.random() * props.boardSize),
     y: Math.floor(Math.random() * props.boardSize),
@@ -178,42 +186,19 @@ const setTargetCell = () => {
   const strokeWidth = 2;
   const strokeColor = "transparent";
 
-  switch (targetCell.value.shape) {
-    case "circle":
-      drawCircle(
-        boardContext.value,
-        position.x,
-        position.y,
-        size,
-        fillColor,
-        strokeWidth,
-        strokeColor
-      );
-      break;
-    case "diamond":
-      drawDiamond(
-        boardContext.value,
-        position.x,
-        position.y,
-        size,
-        fillColor,
-        strokeWidth,
-        strokeColor
-      );
-      break;
-    case "square":
-      drawSquare(
-        boardContext.value,
-        position.x,
-        position.y,
-        size,
-        fillColor,
-        strokeWidth,
-        strokeColor
-      );
-      break;
-    default:
-      console.info(`Unknown shape type: ${targetCell.value.shape}`);
+  const drawing = shapeDrawing[targetCell.value.shape];
+  if (drawing) {
+    drawing(
+      boardContext.value,
+      position.x,
+      position.y,
+      size,
+      fillColor,
+      strokeWidth,
+      strokeColor
+    );
+  } else {
+    console.info(`Unknown shape type: ${targetCell.value.shape}`);
   }
 };
 
@@ -268,19 +253,6 @@ const blinkThenLose = () => {
     props.lose();
   }
 };
-
-onMounted(() => {
-  boardContext.value = (
-    document.getElementById("snake-canvas") as HTMLCanvasElement
-  ).getContext("2d");
-  document.getElementById("snake-canvas")?.focus();
-  window.addEventListener("keydown", onKeyPress);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onKeyPress);
-});
-
 watch(
   () => props.isPlaying,
   (value) => {
@@ -300,6 +272,22 @@ watch(
   },
   { deep: true }
 );
+
+onMounted(() => {
+  boardContext.value = (
+    document.getElementById("snake-canvas") as HTMLCanvasElement
+  ).getContext("2d");
+  document.getElementById("snake-canvas")?.focus();
+  window.addEventListener("keydown", onKeyPress);
+  // resetSnake();
+  // drawSnake();
+  // setTargetCell();
+  // ...maybe
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onKeyPress);
+});
 </script>
 <style scoped>
 #snake-canvas {
