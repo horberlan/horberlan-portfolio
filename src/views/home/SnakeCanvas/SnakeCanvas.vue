@@ -12,30 +12,31 @@ import { defaultKeysAndMoveDirection, sound } from "./index";
 import { drawCircle, drawDiamond, drawSquare } from "@/utils/game/shapes";
 import { useDebounceFn } from "@vueuse/core";
 
-interface Props {
-  cellSize: number;
-  boardSize: number;
-  speed: number;
-  isPlaying: boolean;
-  stop: () => void;
-  lose: () => void;
-  addScores: (score: number) => void;
-  scores: number;
-  foodColor?: string;
-  snakeColor?: string[];
-  virtualKeyboardDirection: typeof direction.value;
-}
-
 interface TargetCell {
   x: number;
   y: number;
   shape: "circle" | "diamond" | "square";
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  snakeColor: () => ["#43D9AD", "#2b8a7f"],
-  foodColor: "#2b897f",
-});
+const props = withDefaults(
+  defineProps<{
+    cellSize: number;
+    boardSize: number;
+    speed: number;
+    isPlaying: boolean;
+    stop: () => void;
+    lose: () => void;
+    addScores: (score: number) => void;
+    scores: number;
+    foodColor?: string;
+    snakeColor?: string[];
+    virtualKeyboardDirection: typeof direction.value;
+  }>(),
+  {
+    snakeColor: () => ["#43D9AD", "#2b8a7f"],
+    foodColor: "#2b897f",
+  }
+);
 
 defineEmits(["update:is-playing"]);
 
