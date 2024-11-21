@@ -36,7 +36,7 @@ watchEffect(() => {
   if (showPopUp.value) {
     setTimeout(() => {
       emit("update:showMessage", false);
-    }, 4000);
+    }, 5000);
   }
 });
 </script>
@@ -44,11 +44,10 @@ watchEffect(() => {
 <style scoped lang="scss">
 .container {
   position: absolute;
-  right: 20px;
-  bottom: 130px;
-  height: 45px;
+  right: 1.25rem;
+  bottom: 4.5rem;
   background: #1c2b3a;
-
+  padding-block: 1rem;
   color: #fff;
   line-height: 1rem;
   &_pop-up {
@@ -60,6 +59,7 @@ watchEffect(() => {
 
     &_message {
       color: white;
+      margin: 0;
     }
     &_close {
       width: 15px;

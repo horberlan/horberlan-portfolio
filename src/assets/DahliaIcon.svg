@@ -1,24 +1,7 @@
-<template>
-  <svg
-    version="1.1"
-    id="Layer_1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    x="0px"
-    y="0px"
-    width="1939px"
-    height="1218px"
-    viewBox="0 0 1939 1218"
-    enable-background="new 0 0 1939 1218"
-    xml:space="preserve"
-  >
-    <image
-      id="image0"
-      width="1939"
-      height="1218"
-      x="0"
-      y="0"
-      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB5MAAATCCAMAAACnnTHlAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+    y="0px" viewBox="0 0 1939 1218" enable-background="new 0 0 1939 1218"
+    xml:space="preserve">
+    <image id="image0" width="1939" height="1218" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB5MAAATCCAMAAACnnTHlAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
 AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAADAFBMVEUAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAaFxcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAABSUlRmZWVramxzb25hYF9WVVdKSktEQ0M9PT08NzVPRUNaWVlTT01eXV5AQEBH
@@ -2345,7 +2328,5 @@ MBgMBoPBYDAYDAaDwWAwGAwGg8FgMBgMBoPBYDAYDAaDwWAwGAwGg8FgMBgMBoPBYDAYDAaDwWAw
 GAwGg8FgMBgMBoPBOsr+f4jcvg4pehUbAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIzLTA1LTA3VDIx
 OjIxOjI4KzAwOjAwDAs4sAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMy0wNS0wN1QyMToyMToyOCsw
 MDowMH1WgAwAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjMtMDUtMDdUMjE6MjE6MjgrMDA6MDAq
-Q6HTAAAAAElFTkSuQmCC"
-    />
-  </svg>
-</template>
+Q6HTAAAAAElFTkSuQmCC" />
+</svg>

@@ -9,7 +9,9 @@
         skeleton
       />
     </div>
-    <SvgIcon class="img" :name="bg" margin="0" />
+    <!-- <SvgIcon class="img" :name="bg" margin="0" /> -->
+    <RenderSvg class="img" :name="bg" margin="0" />
+
     <div class="card-content">
       <p v-if="desc">{{ truncateText(desc, 80) }}</p>
       <a class="primary-btn" role="button" :href="href" target="_blank"
@@ -22,6 +24,7 @@
 
 <script setup lang="ts">
 import SvgIcon from "@/components/SvgIcon.vue";
+import RenderSvg from "@/components/RenderSvg.vue";
 import type { PROJECT_TYPE } from "@/utils/enums/project";
 import { truncateText } from "@/utils/strings/index";
 defineProps<{
