@@ -66,36 +66,36 @@
       <div class="right-container">
         <p class="test-span section-titles">// Code snippet showcase:</p>
         <span v-if="!snippetList.length" class="loading">Loading</span>
+        <template v-else v-for="snippet in snippetList" :key="snippet._id">
+          <div class="snippet-container">
+            <div class="header">
+              <div class="left">
+                <img
+                  class="img"
+                  :src="snippet.avatar_url"
+                  :alt="snippet.name"
+                />
+                <p>
+                  {{ snippet.name }}
 
-        <div
-          v-else
-          class="snippet-container"
-          v-for="snippet in snippetList"
-          :key="snippet._id"
-        >
-          <div class="header">
-            <div class="left">
-              <img class="img" :src="snippet.avatar_url" :alt="snippet.name" />
-              <p>
-                {{ snippet.name }}
-
-                Created
-                {{ moment.utc(snippet.updated_date).format("MM/DD/YYYY") }}
-              </p>
+                  Created
+                  {{ moment.utc(snippet.updated_date).format("MM/DD/YYYY") }}
+                </p>
+              </div>
+              <div class="right">
+                <p
+                  @click.once="updateSafeSnippet(snippet), (isClicked = true)"
+                  :class="{ clicked: snippet.isClicked }"
+                >
+                  {{ snippet.stars }} stars
+                </p>
+              </div>
             </div>
-            <div class="right">
-              <p
-                @click.once="updateSafeSnippet(snippet), (isClicked = true)"
-                :class="{ clicked: isClicked }"
-              >
-                {{ snippet.stars }} stars
-              </p>
+            <div class="snippet-content">
+              <highlightjs autodetect :code="snippet.snippet" />
             </div>
           </div>
-          <div class="snippet-content">
-            <highlightjs autodetect :code="snippet.snippet" />
-          </div>
-        </div>
+        </template>
       </div>
     </template>
   </PanelView>
@@ -118,7 +118,9 @@ import { markRaw } from "vue";
 import { type Snippet } from "@/services/entites";
 import VueMarkdown from "vue-markdown-render";
 
-const snippetList = ref<Snippet[]>([]);
+type AddIsClicked<T> = T & { isClicked: boolean };
+
+const snippetList = ref<AddIsClicked<Snippet>[]>([]);
 const isClicked = ref(false);
 
 const aboutMeMarkdown: Ref<string | null> = ref(null);
@@ -191,8 +193,7 @@ const sidebarAccordions = ref([
 ]);
 
 const scrollToElement = (id: string) => {
-  const element = document.getElementById(id);
-  element?.scrollIntoView({
+  document.getElementById(id)?.scrollIntoView({
     behavior: "smooth",
     block: "center",
     inline: "nearest",
@@ -202,13 +203,18 @@ const scrollToElement = (id: string) => {
 const getSafeSnippet = async () => {
   try {
     const snippets = await getSnippet();
-    snippetList.value = snippets;
+    snippetList.value = snippets.map((snippet: Snippet) => ({
+      ...snippet,
+      isClicked: false,
+    }));
   } catch (error) {
     console.error("Error fetching snippets:", error);
   }
 };
 
 const updateSafeSnippet = async (snippet: Partial<Snippet>) => {
+  if (!snippet.stars) return;
+
   snippet = { _id: snippet._id, stars: ++snippet.stars };
   try {
     await updateSnippetStars(snippet as never);
@@ -216,6 +222,11 @@ const updateSafeSnippet = async (snippet: Partial<Snippet>) => {
   } catch (error) {
     console.error("Error updating snippet:", error);
   }
+  const index = snippetList.value.findIndex(
+    (snipp) => snipp._id === snippet._id
+  );
+  if (index === -1) return;
+  snippetList.value[index].isClicked = true;
 };
 
 onMounted(async () => {
@@ -298,7 +309,7 @@ onMounted(async () => {
 .clicked {
   cursor: not-allowed;
 }
-.h2 {
+:deep(h2) {
   color: $font-lynch;
 }
 </style>

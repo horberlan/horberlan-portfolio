@@ -93,8 +93,8 @@ const move = () => {
       snake.value.unshift(targetCell.value);
       targetCell.value = null;
       props.addScores(props.speed);
-      playEatFoodSong();
-      if (props.scores === 5) playWinGameSong();
+      playGameSound("eat-food-song");
+      if (props.scores === 5) playGameSound("win-game-song");
     } else {
       snake.value.unshift(newHeadCell);
       snake.value.pop();
@@ -219,17 +219,10 @@ const isTargetNewHead = () => {
 const isBlinking = ref(false);
 const blinkCount = ref(0);
 
-const playGameOverSong = () => {
-  const audio = document.getElementById("game-over-song") as HTMLAudioElement;
-  audio.play();
-};
-
-const playEatFoodSong = () => {
-  const audio = document.getElementById("eat-food-song") as HTMLAudioElement;
-  audio.play();
-};
-const playWinGameSong = () => {
-  const audio = document.getElementById("win-game-song") as HTMLAudioElement;
+const playGameSound = (
+  id: "game-over-song" | "eat-food-song" | "win-game-song"
+) => {
+  const audio = document.getElementById(id) as HTMLAudioElement;
   audio.play();
 };
 
@@ -246,7 +239,7 @@ const blinkThenLose = () => {
     isBlinking.value = !isBlinking.value;
     blinkCount.value++;
     setTimeout(blinkThenLose, 200);
-    playGameOverSong();
+    playGameSound("game-over-song");
   } else {
     isBlinking.value = false;
     console.info(`Game over! You've scored ${props.scores} points.`);
