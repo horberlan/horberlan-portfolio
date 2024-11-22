@@ -19,6 +19,7 @@ export default defineConfig({
         additionalData: `
           @use "sass:math";
           @use "sass:meta";
+          @use "sass:map";
           @use "./src/assets/styles/_variables.scss" as *;`,
       },
     },

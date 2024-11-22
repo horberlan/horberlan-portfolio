@@ -182,13 +182,13 @@ onBeforeMount(async () => await getSafeProjects([]));
   gap: 2rem;
 
   .cards-container {
-    margin-block: map-get($margins, "block-large-screen");
-    margin-inline: map-get($margins, "inline-large-screen");
+    margin-block: map.get($margins, "block-large-screen");
+    margin-inline: map.get($margins, "inline-large-screen");
   }
 
   @media screen and (max-width: 760px) {
-    margin-block: map-get($margins, "block-small-screen");
-    margin-inline: map-get($margins, "inline-small-screen");
+    margin-block: map.get($margins, "block-small-screen");
+    margin-inline: map.get($margins, "inline-small-screen");
     justify-content: center;
   }
 }
