@@ -72,11 +72,16 @@ watchEffect(() => {
   setBoxShadow();
 });
 
-const updateSafeSnippet = async (snippet: Partial<Snippet>) => {
+const updateSafeSnippet = async (
+  snippet: Required<Pick<Snippet, "_id" | "stars">>
+) => {
   if (isClicked.value || !snippet.stars) return;
-
   try {
-    await updateSnippetStars({ _id: snippet._id, stars: ++snippet.stars });
+    await updateSnippetStars({
+      _id: snippet._id,
+      stars: ++snippet.stars,
+    });
+
     await emit("update:snippets");
   } catch (error) {
     console.error("Error updating snippet:", error);
@@ -125,34 +130,33 @@ const updateSafeSnippet = async (snippet: Partial<Snippet>) => {
     border: 1px solid #1e2d3d;
     border-radius: 8px;
   }
-}
-
-:deep(pre) {
-  position: relative;
-  padding-block: 0.5rem;
-  padding-inline: 0.5rem 0.25rem;
-  margin: 0;
-  &::-webkit-scrollbar {
-    display: none;
+  :deep(pre) {
+    position: relative;
+    padding-block: 0.5rem;
+    padding-inline: 0.5rem 0.25rem;
+    margin: 0;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
-}
 
-:deep(.hljs) {
-  overflow-x: auto;
-  background-color: transparent;
-  transition: 400ms;
-  box-shadow: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
-  border-radius: 5px;
-  &::-webkit-scrollbar {
-    display: none;
+  :deep(.hljs) {
+    overflow-x: auto;
+    background-color: transparent;
+    transition: 400ms;
+    box-shadow: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+    border-radius: 5px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
-}
 
-:deep(.scroll-right) {
-  box-shadow: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
-}
+  :deep(.scroll-right) {
+    box-shadow: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+  }
 
-:deep(.scroll-left) {
-  box-shadow: inset 30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+  :deep(.scroll-left) {
+    box-shadow: inset 30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+  }
 }
 </style>
