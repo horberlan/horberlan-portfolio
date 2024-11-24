@@ -203,6 +203,7 @@ onBeforeMount(async () => await getSafeProjects([]));
   opacity: 0;
   transform: translateX(30px);
 }
+
 // todo: change wrapper logic
 .container-left-side {
   width: 20vw;

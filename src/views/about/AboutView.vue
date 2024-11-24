@@ -67,34 +67,10 @@
         <p class="test-span section-titles">// Code snippet showcase:</p>
         <span v-if="!snippetList.length" class="loading">Loading</span>
         <template v-else v-for="snippet in snippetList" :key="snippet._id">
-          <div class="snippet-container">
-            <div class="header">
-              <div class="left">
-                <img
-                  class="img"
-                  :src="snippet.avatar_url"
-                  :alt="snippet.name"
-                />
-                <p>
-                  {{ snippet.name }}
-
-                  Created
-                  {{ moment.utc(snippet.updated_date).format("MM/DD/YYYY") }}
-                </p>
-              </div>
-              <div class="right">
-                <p
-                  @click.once="updateSafeSnippet(snippet), (isClicked = true)"
-                  :class="{ clicked: snippet.isClicked }"
-                >
-                  {{ snippet.stars }} stars
-                </p>
-              </div>
-            </div>
-            <div class="snippet-content">
-              <highlightjs autodetect :code="snippet.snippet" />
-            </div>
-          </div>
+          <SnippetCard
+            :snippet="snippet"
+            @update:snippets="getSafeSnippet()"
+          />
         </template>
       </div>
     </template>
@@ -103,25 +79,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted, type Ref } from "vue";
-import moment from "moment";
 import BoxAccordion from "@/components/BoxAccordion.vue";
 import PanelView from "@/components/PanelView.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
 import MediumPublications from "./MediumPublications.vue";
 import RenderMarkdown from "./RenderMarkdown.vue";
-import {
-  getMarkdown,
-  getSnippet,
-  updateSnippetStars,
-} from "@/services/entites";
+import { getMarkdown, getSnippet } from "@/services/entites";
 import { markRaw } from "vue";
 import { type Snippet } from "@/services/entites";
 import VueMarkdown from "vue-markdown-render";
+import SnippetCard from "./SnippetCard.vue";
 
 type AddIsClicked<T> = T & { isClicked: boolean };
 
 const snippetList = ref<AddIsClicked<Snippet>[]>([]);
-const isClicked = ref(false);
 
 const aboutMeMarkdown: Ref<string | null> = ref(null);
 const interestsMarkdown: Ref<string | null> = ref(null);
@@ -203,6 +174,7 @@ const scrollToElement = (id: string) => {
 const getSafeSnippet = async () => {
   try {
     const snippets = await getSnippet();
+    if (!snippets) return;
     snippetList.value = snippets.map((snippet: Snippet) => ({
       ...snippet,
       isClicked: false,
@@ -210,23 +182,6 @@ const getSafeSnippet = async () => {
   } catch (error) {
     console.error("Error fetching snippets:", error);
   }
-};
-
-const updateSafeSnippet = async (snippet: Partial<Snippet>) => {
-  if (!snippet.stars) return;
-
-  snippet = { _id: snippet._id, stars: ++snippet.stars };
-  try {
-    await updateSnippetStars(snippet as never);
-    await getSafeSnippet();
-  } catch (error) {
-    console.error("Error updating snippet:", error);
-  }
-  const index = snippetList.value.findIndex(
-    (snipp) => snipp._id === snippet._id
-  );
-  if (index === -1) return;
-  snippetList.value[index].isClicked = true;
 };
 
 onMounted(async () => {
@@ -246,45 +201,9 @@ onMounted(async () => {
   border: none;
   cursor: pointer;
   margin-block-start: 0.5rem;
+
   &.is_root {
     margin-inline-start: 1rem;
-  }
-}
-
-.snippet-container {
-  display: flex;
-  flex-direction: column;
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-
-    .left {
-      display: grid;
-      grid-template-columns: 40px 1fr;
-      grid-template-rows: min-content;
-      place-items: center;
-      gap: 1rem;
-
-      .img {
-        width: 2.625rem;
-        height: 2.625rem;
-        border-radius: 50%;
-      }
-    }
-
-    .right {
-      cursor: pointer;
-      display: flex;
-      gap: 2rem;
-    }
-  }
-
-  .snippet-content {
-    background: #011221;
-    border: 1px solid #1e2d3d;
-    border-radius: 0.9375rem;
-    padding: 1.875rem 1.5rem;
   }
 }
 
@@ -298,18 +217,9 @@ onMounted(async () => {
   opacity: 0;
 }
 
-.language-javascript {
-  background-color: transparent;
-  padding: 0;
-  margin: 0;
-}
+:deep(h2),
 .section-titles {
   color: $font-lynch;
-}
-.clicked {
-  cursor: not-allowed;
-}
-:deep(h2) {
-  color: $font-lynch;
+  margin-block-start: 1rem;
 }
 </style>
