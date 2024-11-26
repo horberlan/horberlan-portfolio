@@ -116,24 +116,7 @@ onMounted(() => {
     height: auto;
   }
 }
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #011221 transparent;
-}
 
-*::-webkit-scrollbar {
-  width: 10px;
-  width: 10px;
-}
-*::-webkit-scrollbar-track {
-  border-radius: 7px;
-  background-color: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: #091e31;
-}
 :deep(.drager_col) {
   min-width: 76vw;
 }

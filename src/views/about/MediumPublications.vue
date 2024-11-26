@@ -128,7 +128,6 @@ watchEffect(async () => {
   gap: 1.5rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding-bottom: 20px;
   scroll-behavior: smooth;
   overscroll-behavior-x: contain;
   cursor: grab;

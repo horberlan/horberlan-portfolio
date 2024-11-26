@@ -20,7 +20,8 @@ export default defineConfig({
           @use "sass:math";
           @use "sass:meta";
           @use "sass:map";
-          @use "./src/assets/styles/_variables.scss" as *;`,
+          @use "./src/assets/styles/_variables.scss" as *;
+          @use "highlight.js/styles/stackoverflow-dark.css";`,
       },
     },
   },

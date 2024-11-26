@@ -84,7 +84,7 @@ export const getSnippet = async () => {
 };
 
 export const updateSnippetStars = async (
-  snippet: Snippet
+  snippet: Pick<Snippet, "_id" | "stars">
 ): Promise<Snippet | undefined> => {
   try {
     const { data } = await api.patch(`/snippets/${snippet._id}/stars`, {
