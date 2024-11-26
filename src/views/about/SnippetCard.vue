@@ -1,5 +1,5 @@
 <template>
-  <div class="snippet-container" @vue:mounted="nextTick(), setBoxShadow()">
+  <div class="snippet-container">
     <div class="header">
       <div class="left">
         <img class="avatar" :src="snippet.avatar_url" :alt="snippet.name" />
@@ -9,9 +9,8 @@
         <p
           @click="updateSafeSnippet(snippet), (isClicked = true)"
           :class="{ clicked: isClicked }"
-        >
-          {{ snippet.stars }} stars
-        </p>
+          v-html="`${snippet.stars} stars`"
+        />
       </div>
     </div>
     <div class="snippet-content">
@@ -22,8 +21,9 @@
 
 <script setup lang="ts">
 import { updateSnippetStars, type Snippet } from "@/services/entites";
+import { useDebounceFn } from "@vueuse/core";
 import moment from "moment";
-import { h, nextTick, ref, type Ref } from "vue";
+import { h, onMounted, ref, watchEffect, type Ref } from "vue";
 
 defineProps<{
   snippet: Snippet;
@@ -43,28 +43,23 @@ const TitleContent = ({ name, updated }: { name: string; updated: string }) => {
 
 const setBoxShadow = () => {
   if (!highlightjsRef.value) return;
-  console.log(highlightjsRef.value)
   const block = highlightjsRef.value.$el?.children[0] as HTMLElement;
 
   const checkScrollPosition = () => {
     if (!block) return;
-    const { scrollLeft, clientWidth, scrollWidth } = block;
-    if (!scrollLeft || !clientWidth || !scrollWidth) return;
+    const hasOverflow = block.scrollWidth > block.clientWidth;
 
-    if (scrollWidth > clientWidth) {
-      if (scrollLeft >= scrollWidth - clientWidth) {
-        block.classList.remove("scroll-right");
-        block.classList.add("scroll-left");
-      } else {
-        block.classList.add("scroll-right");
-        block.classList.remove("scroll-left");
-      }
-    } else {
-      block.classList.remove("scroll-left", "scroll-right");
-    }
+    block.classList.toggle("no-shadow", !hasOverflow);
+    block.classList.remove("scroll-left", "scroll-right");
+    if (!hasOverflow) return;
+    const isScrollAtEnd =
+      block.scrollLeft >= block.scrollWidth - block.clientWidth;
+    block.classList.toggle("scroll-right", !isScrollAtEnd);
+    block.classList.toggle("scroll-left", isScrollAtEnd);
   };
 
   checkScrollPosition();
+  window.addEventListener("resize", checkScrollPosition);
   block.addEventListener("scroll", checkScrollPosition);
 };
 
@@ -83,6 +78,18 @@ const updateSafeSnippet = async (
     console.error("Error updating snippet:", error);
   }
 };
+
+onMounted(async () => {
+  setBoxShadow();
+});
+
+const debounceSetBoxShadow = useDebounceFn(async () => {
+  setBoxShadow();
+}, 50);
+
+watchEffect(async () => {
+  await debounceSetBoxShadow();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -98,7 +105,7 @@ const updateSafeSnippet = async (
 
     .left {
       display: grid;
-      grid-template-columns: 40px 1fr;
+      grid-template-columns: 2.5rem 1fr;
       grid-template-rows: min-content;
       place-items: center;
       gap: 1rem;
@@ -124,7 +131,7 @@ const updateSafeSnippet = async (
   .snippet-content {
     background: #011221;
     border: 1px solid #1e2d3d;
-    border-radius: 8px;
+    border-radius: 0.5rem;
   }
   :deep(pre) {
     position: relative;
@@ -134,21 +141,26 @@ const updateSafeSnippet = async (
     &::-webkit-scrollbar {
       display: none;
     }
+    $shadow-right: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+    $shadow-left: inset 30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+
     .hljs {
       overflow-x: auto;
       background-color: transparent;
       transition: 400ms;
       border-radius: 5px;
-      box-shadow: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
       &::-webkit-scrollbar {
         display: none;
       }
+      &.no-shadown {
+        box-shadow: none;
+      }
       &.scroll-right {
-        box-shadow: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+        box-shadow: $shadow-right;
       }
 
       &.scroll-left {
-        box-shadow: inset 30px 0px 20px -10px rgba(26, 31, 38, 0.6);
+        box-shadow: $shadow-left;
       }
     }
   }

@@ -67,10 +67,7 @@
         <p class="test-span section-titles">// Code snippet showcase:</p>
         <span v-if="!snippetList.length" class="loading">Loading</span>
         <template v-else v-for="snippet in snippetList" :key="snippet._id">
-          <SnippetCard
-            :snippet="snippet"
-            @update:snippets="getSafeSnippet()"
-          />
+          <SnippetCard :snippet="snippet" @update:snippets="getSafeSnippet()" />
         </template>
       </div>
     </template>
