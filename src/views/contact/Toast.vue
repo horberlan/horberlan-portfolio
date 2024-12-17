@@ -1,18 +1,16 @@
 <template>
   <Transition>
-    <div class="container" v-if="showPopUp">
+    <div class="container" v-if="showToast">
       <div class="container_pop-up">
         <div class="container_pop-up_icon">
           <SvgIcon skeleton name="WarningIcon" size="md" />
         </div>
-        <p class="container_pop-up_message">Message sent successfully</p>
-        <div
-          role="button"
-          class="container_pop-up_close"
-          @click="emit('update:showMessage', false)"
-        >
-          &#x2715;
-        </div>
+        <p class="container_pop-up_message" v-html="message" />
+        <template v-if="hasCloseIcon">
+          <div role="button" class="container_pop-up_close" @click="emit('update:show-message', false)">
+            &#x2715;
+          </div>
+        </template>
       </div>
     </div>
   </Transition>
@@ -24,18 +22,22 @@ import { ref, watchEffect } from "vue";
 
 const props = withDefaults(
   defineProps<{
+    message?: string;
     showMessage: boolean;
+    hasCloseIcon?: boolean;
   }>(),
-  { showMessage: false }
+
+  { hasCloseIcon: false, showMessage: false, message: "Message sent successfully" }
 );
-const emit = defineEmits(["update:showMessage"]);
-const showPopUp = ref(props.showMessage);
+
+const emit = defineEmits([ "update:show-message" ]);
+const showToast = ref(props.showMessage);
 
 watchEffect(() => {
-  showPopUp.value = props.showMessage;
-  if (showPopUp.value) {
+  showToast.value = props.showMessage;
+  if (showToast.value) {
     setTimeout(() => {
-      emit("update:showMessage", false);
+      emit("update:show-message", false);
     }, 5000);
   }
 });
@@ -43,13 +45,16 @@ watchEffect(() => {
 
 <style scoped lang="scss">
 .container {
-  position: absolute;
-  right: 1.25rem;
-  bottom: 4.5rem;
+  position: fixed;
+  inset-inline-end: 1.25rem;
+  inset-block-end: 1.5rem;
   background: #1c2b3a;
   padding-block: 1rem;
   color: #fff;
   line-height: 1rem;
+  border-radius: 8px;
+  z-index: 3;
+
   &_pop-up {
     display: flex;
     align-items: center;
@@ -61,14 +66,16 @@ watchEffect(() => {
       color: white;
       margin: 0;
     }
+
     &_close {
-      width: 15px;
+      inline-size: 15px;
       aspect-ratio: 1;
       cursor: pointer;
       color: #949da6;
     }
   }
 }
+
 .v-enter-active,
 .v-leave-active {
   transition: opacity 600ms ease;

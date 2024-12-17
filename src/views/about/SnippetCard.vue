@@ -6,17 +6,16 @@
         <TitleContent :name="snippet.name" :updated="snippet.updated_date" />
       </div>
       <div class="right">
-        <p
-          @click="updateSafeSnippet(snippet), (isClicked = true)"
-          :class="{ clicked: isClicked }"
-          v-html="`${snippet.stars} stars`"
-        />
+        <p @click="updateSafeSnippet(snippet), (isClicked = true)" :class="{ clicked: isClicked }"
+          v-html="`${snippet.stars} stars`" />
       </div>
     </div>
     <div class="snippet-content">
       <highlightjs ref="highlightjsRef" autodetect :code="snippet.snippet" />
     </div>
   </div>
+  <Toast :showMessage="showToast" @update:show-message="showToast = !showToast"
+    message="Glad you found it useful, thanks!" />
 </template>
 
 <script setup lang="ts">
@@ -24,14 +23,27 @@ import { updateSnippetStars, type Snippet } from "@/services/entites";
 import { useDebounceFn } from "@vueuse/core";
 import moment from "moment";
 import { h, onMounted, ref, watchEffect, type Ref } from "vue";
+import Toast from "../contact/Toast.vue";
+import { useMutation } from "@tanstack/vue-query";
 
 defineProps<{
   snippet: Snippet;
 }>();
 
-const emit = defineEmits(["update:snippets"]);
+const emit = defineEmits([ "update:snippets" ]);
 const isClicked = ref(false);
 const highlightjsRef: Ref<HTMLElement | null> = ref(null);
+const showToast = ref(false);
+
+const updateSnippetStarsMutation = useMutation({
+  mutationFn: (data: { _id: string, stars: number }) => updateSnippetStars({
+    _id: data._id,
+    stars: data.stars,
+  }),
+  mutationKey: [ 'snippets' ],
+})
+
+const { variables, mutate: mutateUpdateSnippetStars } = updateSnippetStarsMutation
 
 const TitleContent = ({ name, updated }: { name: string; updated: string }) => {
   return h("p", { style: { display: "flex", gap: "0.5rem" } }, [
@@ -43,7 +55,7 @@ const TitleContent = ({ name, updated }: { name: string; updated: string }) => {
 
 const setBoxShadow = () => {
   if (!highlightjsRef.value) return;
-  const block = highlightjsRef.value.$el?.children[0] as HTMLElement;
+  const block = highlightjsRef.value.$el?.children[ 0 ] as HTMLElement;
 
   const checkScrollPosition = () => {
     if (!block) return;
@@ -66,16 +78,19 @@ const setBoxShadow = () => {
 const updateSafeSnippet = async (
   snippet: Required<Pick<Snippet, "_id" | "stars">>
 ) => {
+
   if (isClicked.value || !snippet.stars) return;
   try {
-    await updateSnippetStars({
+
+    await mutateUpdateSnippetStars({
       _id: snippet._id,
       stars: ++snippet.stars,
-    });
-
-    await emit("update:snippets");
+    })
   } catch (error) {
     console.error("Error updating snippet:", error);
+  }
+  finally {
+    showToast.value = true;
   }
 };
 
@@ -111,8 +126,8 @@ watchEffect(async () => {
       gap: 1rem;
 
       .avatar {
-        width: 2.625rem;
-        height: 2.625rem;
+        inline-size: 2.625rem;
+        block-size: 2.625rem;
         border-radius: 50%;
       }
     }
@@ -133,14 +148,17 @@ watchEffect(async () => {
     border: 1px solid #1e2d3d;
     border-radius: 0.5rem;
   }
+
   :deep(pre) {
     position: relative;
     padding-block: 0.5rem;
     padding-inline: 0.5rem 0.25rem;
     margin: 0;
+
     &::-webkit-scrollbar {
       display: none;
     }
+
     $shadow-right: inset -30px 0px 20px -10px rgba(26, 31, 38, 0.6);
     $shadow-left: inset 30px 0px 20px -10px rgba(26, 31, 38, 0.6);
 
@@ -149,12 +167,15 @@ watchEffect(async () => {
       background-color: transparent;
       transition: 400ms;
       border-radius: 5px;
+
       &::-webkit-scrollbar {
         display: none;
       }
+
       &.no-shadown {
         box-shadow: none;
       }
+
       &.scroll-right {
         box-shadow: $shadow-right;
       }

@@ -44,14 +44,14 @@
       {{ formValue }}
     </template>
   </PanelView>
-  <PopUp :showMessage="showPopUp" @update:showMessage="showPopUp = false" />
+  <Toast :showMessage="showToast" @update:show-message="showToast = false" />
 </template>
 
 <script setup lang="ts">
 import PanelView from "@/components/PanelView.vue";
 import { ref, type Ref } from "vue";
 import { postContact } from "@/services/entites";
-import PopUp from "./PopUp.vue";
+import Toast from "./Toast.vue";
 
 type FormValue = {
   name?: string;
@@ -65,7 +65,7 @@ const formValue: Ref<FormValue> = ref({
   email: "",
   message: "",
 });
-const showPopUp = ref(false);
+const showToast = ref(false);
 
 const submitContact = async (value: FormValue) => {
   try {
@@ -78,7 +78,7 @@ const submitContact = async (value: FormValue) => {
     console.error(error);
   } finally {
     console.info("done");
-    showPopUp.value = true;
+    showToast.value = true;
   }
 };
 const validateAndSubmit = () => {
