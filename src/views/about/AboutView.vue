@@ -2,42 +2,20 @@
   <PanelView>
     <template #panel-1>
       <div class="panel-1-content">
-        <box-accordion
-          v-for="(accordion, index) in sidebarAccordions"
-          :key="index"
-          mode="item"
-          :title="accordion.titleAccorden"
-          :open="true"
-        >
+        <box-accordion v-for="(accordion, index) in sidebarAccordions" :key="index" mode="item"
+          :title="accordion.titleAccorden" :open="true">
           <template v-if="accordion.content === personalInfo">
             <template v-for="(item, index) in accordion.content" :key="index">
-              <button
-                v-if="item.in_root"
-                class="btn is_root"
-                @click="scrollToElement('testing')"
-              >
+              <button v-if="item.in_root" class="btn is_root" @click="scrollToElement('testing')">
                 <SvgIcon skeleton name="AboutMd" size="md" />{{ item.title }}
               </button>
-              <box-accordion
-                v-else
-                :title="item.title"
-                @click="scrollToElement(item.key as never)"
-                :open="Boolean(item.isOpened)"
-              >
+              <box-accordion v-else :title="item.title" @click="scrollToElement(item.key as never)"
+                :open="Boolean(item.isOpened)">
                 <template #icon-folder>
-                  <SvgIcon
-                    skeleton
-                    name="FolderIcon"
-                    size="md"
-                    :fill="item.iconFill"
-                  />
+                  <SvgIcon skeleton name="FolderIcon" size="md" :fill="item.iconFill" />
                 </template>
-                <button
-                  v-for="(education, index) in item.content"
-                  :key="index"
-                  @click="scrollToElement(education.title)"
-                  class="btn"
-                >
+                <button v-for="(education, index) in item.content" :key="index"
+                  @click="scrollToElement(education.title)" class="btn">
                   <SvgIcon skeleton name="AboutMd" size="md" />
                   {{ education.title || "" }}
                 </button>
@@ -50,7 +28,7 @@
                 <SvgIcon skeleton :name="link.icon" size="md" />{{ link.title }}
               </button>
             </h4>
-            <vue-markdown :source="contacts[0].markdown" />
+            <vue-markdown :source="contacts[ 0 ].markdown" />
           </template>
         </box-accordion>
       </div>
@@ -67,7 +45,7 @@
         <p class="test-span section-titles">// Code snippet showcase:</p>
         <span v-if="!snippetList.length" class="loading">Loading</span>
         <template v-else v-for="snippet in snippetList" :key="snippet._id">
-          <SnippetCard :snippet="snippet" @update:snippets="getSafeSnippet()" />
+          <SnippetCard :snippet="snippet" @update:snippets="refetch()" />
         </template>
       </div>
     </template>
@@ -75,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, type Ref } from "vue";
+import { ref, onMounted, type Ref, watchEffect } from "vue";
 import BoxAccordion from "@/components/BoxAccordion.vue";
 import PanelView from "@/components/PanelView.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
@@ -86,6 +64,7 @@ import { markRaw } from "vue";
 import { type Snippet } from "@/services/entites";
 import VueMarkdown from "vue-markdown-render";
 import SnippetCard from "./SnippetCard.vue";
+import { useQuery } from "@tanstack/vue-query";
 
 type AddIsClicked<T> = T & { isClicked: boolean };
 
@@ -99,23 +78,12 @@ const getMarkdownData = async (fileName: string): Promise<string> => {
   const data = await getMarkdown(`${fileName}`);
   return data;
 };
-onMounted(async () => {
-  if (!aboutMeMarkdown.value) {
-    aboutMeMarkdown.value = await getMarkdownData("about-me");
-  }
-  if (!interestsMarkdown.value) {
-    interestsMarkdown.value = await getMarkdownData("interests");
-  }
-  if (!skillsMarkdown.value) {
-    skillsMarkdown.value = await getMarkdownData("skills");
-  }
-});
 
 const personalInfo = ref([
   {
     title: "bio",
     key: "about-me",
-    content: [{ title: "about-me" }],
+    content: [ { title: "about-me" } ],
     iconFill: "#E99287",
     isOpened: true,
   },
@@ -131,7 +99,7 @@ const personalInfo = ref([
   {
     title: "interests",
     key: "Web3",
-    content: [{ title: "Web3" }],
+    content: [ { title: "Web3" } ],
     iconFill: "#43D9AD",
     isOpened: false,
   },
@@ -168,22 +136,41 @@ const scrollToElement = (id: string) => {
   });
 };
 
+const { data: snippetsQuery, refetch, isFetched } = useQuery({ queryKey: [ 'snippets' ], queryFn: async () => await getSnippet() })
+
 const getSafeSnippet = async () => {
   try {
-    const snippets = await getSnippet();
-    if (!snippets) return;
-    snippetList.value = snippets.map((snippet: Snippet) => ({
-      ...snippet,
-      isClicked: false,
-    }));
+    await refetch();
+    if (!snippetsQuery.value) return;
+    if (isFetched.value)
+      snippetList.value = snippetsQuery.value.map((snippet: Snippet) => ({
+        ...snippet,
+        isClicked: false,
+      }));
   } catch (error) {
     console.error("Error fetching snippets:", error);
   }
 };
 
+watchEffect(() => {
+  if (snippetsQuery.value) {
+    snippetList.value = (snippetsQuery as typeof snippetList).value;
+
+  }
+});
 onMounted(async () => {
   await getSafeSnippet();
+  if (!aboutMeMarkdown.value) {
+    aboutMeMarkdown.value = await getMarkdownData("about-me");
+  }
+  if (!interestsMarkdown.value) {
+    interestsMarkdown.value = await getMarkdownData("interests");
+  }
+  if (!skillsMarkdown.value) {
+    skillsMarkdown.value = await getMarkdownData("skills");
+  }
 });
+
 </script>
 
 <style lang="scss" scoped>
