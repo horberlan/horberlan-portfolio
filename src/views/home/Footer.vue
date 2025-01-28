@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const footerData = ["Copyright ©", "@pois.nada"];
 const title = ref(footerData[1]);
 const letters = ref<HTMLElement[]>([]);
@@ -33,6 +35,7 @@ function handleMouseMove(event: MouseEvent) {
     letter.style.transform = `translateY(${translateY}px) scale(${scale})`;
   });
 }
+
 function adjustLettersPosition() {
   const footer = document.querySelector("footer");
   const textWrapper = document.querySelector(".text-wrapper");
@@ -41,6 +44,7 @@ function adjustLettersPosition() {
     (textWrapper as HTMLElement).style.bottom = `${footerHeight - 20}px`;
   }
 }
+
 function setDistanceIntensity(clientX, clientY, middleX, middleY) {
   if (!clientX || !middleX)
     return {
@@ -61,6 +65,11 @@ function setDistanceIntensity(clientX, clientY, middleX, middleY) {
   };
 }
 
+function getRandomColor() {
+  const colors = ["#607b96", "#4D5BCE", "#43D9AD"]
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
 onMounted(() => {
   adjustLettersPosition();
   window.addEventListener("resize", adjustLettersPosition);
@@ -76,7 +85,7 @@ onUnmounted(() => {
 <template>
   <div class="wrapper">
     <div class="text-wrapper">
-      <div class="letters rubik-bold">
+      <div class="letters" v-if="!route.name">
         <span
           class="letter rubik-bold"
           v-for="(letter, index) of title"
@@ -174,7 +183,7 @@ $size: 16rem;
   .letter {
     font-size: $size;
     line-height: 1;
-    color: $mirage-secundary;
+    color: v-bind(getRandomColor());
     text-shadow: 1px 1px 0px $background-midnight;
     transition: transform 50ms ease;
     &s {
