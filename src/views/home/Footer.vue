@@ -128,7 +128,6 @@ onMounted(() => {
   window.addEventListener("scroll", handleScroll);
 
   setTimeout(triggerInitialScroll, 100);
-  console.log(isMobile.value);
 });
 
 onUnmounted(() => {
