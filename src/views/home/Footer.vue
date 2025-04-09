@@ -1,37 +1,58 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const footerData = ["Copyright ©", "@pois.nada"];
+const footerData = ["Copyright ©", " @pois.nada "];
 const title = ref(footerData[1]);
 const letters = ref<HTMLElement[]>([]);
+const isMobile = computed(
+  () => window?.matchMedia("(max-width: 1024px)").matches
+);
 
 function handleMouseMove(event: MouseEvent) {
+  if (isMobile.value) return;
+
   const rect = (
     document.querySelector(".letters") as HTMLElement
-  ).getBoundingClientRect();
+  )?.getBoundingClientRect();
 
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
+  if (!rect) return;
 
-  letters.value.forEach((letter: HTMLElement, index) => {
+  letters.value.forEach((letter: HTMLElement) => {
     const letterRect = letter.getBoundingClientRect();
     const letterCenterX = letterRect.left + letterRect.width / 2;
     const letterCenterY = letterRect.top + letterRect.height / 2;
 
-    const distanceX = event.clientX - letterCenterX;
-    const distanceY = event.clientY - letterCenterY;
-
-    const { distance, intensity } = setDistanceIntensity(
+    const { intensity } = setDistanceIntensity(
       event.clientX,
       event.clientY,
       letterCenterX,
       letterCenterY
     );
 
-    const translateY = -70 * intensity;
-    const scale = 1 + 0.1 * intensity;
+    const translateY = -80 * intensity;
+    const scale = 1 + 0.4 * intensity;
+    letter.style.transform = `translateY(${translateY}px) scale(${scale})`;
+  });
+}
+
+function handleScroll() {
+  if (!isMobile.value) return;
+
+  const scrollPosition = window.scrollY;
+  const documentHeight =
+    document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPercentage = Math.min(1, scrollPosition / documentHeight);
+
+  letters.value.forEach((letter: HTMLElement, index) => {
+    const delay = (index * 0.1) / 10;
+    const wavePosition = Math.min(1, scrollPercentage + delay);
+
+    const translateY = -40 * wavePosition;
+    const scale = 1 + 0.1 * wavePosition;
+
     letter.style.transform = `translateY(${translateY}px) scale(${scale})`;
   });
 }
@@ -45,7 +66,12 @@ function adjustLettersPosition() {
   }
 }
 
-function setDistanceIntensity(clientX, clientY, middleX, middleY) {
+function setDistanceIntensity(
+  clientX: number,
+  clientY: number,
+  middleX: number,
+  middleY: number
+) {
   if (!clientX || !middleX)
     return {
       distance: 0,
@@ -66,26 +92,59 @@ function setDistanceIntensity(clientX, clientY, middleX, middleY) {
 }
 
 function getRandomColor() {
-  const colors = ["#607b96", "#4D5BCE", "#43D9AD"]
+  //binded in scss
+  const colors = ["#607b96", "#4D5BCE", "#43D9AD"];
   return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function resetLetters() {
+  letters.value.forEach((letter: HTMLElement) => {
+    letter.style.transform = "";
+  });
+}
+
+function triggerInitialScroll() {
+  if (isMobile.value) {
+    handleScroll();
+  }
 }
 
 onMounted(() => {
   adjustLettersPosition();
-  window.addEventListener("resize", adjustLettersPosition);
+
+  window.addEventListener("resize", () => {
+    const wasMobile = isMobile.value;
+    adjustLettersPosition();
+
+    if (wasMobile !== isMobile.value) {
+      resetLetters();
+      if (isMobile.value) {
+        handleScroll();
+      }
+    }
+  });
+
   window.addEventListener("mousemove", handleMouseMove);
+  window.addEventListener("scroll", handleScroll);
+
+  setTimeout(triggerInitialScroll, 100);
+  console.log(isMobile.value);
 });
 
 onUnmounted(() => {
   window.removeEventListener("resize", adjustLettersPosition);
   window.removeEventListener("mousemove", handleMouseMove);
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
 <template>
-  <div class="wrapper">
+  <div class="wrapper sm:h-10 md:h-30 xl:h-60">
     <div class="text-wrapper">
-      <div class="letters" v-if="!route.name">
+      <article
+        class="letters prose sm:text-4xl md:text-6xl lg:text-9xl text-4xl"
+        v-if="!route.name"
+      >
         <span
           class="letter rubik-bold"
           v-for="(letter, index) of title"
@@ -93,7 +152,7 @@ onUnmounted(() => {
           :ref="el => { if (el) letters[index] = el as HTMLElement }"
           v-html="letter"
         />
-      </div>
+      </article>
     </div>
     <footer>
       <li v-for="(footer, index) in footerData" :key="index">
@@ -104,15 +163,12 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-$size: 16rem;
-
 .wrapper {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   overflow: hidden;
-  height: $size;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -181,8 +237,6 @@ $size: 16rem;
     }
   }
   .letter {
-    font-size: $size;
-    line-height: 1;
     color: v-bind(getRandomColor());
     text-shadow: 1px 1px 0px $background-midnight;
     transition: transform 50ms ease;
@@ -191,7 +245,7 @@ $size: 16rem;
       justify-content: space-evenly;
       flex-flow: row nowrap;
       width: 100%;
-      transform: translateY(70%);
+      transform: translateY(90%);
       cursor: default;
     }
   }

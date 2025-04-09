@@ -38,9 +38,6 @@ importers:
       three:
         specifier: ^0.172.0
         version: 0.172.0
-      unocss:
-        specifier: ^65.4.3
-        version: 65.4.3(postcss@8.5.1)(rollup@3.29.5)(vite@4.5.9(@types/node@18.19.74)(lightningcss@1.29.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.0.4))
       v-timeline-component:
         specifier: ^0.2.3
         version: 0.2.3(typescript@5.0.4)
@@ -129,6 +126,9 @@ importers:
       typescript:
         specifier: ~5.0.4
         version: 5.0.4
+      unocss:
+        specifier: ^65.4.3
+        version: 65.4.3(postcss@8.5.1)(rollup@3.29.5)(vite@4.5.9(@types/node@18.19.74)(lightningcss@1.29.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.0.4))
       vite:
         specifier: ^4.5.9
         version: 4.5.9(@types/node@18.19.74)(lightningcss@1.29.1)(sass@1.83.4)(terser@5.37.0)
