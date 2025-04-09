@@ -7,6 +7,7 @@ import router from "./router";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
+import 'virtual:uno.css'
 
 const app = createApp(App);
 

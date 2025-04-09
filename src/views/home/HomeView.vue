@@ -31,9 +31,14 @@ const intl = {
         </p>
       </div>
       <span
-        v-for="link in intl.github"
+        v-for="(link, index) in intl.github"
         :key="link"
         class="github"
+        :class="
+          index === intl.github.length - 1
+            ? 'hover:underline decoration-wavy'
+            : null
+        "
         role="button"
         @click="redirectTo('https://github.com/horberlan/horberlan-portfolio')"
       >

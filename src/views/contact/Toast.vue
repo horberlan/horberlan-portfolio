@@ -22,12 +22,15 @@ import { ref, watchEffect } from "vue";
 
 const props = withDefaults(
   defineProps<{
+    hasCloseIcon?: boolean;
     message?: string;
     showMessage: boolean;
-    hasCloseIcon?: boolean;
-  }>(),
+    timeout?: number;
+  }>(
+    
+  ),
 
-  { hasCloseIcon: false, showMessage: false, message: "Message sent successfully" }
+  { hasCloseIcon: false,  showMessage: false, message: "Message sent successfully", timeout: 5000 }
 );
 
 const emit = defineEmits([ "update:show-message" ]);
@@ -38,7 +41,7 @@ watchEffect(() => {
   if (showToast.value) {
     setTimeout(() => {
       emit("update:show-message", false);
-    }, 5000);
+    }, props.timeout);
   }
 });
 </script>
