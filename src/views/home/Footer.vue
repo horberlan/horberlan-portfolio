@@ -239,7 +239,7 @@ onUnmounted(() => {
   .letter {
     color: v-bind(getRandomColor());
     text-shadow: 1px 1px 0px $background-midnight;
-    transition: transform 50ms ease;
+    transition: transform 180ms ease;
     &s {
       display: flex;
       justify-content: space-evenly;
