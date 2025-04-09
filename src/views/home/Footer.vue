@@ -200,13 +200,9 @@ onUnmounted(() => {
       padding: 1rem 2rem;
       &:first-of-type {
         border-right: 1px solid $bg-color;
-        border-top-right-radius: 1rem;
-        border-bottom-right-radius: 1rem;
       }
       &:last-of-type {
         border-left: 1px solid $bg-color;
-        border-top-left-radius: 1rem;
-        border-bottom-left-radius: 1rem;
       }
       height: 100%;
       color: $font-lynch;
