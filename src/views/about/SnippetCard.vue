@@ -6,16 +6,22 @@
         <TitleContent :name="snippet.name" :updated="snippet.updated_date" />
       </div>
       <div class="right">
-        <p @click="updateSafeSnippet(snippet), (isClicked = true)" :class="{ clicked: isClicked }"
-          v-html="`${snippet.stars} stars`" />
+        <p
+          @click="updateSafeSnippet(snippet), (isClicked = true)"
+          :class="{ clicked: isClicked }"
+          v-html="`${snippet.stars} stars`"
+        />
       </div>
     </div>
     <div class="snippet-content">
       <highlightjs ref="highlightjsRef" autodetect :code="snippet.snippet" />
     </div>
   </div>
-  <Toast :showMessage="showToast" @update:show-message="showToast = !showToast"
-    message="Glad you found it useful, thanks!" />
+  <Toast
+    :showMessage="showToast"
+    @update:show-message="showToast = !showToast"
+    message="Glad you found it useful, thanks!"
+  />
 </template>
 
 <script setup lang="ts">
@@ -30,20 +36,22 @@ defineProps<{
   snippet: Snippet;
 }>();
 
-const emit = defineEmits([ "update:snippets" ]);
+const emit = defineEmits(["update:snippets"]);
 const isClicked = ref(false);
 const highlightjsRef: Ref<HTMLElement | null> = ref(null);
 const showToast = ref(false);
 
 const updateSnippetStarsMutation = useMutation({
-  mutationFn: (data: { _id: string, stars: number }) => updateSnippetStars({
-    _id: data._id,
-    stars: data.stars,
-  }),
-  mutationKey: [ 'snippets' ],
-})
+  mutationFn: (data: { _id: string; stars: number }) =>
+    updateSnippetStars({
+      _id: data._id,
+      stars: data.stars,
+    }),
+  mutationKey: ["snippets"],
+});
 
-const { variables, mutate: mutateUpdateSnippetStars } = updateSnippetStarsMutation
+const { variables, mutate: mutateUpdateSnippetStars } =
+  updateSnippetStarsMutation;
 
 const TitleContent = ({ name, updated }: { name: string; updated: string }) => {
   return h("p", { style: { display: "flex", gap: "0.5rem" } }, [
@@ -55,7 +63,7 @@ const TitleContent = ({ name, updated }: { name: string; updated: string }) => {
 
 const setBoxShadow = () => {
   if (!highlightjsRef.value) return;
-  const block = highlightjsRef.value.$el?.children[ 0 ] as HTMLElement;
+  const block = highlightjsRef.value.$el?.children[0] as HTMLElement;
 
   const checkScrollPosition = () => {
     if (!block) return;
@@ -78,18 +86,15 @@ const setBoxShadow = () => {
 const updateSafeSnippet = async (
   snippet: Required<Pick<Snippet, "_id" | "stars">>
 ) => {
-
   if (isClicked.value || !snippet.stars) return;
   try {
-
     await mutateUpdateSnippetStars({
       _id: snippet._id,
       stars: ++snippet.stars,
-    })
+    });
   } catch (error) {
     console.error("Error updating snippet:", error);
-  }
-  finally {
+  } finally {
     showToast.value = true;
   }
 };
