@@ -7,7 +7,11 @@
         </div>
         <p class="container_pop-up_message" v-html="message" />
         <template v-if="hasCloseIcon">
-          <div role="button" class="container_pop-up_close" @click="emit('update:show-message', false)">
+          <div
+            role="button"
+            class="container_pop-up_close"
+            @click="emit('update:show-message', false)"
+          >
             &#x2715;
           </div>
         </template>
@@ -26,14 +30,17 @@ const props = withDefaults(
     message?: string;
     showMessage: boolean;
     timeout?: number;
-  }>(
-    
-  ),
+  }>(),
 
-  { hasCloseIcon: false,  showMessage: false, message: "Message sent successfully", timeout: 5000 }
+  {
+    hasCloseIcon: false,
+    showMessage: false,
+    message: "Message sent successfully",
+    timeout: 5000,
+  }
 );
 
-const emit = defineEmits([ "update:show-message" ]);
+const emit = defineEmits(["update:show-message"]);
 const showToast = ref(props.showMessage);
 
 watchEffect(() => {
@@ -57,6 +64,8 @@ watchEffect(() => {
   line-height: 1rem;
   border-radius: 8px;
   z-index: 3;
+  max-width: 350px;
+  width: fit-content;
 
   &_pop-up {
     display: flex;
