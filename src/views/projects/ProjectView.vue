@@ -1,7 +1,8 @@
 <template>
   <PanelView :isResizable="false">
     <template #panel-1>
-      <box-accordion
+      <div class="container-left-side"></div>
+      <!-- <box-accordion
         title="projects"
         :open="true"
         @selected="null"
@@ -23,7 +24,7 @@
             @focus-next="focusNext(index)"
           />
         </template>
-      </box-accordion>
+      </box-accordion> -->
     </template>
     <template #left>
       <template v-if="filtredProjectsList.length">
