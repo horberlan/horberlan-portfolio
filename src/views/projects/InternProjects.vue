@@ -375,6 +375,11 @@ $neu-shadow-color: rgba($neu-black, 0.3);
   padding-block: 2rem;
   padding-left: 1rem;
   scroll-padding-top: 5vh;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
 }
 
 .horizontal-section {
