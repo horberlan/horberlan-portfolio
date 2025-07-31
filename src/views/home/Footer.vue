@@ -4,8 +4,8 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const footerData = ["Copyright ©", " @pois.nada "];
-const title = ref(footerData[1]);
+const footerData = [ "Copyright ©", " @pois.nada " ];
+const title = ref(footerData[ 1 ]);
 const letters = ref<HTMLElement[]>([]);
 const isMobile = computed(
   () => window?.matchMedia("(max-width: 1024px)").matches
@@ -92,9 +92,9 @@ function setDistanceIntensity(
 }
 
 function getRandomColor() {
-  //binded in scss
-  const colors = ["#607b96", "#4D5BCE", "#43D9AD"];
-  return colors[Math.floor(Math.random() * colors.length)];
+  //todo: bind in scss
+  const colors = [ "#607b96", "#4D5BCE", "#43D9AD", "#E99287", "#FFFDDC", "#6D7A88" ];
+  return colors[ Math.floor(Math.random() * colors.length) ];
 }
 
 function resetLetters() {
@@ -140,17 +140,9 @@ onUnmounted(() => {
 <template>
   <div class="wrapper sm:h-10 md:h-30 xl:h-60">
     <div class="text-wrapper">
-      <article
-        class="letters prose sm:text-4xl md:text-6xl lg:text-9xl text-4xl"
-        v-if="!route.name"
-      >
-        <span
-          class="letter rubik-bold"
-          v-for="(letter, index) of title"
-          :key="index"
-          :ref="el => { if (el) letters[index] = el as HTMLElement }"
-          v-html="letter"
-        />
+      <article class="letters prose sm:text-4xl md:text-6xl lg:text-9xl text-4xl" v-if="!route.name">
+        <span class="letter rubik-bold" v-for="(letter, index) of title" :key="index"
+          :ref="el => { if (el) letters[ index ] = el as HTMLElement }" v-html="letter" />
       </article>
     </div>
     <footer>
@@ -171,6 +163,8 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  z-index: 4;
+
   &-wrapper {
     position: absolute;
     left: 0;
@@ -178,6 +172,7 @@ onUnmounted(() => {
     bottom: 100%;
     z-index: 1;
   }
+
   footer {
     position: relative;
     z-index: 2;
@@ -198,20 +193,25 @@ onUnmounted(() => {
     li {
       list-style: none;
       padding: 1rem 2rem;
+
       &:first-of-type {
         border-right: 1px solid $bg-color;
       }
+
       &:last-of-type {
         border-left: 1px solid $bg-color;
       }
+
       height: 100%;
       color: $font-lynch;
       list-style: none;
+
       &:last-child {
         display: flex;
         margin-inline-start: auto;
         gap: 1rem;
         padding: 1rem 1.5rem;
+
         &::after {
           filter: grayscale(1);
           cursor: pointer;
@@ -223,6 +223,7 @@ onUnmounted(() => {
           height: 1.2rem;
           transition: 400ms;
         }
+
         &:hover {
           &::after {
             filter: none;
@@ -231,10 +232,12 @@ onUnmounted(() => {
       }
     }
   }
+
   .letter {
     color: v-bind(getRandomColor());
     text-shadow: 1px 1px 0px $background-midnight;
     transition: transform 180ms ease;
+
     &s {
       display: flex;
       justify-content: space-evenly;
