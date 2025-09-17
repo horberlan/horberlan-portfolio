@@ -65,7 +65,7 @@ $orange: #e99287;
   background: url("../../assets/background_blurs.svg") center no-repeat
     transparent;
   background-position: 100% 0%;
-  height: 100%;
+  height: 110%;
 
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
