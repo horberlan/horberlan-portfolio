@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div class="container" v-if="showToast">
+    <div class="container z-[1000]" v-if="showToast">
       <div class="container_pop-up">
         <div class="container_pop-up_icon">
           <SvgIcon skeleton name="WarningIcon" size="md" />
@@ -63,7 +63,7 @@ watchEffect(() => {
   color: #fff;
   line-height: 1rem;
   border-radius: 8px;
-  z-index: 3;
+  z-index: 9;
   max-width: 350px;
   width: fit-content;
 
