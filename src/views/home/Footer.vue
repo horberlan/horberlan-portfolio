@@ -94,7 +94,7 @@ function setDistanceIntensity(
 function getRandomColor() {
   //todo: bind in scss
   const colors = [ "#607b96", "#4D5BCE", "#43D9AD", "#E99287", "#FFFDDC", "#6D7A88" ];
-  return colors[ Math.floor(Math.random() * colors.length) ];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 function resetLetters() {
@@ -138,9 +138,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="wrapper sm:h-10 md:h-30 xl:h-60">
+  <div class="wrapper sm:h-10 md:h-30 xl:h-40" :class="route.name === 'home'? 'xl:h-40' :'xl:h-10'">
     <div class="text-wrapper">
-      <article class="letters prose sm:text-4xl md:text-6xl lg:text-9xl text-4xl" v-if="!route.name">
+      <article class="letters prose sm:text-4xl md:text-6xl lg:text-9xl text-4xl" v-if="route.name === 'home'">
         <span class="letter rubik-bold" v-for="(letter, index) of title" :key="index"
           :ref="el => { if (el) letters[ index ] = el as HTMLElement }" v-html="letter" />
       </article>
