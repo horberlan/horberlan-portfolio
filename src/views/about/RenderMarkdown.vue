@@ -34,7 +34,6 @@ const SkeletonBox = () => {
 
 <style lang="scss" scoped>
 .markdown-container {
-  margin-block-end: 4rem;
   * {
     color: $font-lynch;
   }

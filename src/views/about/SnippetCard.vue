@@ -7,10 +7,9 @@
       </div>
       <div class="right">
         <p
-          class="btn-icon"
           @click="updateSafeSnippet(snippet), (isClicked = true)"
           :class="{ clicked: isClicked }"
-          v-html="`${snippet.stars}★`"
+          v-html="`${snippet.stars} stars`"
         />
       </div>
     </div>
@@ -190,16 +189,6 @@ watchEffect(async () => {
         box-shadow: $shadow-left;
       }
     }
-  }
-}
-.btn-icon {
-  position: relative;
-  &::after {
-    position: absolute;
-    content: "";
-    width: 12px;
-    aspect-ratio: 1/1;
-    background: url(../../assets/favorite.svg) no-repeat center;
   }
 }
 </style>
