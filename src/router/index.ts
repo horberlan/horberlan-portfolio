@@ -1,42 +1,56 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import AboutView from "@/views/about/AboutView.vue";
-import ContactView from "@/views/contact/ContactView.vue";
-import HomeView from "@/views/home/IndexHome.vue";
-import ProjectView from "@/views/projects/ProjectView.vue";
-import InternProjects from "@/views/projects/InternProjects.vue";
-
 const router = createRouter({
-  history: createWebHistory(), // import.meta.env.BASE_URL
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "",
-      component: HomeView,
-    },
-    {
-      path: "/",
       name: "home",
-      component: HomeView,
+      component: () => import("@/views/home/HomeView.vue"),
     },
     {
       path: "/about",
       name: "about",
-      component: AboutView,
+      component: () => import("@/views/about/AboutView.vue"),
     },
     {
       path: "/projects",
-      name: "project",
-      component: ProjectView,
+      name: "projects",
+      component: () => import("@/views/projects/ProjectView.vue"),
     },
     {
-      path: "/projects/:name",
-      component: InternProjects,
+      path: "/projects/:projectName",
+      name: "project-simple",
+      component: () => import("@/views/projects/InternProjects.vue"),
+      beforeEnter: (to, from, next) => {
+        if (to.params.projectName && !to.params.projectName.includes("/")) {
+          next();
+        } else {
+          next("/projects");
+        }
+      },
+    },
+    {
+      path: "/projects/:inside/:name",
+      name: "project-detail",
+      component: () => import("@/views/projects/InternProjects.vue"),
+      beforeEnter: (to, from, next) => {
+        if (to.params.inside && to.params.name) {
+          next();
+        } else {
+          next("/projects");
+        }
+      },
     },
     {
       path: "/contact",
       name: "contact",
-      component: ContactView,
+      component: () => import("@/views/contact/ContactView.vue"),
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: () => import("@/views/NotFound.vue"),
     },
   ],
 });
